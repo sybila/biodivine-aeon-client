@@ -10,6 +10,10 @@
         <script src="script/dependencies/lodash.js"></script>
         <script src="script/dependencies/cytoscape-edgehandles.js"></script>
 
+        <script src="script/LiveModel.js"></script>
+        <script src="script/UI.js"></script>
+        <script src="script/CytoscapeEditor.js"></script>        
+        <script src="script/ModelEditor.js"></script>        
         <script src="script/main.js"></script>
     </head>
 
@@ -20,7 +24,7 @@
 
         <div id="node-menu" class="invisible">
             <div class="button-row">                
-                <img alt="Edit name" id="node-menu-rename" class="button" src="img/edit-24px.svg">                
+                <img alt="Edit name" id="node-menu-edit-name" class="button" src="img/edit-24px.svg">                
                 <img alt="Edit update function" id="node-menu-edit-function" class="button" src="img/functions-24px.svg">
                 <img alt="Remove" id="node-menu-remove" class="button" src="img/delete-24px.svg">
             </div>
@@ -28,5 +32,44 @@
             <span class="hint invisible">Hint</span>
         </div>
 
+        <div style="position: absolute;">            
+
+            <div id="tab-model-editor" class="main-panel gone">
+                <div class="invisible-input full-line">
+                    <input id="model-name" class="center" type="text" name="model-name" value="Model Name" placeholder="(model name)" style="font-size: 20px;">
+                </div>
+                <div class="invisible-input full-line">
+                    <textarea id="model-description" placeholder="(model description)"></textarea>
+                </div>      
+
+                <div id="model-variables" class="full-line">                
+                    <div id="model-variable-template" class="gone">
+                        <div class="invisible-input">
+                            <input class="variable-name" type="text" name="variable-name" value="Variable name" placeholder="(variable name)">
+                        </div>
+                    </div>
+                </div>       
+                <button id="button-add-variable" class="image-button center" onclick="LiveModel.addVariable()">Add variable <img src="img/add_box-24px.svg"></button>
+            </div>
+
+            <div id="tab-engine" class="main-panel gone">
+                <img alt="close" src="img/close-24px.svg" class="close-button" onclick="UI.closeContent()">
+                Engine panel
+            </div>
+
+            <div id="side-menu">
+                <div class="button-group">
+                    <img alt="Engine" id="side-menu-engine" src="img/engine-48px.svg" class="button" tab-id="tab-engine">
+                    <span class="hint invisible">Compute Engine</span>
+                </div>
+
+                <div class="button-group">
+                    <img alt="Model" id="side-menu-model" src="img/model-48px.svg" class="button" tab-id="tab-model-editor">
+                    <span class="hint invisible">Model Editor</span>
+                </div>  
+
+            </div>
+        </div>
+        
     </body>
 </html>

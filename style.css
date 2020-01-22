@@ -6,6 +6,11 @@
     src: url('font/FiraMono-Regular.ttf');
 }
 
+@font-face {
+    font-family: 'FiraMonoBold';
+    src: url('font/FiraMono-Bold.ttf');
+}
+
 /*
 @font-face {
     font-family: 'symbols';
@@ -39,10 +44,14 @@ body {
     z-index: -1;
 }
 
+/*
+    The menu that is displayed when user clicks on a node.
+*/
 #node-menu {
 	position: absolute;
-	left: 0;
-	top: 0;
+    /* Initially, menu is off screen */
+	left: -200px;
+	top: -200px;
     /* This is to accommodate longer hints */
     width: 160px;
     /* Ensure hint is in the middle */
@@ -77,6 +86,67 @@ body {
     transition: opacity 0.3s;
 }
 
+/*
+    The menu with main buttons/panels
+*/
+#side-menu {
+    position: absolute;
+    top: 0;
+}
+
+#side-menu .button {
+    width: 48px;
+    height: 48px;
+    padding: 12px;
+    border-radius: 24px;
+    background-color: #ECEFF1;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+#side-menu .button.selected {
+    background-color: #CFD8DC;
+}
+
+#side-menu .button:hover {
+    background-color: #B0BEC5;
+}
+
+#side-menu .button-group {
+    background-color: #ECEFF1;
+    display: block;
+    border-radius: 24px;
+    box-shadow: 0px 2px 5px #d0d0d0;
+    height: 72px;
+    width: 72px;
+    transition: width 0.3s;
+    position: relative;
+    margin-bottom: 12px;
+}
+
+#side-menu .button-group .hint {
+    width: 200px;
+    line-height: 72px;
+    display: table-cell;
+    position: absolute;
+    top: 0px;
+    left: 72px;
+    font-weight: bold;    
+    font-size: 20px;    
+    text-align: center;      
+    pointer-events: none;
+}
+
+.main-panel {
+    display: block;
+    background-color: #f5f5f5;
+    box-shadow: 0px 2px 5px #d0d0d0;
+    width: 500px;
+    margin-left: 82px;
+    padding: 12px;
+    border-radius: 8px;
+}
+
 .invisible {
     opacity: 0;
 }
@@ -84,3 +154,126 @@ body {
 .gone {
 	display: none;
 }
+
+.close-button {
+    width: 24px;
+    height: 24px;
+    padding: 8px;
+    border-radius: 24px;    
+    transition: 0.3s;
+}
+
+.close-button:hover {
+    background: #CFD8DC;
+}
+
+.invisible-input {
+    position: relative;
+    display: inline-block;
+}
+
+.invisible-input input {
+    font-family: 'FiraMono', monospace;
+    background: none;
+    border: none;
+    font-size: 14px;   
+}
+
+.invisible-input textarea {
+    font-family: 'FiraMono', monospace;
+    background: none;
+    border: none;
+    font-size: 14px;
+    resize: none;
+    height: 50px;
+}
+
+.invisible-input input:focus {
+    outline: none;
+    font-weight: bold;
+    font-family: 'FiraMonoBold', monospace;
+}
+
+.invisible-input textarea:focus {
+    outline: none;
+    font-weight: bold;
+    font-family: 'FiraMonoBold', monospace;
+}
+
+.invisible-input::after {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    content: url('img/edit-24px.svg');
+    transition: opacity 0.3s;
+    opacity: 0;
+}
+
+.invisible-input:hover::after {
+    opacity: 1;
+}
+
+.invisible-input.full-line {
+    width: 100%;
+}
+
+.invisible-input.full-line input {
+    width: 100%;
+}
+
+.invisible-input.full-line textarea {
+    width: 100%;
+}
+
+.image-button {
+    background-color: #ECEFF1;
+    display: block;
+    border-radius: 12px;
+    box-shadow: 0px 2px 5px #d0d0d0;
+    height: 40px;
+    position: relative;
+    font-size: 16px;
+    font-weight: bold;
+    padding-right: 40px;
+    padding-left: 12px;
+    transition: background-color 0.3s;
+    border: none;
+}
+
+.image-button:hover {
+    background-color: #B0BEC5;
+}
+
+.image-button:focus {
+    outline: none;
+}
+
+.image-button:active {
+    border: none;
+}
+
+.image-button img {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 24px;
+    height: 24px;    
+}
+
+
+input.center {
+    text-align: center;
+}
+
+button.center {
+    margin: 0 auto;
+}
+
+/*
+Color scheme:
+
+    Backgrounds: #ECEFF1;
+    Basic element background: #CFD8DC;
+    Highlighted element background: #B0BEC5;
+
+*/
