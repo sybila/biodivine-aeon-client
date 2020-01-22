@@ -22,6 +22,9 @@
     src: url("font/B2.ttf");
 }*/
 
+body {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+}
 
 /*
 	The root of the model editor - just stretch across the whole page...
@@ -40,8 +43,42 @@
 	position: absolute;
 	left: 0;
 	top: 0;
+    /* This is to accommodate longer hints */
+    width: 160px;
+    /* Ensure hint is in the middle */
+    text-align: center;
 	/* Ensures the zoom is properly applied when needed */
 	transform-origin: 0% 0%;
+    /* We don't animate other stuff because that needs to be in sync with the graph */
+    transition: opacity 0.3s;
+}
+
+#node-menu .button {
+    width: 24px;
+    height: 24px;
+    padding: 12px;
+    border-radius: 24px;    
+    transition: 0.3s;
+}
+
+#node-menu .button:hover {
+    background-color: #CFD8DC;
+}
+
+#node-menu .button-row {
+    height: 48px;
+    width: 153px;
+    border-radius: 24px;
+    background-color: #ECEFF1;
+}
+
+#node-menu .hint {
+    font-weight: bold;
+    transition: opacity 0.3s;
+}
+
+.invisible {
+    opacity: 0;
 }
 
 .gone {
