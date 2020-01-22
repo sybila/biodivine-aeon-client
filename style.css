@@ -1,0 +1,49 @@
+/*
+	Custom font used for names and other `technical` texts.
+*/
+@font-face {
+    font-family: 'FiraMono';
+    src: url('font/FiraMono-Regular.ttf');
+}
+
+/*
+@font-face {
+    font-family: 'symbols';
+    src: url('font/Symbols.ttf');
+}
+
+@font-face {
+    font-family: 'BaileyReg';
+    src: url("font/B3.ttf");
+}
+
+@font-face {
+    font-family: 'BaileyBold';
+    src: url("font/B2.ttf");
+}*/
+
+
+/*
+	The root of the model editor - just stretch across the whole page...
+*/
+#cytoscape-editor {
+	position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;    
+    top: 0;
+    background: #f9f9f9;
+    z-index: -1;
+}
+
+#node-menu {
+	position: absolute;
+	left: 0;
+	top: 0;
+	/* Ensures the zoom is properly applied when needed */
+	transform-origin: 0% 0%;
+}
+
+.gone {
+	display: none;
+}
