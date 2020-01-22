@@ -34,19 +34,24 @@
 
         <div style="position: absolute;">            
 
-            <div id="tab-model-editor" class="main-panel gone">
+            <div id="tab-model-editor" class="main-panel gone">                
                 <div class="invisible-input full-line">
                     <input id="model-name" class="center" type="text" name="model-name" value="Model Name" placeholder="(model name)" style="font-size: 20px;">
                 </div>
-                <div class="invisible-input full-line">
+                <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.closeContent()">
+                <div class="invisible-input full-line" style="margin-top: 4px;">
                     <textarea id="model-description" placeholder="(model description)"></textarea>
                 </div>      
 
                 <div id="model-variables" class="full-line">                
-                    <div id="model-variable-template" class="gone">
+                    <div id="model-variable-template" class="gone model-variable">
                         <div class="invisible-input">
-                            <input class="variable-name" type="text" name="variable-name" value="Variable name" placeholder="(variable name)">
+                            <input class="variable-name" type="text" name="variable-name" value="Variable name" placeholder="(variable name)" style="font-size: 18px;">
                         </div>
+                        <img alt="Remove variable" src="img/delete-24px.svg" class="model-variable-remove">
+                        <br>
+                        Regulations: ...<br>
+                        Update function: ...
                     </div>
                 </div>       
                 <button id="button-add-variable" class="image-button center" onclick="LiveModel.addVariable()">Add variable <img src="img/add_box-24px.svg"></button>

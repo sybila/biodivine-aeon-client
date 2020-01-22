@@ -35,7 +35,44 @@ let ModelEditor = {
 			// TODO: What happens if I rename the variable but the change is rejected?
 			LiveModel.renameVariable(id, variableName.value);
 		});
+		// Enable synchronizing hover and selected state
+		variableBox.addEventListener("mouseenter", (e) => {
+			variableBox.classList.add("hover");
+			CytoscapeEditor.hoverNode(id, true);
+		});
+		variableBox.addEventListener("mouseleave", (e) => {
+			variableBox.classList.remove("hover");
+			CytoscapeEditor.hoverNode(id, false);
+		});
+		// Enable remove button
+		variableBox.getElementsByClassName("model-variable-remove")[0].addEventListener("click", (e) => {
+			LiveModel.removeVariable(id);
+		});
 		this._variables.appendChild(variableBox);
+	},
+
+	// Allow to externally set which variable box should be hovered. (Remeber to unset afterwards)
+	hoverVariable(id, isHover) {
+		let box = this._getVariableBox(id);
+		if (box !== undefined) {
+			if (isHover) {
+				box.classList.add("hover");
+			} else {
+				box.classList.remove("hover");
+			}
+		}
+	},
+
+	// Set which variable is currently selected (remember to also unselect afterwards)
+	selectVariable(id, isSelected) {
+		let box = this._getVariableBox(id);
+		if (box !== undefined) {
+			if (isSelected) {
+				box.classList.add("selected");
+			} else {
+				box.classList.remove("selected");
+			}
+		}
 	},
 
 	// Remove a variable box and all associated regulations from the editor.

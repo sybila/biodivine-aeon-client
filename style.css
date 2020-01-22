@@ -84,6 +84,7 @@ body {
 #node-menu .hint {
     font-weight: bold;
     transition: opacity 0.3s;
+    pointer-events: none;
 }
 
 /*
@@ -143,8 +144,9 @@ body {
     box-shadow: 0px 2px 5px #d0d0d0;
     width: 500px;
     margin-left: 82px;
-    padding: 12px;
+    padding: 8px;
     border-radius: 8px;
+    position: relative;
 }
 
 .invisible {
@@ -155,15 +157,19 @@ body {
 	display: none;
 }
 
-.close-button {
+.panel-close-button {
     width: 24px;
     height: 24px;
-    padding: 8px;
-    border-radius: 24px;    
+    padding: 4px;
+    border-radius: 8px;    
     transition: 0.3s;
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    transition: background-color 0.3s;
 }
 
-.close-button:hover {
+.panel-close-button:hover {
     background: #CFD8DC;
 }
 
@@ -260,6 +266,40 @@ body {
     height: 24px;    
 }
 
+.model-variable {
+    padding: 8px;
+    background-color: #fafafa;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px #d0d0d0;
+    border: 2.0px #fafafa solid;
+    position: relative;
+}
+
+.model-variable.hover {
+    border: 2.0px #6a7ea5 dashed;
+}
+
+.model-variable.selected {
+    border: 2.0px #6a7ea5 solid;
+}
+
+.model-variable-remove {
+    width: 24px;
+    height: 24px;
+    padding: 4px;
+    border-radius: 8px;    
+    transition: 0.3s;
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    transition: background-color 0.3s;
+}
+
+.model-variable-remove:hover {
+    background: #CFD8DC;
+}
 
 input.center {
     text-align: center;

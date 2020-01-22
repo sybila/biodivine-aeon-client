@@ -38,16 +38,20 @@ let CytoscapeEditor = {
 			position: { x: position[0], y: position[1] },
 		})
 		node.on('mouseover', (e) => {
-			node.addClass('hover');			
+			node.addClass('hover');	
+			ModelEditor.hoverVariable(id, true);		
 		});
 		node.on('mouseout', (e) => {
 			node.removeClass('hover');			
+			ModelEditor.hoverVariable(id, false);
 		});
 		node.on('select', (e) => {			
 			CytoscapeEditor._renderMenuForSelectedNode(node);
+			ModelEditor.selectVariable(id, true);
 		})
 		node.on('unselect', (e) => {
 			UI.toggleNodeMenu();
+			ModelEditor.selectVariable(id, false);
 		})
 		node.on('click', (e) => {						
 			this._lastClickTimestamp = undefined; // ensure that we cannot double-click inside the node
@@ -75,6 +79,16 @@ let CytoscapeEditor = {
 			let data = node.data();
 			data["name"] = newName;
 			this._cytoscape.style().update();	// redraw nodes
+		}
+	},
+
+	// Allow to externally set which node is hovered - make sure to unset it as well.
+	hoverNode(id, isHover) {
+		let node = this._cytoscape.getElementById(id);
+		if (isHover) {
+			node.addClass('hover');
+		} else {
+			node.removeClass('hover');
 		}
 	},
 
