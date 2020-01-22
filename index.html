@@ -43,18 +43,22 @@
                     <textarea id="model-description" placeholder="(model description)"></textarea>
                 </div>      
 
+                <div style="height: 40px;">
+                    <h3 style="float: left;">Variables:</h3>
+                    <button id="button-add-variable" class="image-button" onclick="LiveModel.addVariable()" style="float: right;">Add variable <img src="img/add_box-24px.svg"></button>
+                </div>
                 <div id="model-variables" class="full-line">                
                     <div id="model-variable-template" class="gone model-variable">
                         <div class="invisible-input">
                             <input class="variable-name" type="text" name="variable-name" value="Variable name" placeholder="(variable name)" style="font-size: 18px;">
                         </div>
-                        <img alt="Remove variable" src="img/delete-24px.svg" class="model-variable-remove">
+                        <img alt="Remove variable" src="img/delete-24px.svg" class="model-variable-remove button">
+                        <img alt="Show variable" src="img/search-24px.svg" class="model-variable-show button">
                         <br>
                         Regulations: ...<br>
                         Update function: ...
                     </div>
-                </div>       
-                <button id="button-add-variable" class="image-button center" onclick="LiveModel.addVariable()">Add variable <img src="img/add_box-24px.svg"></button>
+                </div>                       
             </div>
 
             <div id="tab-engine" class="main-panel gone">

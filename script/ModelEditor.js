@@ -44,10 +44,14 @@ let ModelEditor = {
 			variableBox.classList.remove("hover");
 			CytoscapeEditor.hoverNode(id, false);
 		});
+		// Enable show button
+		variableBox.getElementsByClassName("model-variable-show")[0].addEventListener("click", (e) => {
+			CytoscapeEditor.showNode(id);
+		});
 		// Enable remove button
 		variableBox.getElementsByClassName("model-variable-remove")[0].addEventListener("click", (e) => {
 			LiveModel.removeVariable(id);
-		});
+		});		
 		this._variables.appendChild(variableBox);
 	},
 

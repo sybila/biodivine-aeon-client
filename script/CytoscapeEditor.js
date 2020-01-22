@@ -92,6 +92,28 @@ let CytoscapeEditor = {
 		}
 	},
 
+	// Zoom and pan the editor to ensure that given node is visible.
+	showNode(id) {
+		let node = this._cytoscape.getElementById(id);
+		if (node !== undefined) {					
+			// Taken from https://github.com/cytoscape/cytoscape.js/issues/1691
+			let zoom    = 1.1;
+		    let bb = node.boundingBox(); 
+		    let w   = this._cytoscape.width()
+		    let h = this._cytoscape.height();
+		    var pan = {
+	    	  // add some random padding so it does not end up under the editor panel
+		      x: ((w - zoom * ( bb.x1 + bb.x2 )) / 2)+250,
+		      y: (h - zoom * ( bb.y1 + bb.y2 )) / 2
+		    };
+
+		    this._cytoscape.animate({
+		      zoom: 1.1, 
+		      pan: pan
+		    });
+		}
+	},
+
 	// Update the node menu to be shown exactly for this element
 	// (including zoom and other node proeprties)
 	// If the node is undefined, try to find it
