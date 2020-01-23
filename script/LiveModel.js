@@ -100,6 +100,27 @@ let LiveModel = {
 		return false;
 	},
 
+	// Set the obsevability of the regulation between the two variables, if regulation exists.
+	setObservability(regulatorId, targetId, isObservable) {
+		let regulation = this.findRegulation(regulatorId, targetId);
+		if (regulation !== undefined && regulation.observable != isObservable) {
+			regulation.observable = isObservable;
+			ModelEditor.ensureRegulation(regulation);
+			CytoscapeEditor.ensureRegulation(regulation);
+		}
+	},
+
+	// Set the monotonicity of the regulation between the two variables, if regulation exists.
+	// Monotonicity should be one of `EdgeMonotonicity` constants.
+	setMonotonicity(regulatorId, targetId, monotonicity) {
+		let regulation = this.findRegulation(regulatorId, targetId);
+		if (regulation !== undefined && regulation.monotonicity != monotonicity) {
+			regulation.monotonicity = monotonicity;
+			ModelEditor.ensureRegulation(regulation);
+			CytoscapeEditor.ensureRegulation(regulation);
+		}
+	},
+
 	// Remove the given regulation object from the regulations array.
 	_removeRegulation(regulation) {
 		let index = this._regulations.indexOf(regulation);

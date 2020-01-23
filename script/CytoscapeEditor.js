@@ -21,8 +21,14 @@ let CytoscapeEditor = {
 		this._cytoscape = cytoscape(this.initOptions());
 		this._edgehandles = this._cytoscape.edgehandles(this.edgeOptions());
 		// When the user moves or zooms the graph, position of menu must update as well.
-		this._cytoscape.on('zoom', (e) => this._renderMenuForSelectedNode());
-		this._cytoscape.on('pan', (e) => this._renderMenuForSelectedNode());
+		this._cytoscape.on('zoom', (e) => {
+			this._renderMenuForSelectedNode();
+			this._renderMenuForSelectedEdge();
+		});
+		this._cytoscape.on('pan', (e) => { 
+			this._renderMenuForSelectedNode();
+			this._renderMenuForSelectedEdge();
+		});
 		this._cytoscape.on('click', (e) => {
 			let now = (new Date()).getTime();
 			if (this._lastClickTimestamp && now - this._lastClickTimestamp < DOUBLE_CLICK_DELAY) {				
@@ -34,7 +40,7 @@ let CytoscapeEditor = {
 
 	// Return an id of the selected node, or undefined if nothing is selected.
 	getSelectedNodeId() {
-		node = CytoscapeEditor._cytoscape.$(":selected");
+		let node = CytoscapeEditor._cytoscape.nodes(":selected");
 		if (node.length == 0) return undefined;	// nothing selected
 		return node.id();
 	},
@@ -67,6 +73,7 @@ let CytoscapeEditor = {
 		})
 		node.on('drag', (e) => {			
 			if (node.selected()) CytoscapeEditor._renderMenuForSelectedNode(node);
+			CytoscapeEditor._renderMenuForSelectedEdge();
 		})
 	},
 
@@ -123,6 +130,14 @@ let CytoscapeEditor = {
 		}
 	},
 
+	// Return a { regulator, target } object that describes currently selected regulation,
+	// or undefined if nothing is selected.
+	getSelectedRegulationPair() {
+		let edge = CytoscapeEditor._cytoscape.edges(":selected");
+		if (edge.length == 0) return undefined;	// nothing selected
+		return { regulator: edge.data().source, target: edge.data().target };
+	},
+
 	// Ensure that the graph contains edge which corresponds to the provided regulation.
 	ensureRegulation(regulation) {		
 		let currentEdge = this._findRegulationEdge(regulation.regulator, regulation.target);
@@ -132,22 +147,27 @@ let CytoscapeEditor = {
 			data.observable = regulation.observable;
 			data.monotonicity = regulation.monotonicity;
 			this._cytoscape.style().update();	//redraw graph
+			if (currentEdge.selected()) {			
+				// if the edge is selected, we also redraw the edge menu
+				this._renderMenuForSelectedEdge(currentEdge);
+			}	
 		} else {
 			// Edge does not exist - create a new one
-			this._cytoscape.add({
+			let edge = this._cytoscape.add({
 				group: 'edges', data: { 
 					source: regulation.regulator, target: regulation.target,
 					observable: regulation.observable, monotonicity: regulation.monotonicity
 				}
 			});
-		}
-
+			this._initEdge(edge);
+		}		
 	},
 
 	// Remove regulation between the two specified nodes.
 	removeRegulation(regulatorId, targetId) {
 		let edge = this._findRegulationEdge(regulatorId, targetId);
 		if (edge !== undefined) {
+			if (edge.selected()) edge.unselect();
 			this._cytoscape.remove(edge);
 		}
 	},
@@ -176,6 +196,30 @@ let CytoscapeEditor = {
 		let position = node.renderedPosition();
 		let height = node.height() * zoom;			
 		UI.toggleNodeMenu([position["x"], position["y"] + 3*height], zoom);
+	},
+
+	// Update the edge menu to be shown exactly for the currently selected edge.
+	// If edge is undefined, try to obtain the selected edge.
+	_renderMenuForSelectedEdge(edge) {
+		if (edge === undefined) {
+			edge = CytoscapeEditor._cytoscape.edges(":selected");
+			if (edge.length == 0) return;	// nothing selected
+		}
+		let zoom = CytoscapeEditor._cytoscape.zoom();
+		let boundingBox = edge.renderedBoundingBox();
+		let position = [ (boundingBox.x1 + boundingBox.x2) / 2, (boundingBox.y1 + boundingBox.y2) / 2 ];
+		UI.toggleEdgeMenu(edge.data(), position, zoom);
+	},
+
+	// Helper function to initialize new edge object, since edges can appear explicitly
+	// or from the edgehandles plugin.
+	_initEdge(edge) {
+		edge.on("select", (e) => {
+			this._renderMenuForSelectedEdge(edge);
+		});
+		edge.on("unselect", (e) => {
+			UI.toggleEdgeMenu();	// hide menu
+		});
 	},
 
 	initOptions: function() {
@@ -244,9 +288,12 @@ let CytoscapeEditor = {
 		                'font-family': 'FiraMono',
 		            }
 		        },
-		        {	// Show question mark for edges that are not observable
+		        {	// Show non-observable edges as dashed
 		            'selector': 'edge[observable]',
-		            'style': { 'label': (edge) => { if (edge.data().observable) { return ""; } else { return "?"; } }, }
+		            'style': {
+		            	'line-style': (edge) => { if (edge.data().observable) { return "solid"; } else { return "dashed"; } },
+		                'line-dash-pattern': [8, 3],
+		            }
 		        },
 		        {	// When the edge is an activation, show it as green with normal arrow
 		            'selector': 'edge[monotonicity="activation"]',
@@ -272,11 +319,10 @@ let CytoscapeEditor = {
 		                'target-arrow-shape': 'triangle',
 		            }
 		        },
-		        {	// A selected edge should be drawn dashed
+		        {	// A selected edge should be drawn with an overlay
 		            'selector': 'edge:selected',
 		            'style': {
-		                'line-style': 'dashed',
-		                'line-dash-pattern': [8, 3],
+		                'overlay-opacity': 0.1,
 		            }
 		        },
   				{	// Edge handles pseudo-node for adding
@@ -289,7 +335,7 @@ let CytoscapeEditor = {
 		                'width': '15px',
 		                'height': '15px',
 		                'shape': 'square',
-		                'font-family': 'Material Icons, Helvetica, sans-serif',
+		                'font-family': 'Material Icons',
 		                'padding': 0,
 		                'overlay-opacity': 0,
 		                'border-width': 0,
@@ -340,9 +386,11 @@ let CytoscapeEditor = {
 	            return { data: { observable: true, monotonicity: EdgeMonotonicity.unspecified }};
 	        },
 	        // Add the edge to the live model
-	        complete: function(sourceNode, targetNode, addedEles) {
+	        complete: function(sourceNode, targetNode, addedEles) {	        	
 	        	if (!LiveModel.addRegulation(sourceNode.id(), targetNode.id(), true, EdgeMonotonicity.unspecified)) {
 	        		addedEles.remove();	// if we can't create the regulation, remove new edge
+	        	} else {
+	        		CytoscapeEditor._initEdge(addedEles[0]);
 	        	}	        	
 	        },
 		};

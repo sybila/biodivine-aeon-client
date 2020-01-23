@@ -9,6 +9,7 @@
         <script src="script/dependencies/cytoscape.min.js"></script>
         <script src="script/dependencies/lodash.js"></script>
         <script src="script/dependencies/cytoscape-edgehandles.js"></script>
+        <script src="script/dependencies/hotkeys.min.js"></script>
 
         <script src="script/LiveModel.js"></script>
         <script src="script/UI.js"></script>
@@ -18,15 +19,37 @@
     </head>
 
     <body onload="init()">
-        
+
+        <!-- Hosts the interactive model editor -->        
         <div id="cytoscape-editor">
         </div>
 
-        <div id="node-menu" class="invisible">
+        <!-- A menu element that is shown for selected graph nodes in the editor. -->
+        <div id="node-menu" class="float-menu invisible">
             <div class="button-row">                
-                <img alt="Edit name" id="node-menu-edit-name" class="button" src="img/edit-24px.svg">                
-                <img alt="Edit update function" id="node-menu-edit-function" class="button" src="img/functions-24px.svg">
-                <img alt="Remove" id="node-menu-remove" class="button" src="img/delete-24px.svg">
+                <img alt="Edit name (E)" id="node-menu-edit-name" class="button" src="img/edit-24px.svg">                
+                <img alt="Edit update function (F)" id="node-menu-edit-function" class="button" src="img/functions-24px.svg">
+                <img alt="Remove (R)" id="node-menu-remove" class="button" src="img/delete-24px.svg">
+            </div>
+            <br>
+            <span class="hint invisible">Hint</span>
+        </div>
+
+        <!-- A menu element which is shown for selected edges in the editor. -->
+        <div id="edge-menu" class="float-menu invisible">
+            <div class="button-row">                
+                <img alt="Toggle observability (O)" id="edge-menu-observability" class="button" src="img/visibility_off-24px.svg" 
+                    src-on="img/visibility_off-24px.svg" src-off="img/visibility_on-24px.svg" 
+                    alt-on="Observability off (O)" alt-off="Observability on (O)" 
+                    state=""
+                >
+                <img alt="Toggle monotonicity (M)" id="edge-menu-monotonicity" class="button" src="img/trending_up-24px.svg"
+                    src-unspecified="img/trending_up-24px.svg" alt-unspecified="Make activating (M)"
+                    src-activation="img/trending_down-24px.svg" alt-activation="Make inhibiting (M)"
+                    src-inhibition="img/swap_vert-24px.svg" alt-inhibition="Monotonicity off (M)"
+                    state=""
+                >
+                <img alt="Remove (R)" id="edge-menu-remove" class="button" src="img/delete-24px.svg">
             </div>
             <br>
             <span class="hint invisible">Hint</span>

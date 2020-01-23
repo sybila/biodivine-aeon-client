@@ -71,13 +71,13 @@ body {
 /*
     The menu that is displayed when user clicks on a node.
 */
-#node-menu {
+.float-menu {
 	position: absolute;
     /* Initially, menu is off screen */
 	left: -200px;
 	top: -200px;
     /* This is to accommodate longer hints */
-    width: 160px;
+    width: 190px;
     /* Ensure hint is in the middle */
     text-align: center;
 	/* Ensures the zoom is properly applied when needed */
@@ -86,7 +86,7 @@ body {
     transition: opacity 0.3s;
 }
 
-#node-menu .button {
+.float-menu .button {
     width: 24px;
     height: 24px;
     padding: 12px;
@@ -94,18 +94,19 @@ body {
     transition: 0.3s;
 }
 
-#node-menu .button:hover {
+.float-menu .button:hover {
     background-color: #CFD8DC;
 }
 
-#node-menu .button-row {
+.float-menu .button-row {
     height: 48px;
     width: 153px;
+    margin: 0 auto;
     border-radius: 24px;
     background-color: #ECEFF1;
 }
 
-#node-menu .hint {
+.float-menu .hint {
     font-weight: bold;
     transition: opacity 0.3s;
     pointer-events: none;

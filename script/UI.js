@@ -12,14 +12,16 @@ let UI = {
 
 	// Element where the cytoscape editor resides.
 	cytoscapeEditor: undefined,
-	// Element of the menu that is displayed for each node when selected.
+	// Element of the menu that is displayed for each node/edge when selected.
 	_nodeMenu: undefined,
+	_edgeMenu: undefined,
 	// Contains pairs of elements of the form { button: ..., tab: ... } corresponding to the side menu.
 	_tabsAndButtons: undefined,
 
 	init: function() {
 		this.cytoscapeEditor = document.getElementById("cytoscape-editor");		
 		this._nodeMenu = document.getElementById("node-menu");
+		this._edgeMenu = document.getElementById("edge-menu");
 		
 		let sideMenu = document.getElementById("side-menu");
 		let sideMenuButtons = sideMenu.getElementsByClassName("button");
@@ -31,7 +33,16 @@ let UI = {
 		}
 		
 		this._initNodeMenu(this._nodeMenu);
-		this._initSideMenu(sideMenu);		
+		this._initEdgeMenu(this._edgeMenu);
+		this._initSideMenu(sideMenu);	
+	},
+
+	isEdgeMenuVisible() {
+		return !this._edgeMenu.classList.contains("invisible");
+	},
+
+	isNodeMenuVisible() {
+		return !this._nodeMenu.classList.contains("invisible");
 	},
 
 	// Close any content tab, if open.
@@ -72,6 +83,93 @@ let UI = {
 			// actually at postion [left, top] (this makes it easier to align).
 			menu.style.transform = "scale(" + zoom + ") translate(-50%, -50%)";			
 		}			
+	},
+
+	// Show the edge menu at the specified position with the provided data { observability, monotonicity }
+	// If data or position is indefined, hide menu.
+	toggleEdgeMenu(data, position, zoom = 1.0) {
+		let menu = this._edgeMenu;
+		if (position === undefined || data === undefined) {
+			menu.classList.add("invisible");
+			menu.style.left = "-100px";	// move it somewhere out of clickable area
+			menu.style.top = "-100px";
+		} else {
+			menu.classList.remove("invisible");
+			menu.style.left = position[0] + "px";
+			menu.style.top = (position[1] + (75 * zoom)) + "px";
+			// Scale applies current zoom, translate ensures the middle point of menu is 
+			// actually at postion [left, top] (this makes it easier to align).			
+			menu.style.transform = "scale(" + zoom + ") translate(-50%, -50%)";
+			menu.observabilityButton.updateState(data);
+			menu.monotonicityButton.updateState(data);
+		}
+	},
+
+	// Add a listener to each button to display hint texts when hovered.
+	// For toggle buttons, add functions that enable actual toggling of the state value.
+	_initEdgeMenu(menu) {
+		// make hint work
+		let hint = menu.getElementsByClassName("hint")[0];
+		let buttons = menu.getElementsByClassName("button");
+		for (var i = 0; i < buttons.length; i++) {
+			let button = buttons[i];
+			button.addEventListener("mouseenter", (e) => {
+				hint.textContent = button.alt;
+				hint.classList.remove("invisible");
+			});
+			button.addEventListener("mouseleave", (e) => {
+				hint.classList.add("invisible");
+			});
+		}
+		// Make observability button react to regulation state:
+		let observability = document.getElementById("edge-menu-observability");
+		observability.updateState = function(data) {
+			let state = "off";
+			if (data.observable) state = "on";
+			if (state != observability.getAttribute("state")) {
+				observability.setAttribute("state", state);
+				observability.alt = observability.getAttribute("alt-"+state);
+				observability.src = observability.getAttribute("src-"+state);
+				// if the hint is visible, it must be showing alt of this button (because the value just changed)
+				hint.textContent = observability.alt;
+			}			
+		};
+		observability.addEventListener("click", (e) => {
+			let selected = CytoscapeEditor.getSelectedRegulationPair();
+			if (selected !== undefined) {
+				let isOn = observability.getAttribute("state") == "on";
+				LiveModel.setObservability(selected.regulator, selected.target, !isOn);
+			}
+		});
+		menu.observabilityButton = observability;
+		let monotonicity = document.getElementById("edge-menu-monotonicity");
+		monotonicity.updateState = function(data) {		
+			if (monotonicity.getAttribute("state") != data.monotonicity) {
+				monotonicity.alt = monotonicity.getAttribute("alt-"+data.monotonicity);
+				monotonicity.src = monotonicity.getAttribute("src-"+data.monotonicity);
+				monotonicity.setAttribute("state", data.monotonicity);
+				// if the hint is visible, it must be showing alt of this button (because the value just changed)
+				hint.textContent = monotonicity.alt;
+			}				
+		};
+		monotonicity.addEventListener("click", (e) => {
+			let selected = CytoscapeEditor.getSelectedRegulationPair();
+			if (selected !== undefined) {
+				let current = monotonicity.getAttribute("state");
+				let nextMonotonicity = EdgeMonotonicity.unspecified;
+				if (current == EdgeMonotonicity.unspecified) nextMonotonicity = EdgeMonotonicity.activation;
+				if (current == EdgeMonotonicity.activation) nextMonotonicity = EdgeMonotonicity.inhibition;
+				LiveModel.setMonotonicity(selected.regulator, selected.target, nextMonotonicity);
+			}
+		});
+		menu.monotonicityButton = monotonicity;
+		let removeButton = document.getElementById("edge-menu-remove");
+		removeButton.addEventListener("click", (e) => {
+			let selected = CytoscapeEditor.getSelectedRegulationPair();
+			if (selected !== undefined) {
+				LiveModel.removeRegulation(selected.regulator, selected.target);
+			}
+		});
 	},
 
 	// Add a listener to each button which displays its alt as hint text when hovered
