@@ -6,11 +6,14 @@ let CytoscapeEditor = {
 	
 	// Reference to the cytoscape library "god object"
 	_cytoscape: undefined,
+	// Reference to the edgehandles library "god object"
+	_edgehandles: undefined,
 	// Used to implement the double click feature
 	_lastClickTimestamp: undefined,
 
 	init: function() {
 		this._cytoscape = cytoscape(this.initOptions());
+		this._edgehandles = this._cytoscape.edgehandles(this.edgeOptions());
 		// When the user moves or zooms the graph, position of menu must update as well.
 		this._cytoscape.on('zoom', (e) => this._renderMenuForSelectedNode());
 		this._cytoscape.on('pan', (e) => this._renderMenuForSelectedNode());
@@ -146,7 +149,7 @@ let CytoscapeEditor = {
         	},
   			style: [
   				{ 	// Style of the graph nodes
-  					'selector': 'node',
+  					'selector': 'node[name]',
   					'style': {
   						// 
   						'label': 'data(name)',	
@@ -183,7 +186,55 @@ let CytoscapeEditor = {
   						'border-style': 'solid',                		
   					}
   				},
+  				{	// Edge handles pseudo-node for adding
+		            'selector': '.eh-handle',
+		            'style': {
+		                'background-color': '#3a568c',
+		                'color': '#f9f9f9',
+		                'width': 24,
+		                'height': 24,
+		                'shape': 'diamond',
+		                'font-family': 'Material Icons, Helvetica, sans-serif',
+		                'padding': 0,
+		                'overlay-opacity': 0,
+		                'border-width': 0,
+		                'border-opacity': 0,
+		                'label': 'add_box',
+		                'text-valign': 'center',
+		                'text-halign': 'center',
+		                'font-size': '12pt',
+		            }
+		        },
 			],		
 		}
+	},
+
+	edgeOptions() {
+		return {
+			preview: true, // whether to show added edges preview before releasing selection
+	        hoverDelay: 150, // time spent hovering over a target node before it is considered selected
+	        handleNodes: 'node', // selector/filter function for whether edges can be made from a given node
+	        snap: false,
+	        snapThreshold: 50,
+	        snapFrequency: 15,
+	        noEdgeEventsInDraw: false,
+	        disableBrowserGestures: true, 
+	        handlePosition: function(node) { return 'middle top'; },
+	        handleInDrawMode: false,
+	        edgeType: function(sourceNode, targetNode) { return 'flat'; },
+	        loopAllowed: function(node) { return true; },
+	        nodeLoopOffset: -50,
+	        edgeParams: function(sourceNode, targetNode, i) {
+	            return { data: { visible: '', kind: 'unspecified' }};
+	        },
+	        complete: function(sourceNode, targetNode, addedEles) {
+	        	console.log("complete");
+	            /*if (!Model.existsEdge(sourceNode.data().name, targetNode.data().name)) {
+	                Model.addEdge(sourceNode.data().name, targetNode.data().name, true, 'unspecified');
+	            } else {
+	                addedEles.remove();
+	            }*/
+	        },
+		};
 	},
 }
