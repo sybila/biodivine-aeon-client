@@ -109,6 +109,16 @@ let ModelEditor = {
 		}
 	},
 
+	// Ensure that the given regulation is shown in the editor (do not add duplicates).
+	ensureRegulation(regulation) {
+		console.log("TODO");
+	},
+
+	// Remove regulation between the two specified variables.
+	removeRegulation(regulatorId, targetId) {
+		console.log("TODO");
+	},
+
 	// Utility method to find the variable box GUI element for the given variable.
 	_getVariableBox(id) {
 		let boxes = this._variables.children;

@@ -1,3 +1,9 @@
+let EdgeMonotonicity = {
+	unspecified: "unspecified",
+	activation: "activation",
+	inhibition: "inhibition",
+}
+
 /*
 	Responsible for managing the cytoscape editor object. It has its own representation of the graph,
 	but it should never be updated directly. Instead, always use LiveModel to specify updates.
@@ -46,7 +52,7 @@ let CytoscapeEditor = {
 		});
 		node.on('mouseout', (e) => {
 			node.removeClass('hover');			
-			ModelEditor.hoverVariable(id, false);
+			ModelEditor.hoverVariable(id, false);		
 		});
 		node.on('select', (e) => {			
 			CytoscapeEditor._renderMenuForSelectedNode(node);
@@ -81,7 +87,7 @@ let CytoscapeEditor = {
 		if (node !== undefined) {
 			let data = node.data();
 			data["name"] = newName;
-			this._cytoscape.style().update();	// redraw nodes
+			this._cytoscape.style().update();	//redraw graph
 		}
 	},
 
@@ -117,13 +123,53 @@ let CytoscapeEditor = {
 		}
 	},
 
+	// Ensure that the graph contains edge which corresponds to the provided regulation.
+	ensureRegulation(regulation) {		
+		let currentEdge = this._findRegulationEdge(regulation.regulator, regulation.target);
+		if (currentEdge !== undefined) {
+			// Edge exists - just make sure to update data
+			let data = currentEdge.data();
+			data.observable = regulation.observable;
+			data.monotonicity = regulation.monotonicity;
+			this._cytoscape.style().update();	//redraw graph
+		} else {
+			// Edge does not exist - create a new one
+			this._cytoscape.add({
+				group: 'edges', data: { 
+					source: regulation.regulator, target: regulation.target,
+					observable: regulation.observable, monotonicity: regulation.monotonicity
+				}
+			});
+		}
+
+	},
+
+	// Remove regulation between the two specified nodes.
+	removeRegulation(regulatorId, targetId) {
+		let edge = this._findRegulationEdge(regulatorId, targetId);
+		if (edge !== undefined) {
+			this._cytoscape.remove(edge);
+		}
+	},
+
+	// Return the edge which represents regulation between the given pair of variables or undefined
+	// if such edge does not exist.
+	_findRegulationEdge(regulatorId, targetId) {
+		let edge = this._cytoscape.edges("[source = \""+regulatorId+"\"][target = \""+targetId+"\"]");
+		if (edge.length == 1) {
+			return edge[0];
+		} else {
+			return undefined;
+		}
+	},
+
 	// Update the node menu to be shown exactly for this element
 	// (including zoom and other node proeprties)
 	// If the node is undefined, try to find it
 	// (element?)
 	_renderMenuForSelectedNode(node) {
 		if (node === undefined) {
-			node = CytoscapeEditor._cytoscape.$(":selected");
+			node = CytoscapeEditor._cytoscape.nodes(":selected");
 			if (node.length == 0) return;	// nothing selected
 		}
 		let zoom = CytoscapeEditor._cytoscape.zoom();			
@@ -186,25 +232,88 @@ let CytoscapeEditor = {
   						'border-style': 'solid',                		
   					}
   				},
+  				{	// General style of the graph edge
+		            'selector': 'edge',
+		            'style': {
+		                'width': 4.0,
+		                'curve-style': 'bezier',
+		                'loop-direction': '-15deg',
+		                'loop-sweep': '30deg',
+		                'text-outline-width': 2.3,
+		                'text-outline-color': '#cacaca',
+		                'font-family': 'FiraMono',
+		            }
+		        },
+		        {	// Show question mark for edges that are not observable
+		            'selector': 'edge[observable]',
+		            'style': { 'label': (edge) => { if (edge.data().observable) { return ""; } else { return "?"; } }, }
+		        },
+		        {	// When the edge is an activation, show it as green with normal arrow
+		            'selector': 'edge[monotonicity="activation"]',
+		            'style': {
+		                'line-color': '#4abd73',
+		                'target-arrow-color': '#4abd73',
+		                'target-arrow-shape': 'triangle'
+		            }
+		        },
+		        {	// When the edge is an inhibition, show it as red with a `tee` arrow
+		            'selector': 'edge[monotonicity="inhibition"]',
+		            'style': {
+		                'line-color': '#d05d5d',
+		                'target-arrow-color': '#d05d5d',
+		                'target-arrow-shape': 'tee',
+		            }
+		        },
+		        {	// When the edge has unspecified monotonicity, show it as grey with normal arrow
+		            'selector': 'edge[monotonicity="unspecified"]',
+		            'style': {
+		                'line-color': '#797979',
+		                'target-arrow-color': '#797979',
+		                'target-arrow-shape': 'triangle',
+		            }
+		        },
+		        {	// A selected edge should be drawn dashed
+		            'selector': 'edge:selected',
+		            'style': {
+		                'line-style': 'dashed',
+		                'line-dash-pattern': [8, 3],
+		            }
+		        },
   				{	// Edge handles pseudo-node for adding
 		            'selector': '.eh-handle',
 		            'style': {
-		                'background-color': '#3a568c',
-		                'color': '#f9f9f9',
-		                'width': 24,
-		                'height': 24,
-		                'shape': 'diamond',
+		                'background-color': '#ffffff',
+		                'color': '#6a7ea5',
+		                // Node is intentionally smaller so that it provides background
+		                // just for the `+`` cutout in the icon
+		                'width': '15px',
+		                'height': '15px',
+		                'shape': 'square',
 		                'font-family': 'Material Icons, Helvetica, sans-serif',
 		                'padding': 0,
 		                'overlay-opacity': 0,
 		                'border-width': 0,
 		                'border-opacity': 0,
+		                // Material icon for a box with a plus sign
 		                'label': 'add_box',
 		                'text-valign': 'center',
 		                'text-halign': 'center',
-		                'font-size': '12pt',
+		                'font-size': '24px',
+		            }
+		        },		        
+		        {	// Change ghost edge preview colors
+		            'selector': '.eh-preview, .eh-ghost-edge',
+		            'style': {
+		                'background-color': '#797979',
+		                'line-color': '#797979',
+		                'target-arrow-color': '#797979',
+		                'target-arrow-shape': 'triangle',
 		            }
 		        },
+		        {	// Hide ghost edge when a snapped preview is visible
+		            'selector': '.eh-ghost-edge.eh-preview-active',
+		            'style': { 'opacity': 0 }
+		        }
 			],		
 		}
 	},
@@ -219,21 +328,22 @@ let CytoscapeEditor = {
 	        snapFrequency: 15,
 	        noEdgeEventsInDraw: false,
 	        disableBrowserGestures: true, 
+	        nodeLoopOffset: -50,
+	        // The `+` button should be drawn on top of each node
 	        handlePosition: function(node) { return 'middle top'; },
 	        handleInDrawMode: false,
 	        edgeType: function(sourceNode, targetNode) { return 'flat'; },
-	        loopAllowed: function(node) { return true; },
-	        nodeLoopOffset: -50,
+	        // Loops are always allowed
+	        loopAllowed: function(node) { return true; },	        
+	        // Initialize edge with default parameters
 	        edgeParams: function(sourceNode, targetNode, i) {
-	            return { data: { visible: '', kind: 'unspecified' }};
+	            return { data: { observable: true, monotonicity: EdgeMonotonicity.unspecified }};
 	        },
+	        // Add the edge to the live model
 	        complete: function(sourceNode, targetNode, addedEles) {
-	        	console.log("complete");
-	            /*if (!Model.existsEdge(sourceNode.data().name, targetNode.data().name)) {
-	                Model.addEdge(sourceNode.data().name, targetNode.data().name, true, 'unspecified');
-	            } else {
-	                addedEles.remove();
-	            }*/
+	        	if (!LiveModel.addRegulation(sourceNode.id(), targetNode.id(), true, EdgeMonotonicity.unspecified)) {
+	        		addedEles.remove();	// if we can't create the regulation, remove new edge
+	        	}	        	
 	        },
 		};
 	},

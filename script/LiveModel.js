@@ -10,6 +10,7 @@ let LiveModel = {
 	// used to provide unique variable ids
 	_idCounter: 0,
 	_variables: {},
+	_regulations: [],
 
 	// Create a new variable with a default name. Returns an id of the variable.
 	addVariable: function(position = [0,0]) {
@@ -28,6 +29,11 @@ let LiveModel = {
 		if (variable === undefined) return;	// nothing to remove
 		// prompt user to confirm action
 		if (confirm(Strings.removeNodeCheck(variable['name']))) {
+			// First, explicitly remove all regulations that have something to do with us.
+			for (var i = 0; i < this._regulations.length; i++) {
+				let reg = this._regulations[i];
+				if (reg.regulator == id || reg.target == id) this._removeRegulation(reg);
+			}
 			delete this._variables[id];
 			CytoscapeEditor.removeNode(id);
 			ModelEditor.removeVariable(id);
@@ -48,6 +54,62 @@ let LiveModel = {
 			ModelEditor.renameVariable(id, newName)			
 			return true;
 		}		
+	},
+
+	// True if there exists a regulation between the two variables, return it, otherwise give undefined.
+	findRegulation(regulatorId, targetId) {
+		for (var i = 0; i < this._regulations.length; i++) {
+			let reg = this._regulations[i];
+			if (reg.regulator == regulatorId && reg.target == targetId) return reg;
+		}
+		return undefined;
+	},
+
+	// Return a list of regulations that cthe given id is currently target of.
+	regulationsOf(targetId) {
+		let result = [];
+		for (var i = 0; i < this._regulations.length; i++) {
+			let reg = this._regulations[i];
+			if (reg.target == targetId) result.push(reg);
+		}
+		return result;
+	},
+
+	// Try to add the specified regulation to the model. Return true if added successfully
+	// and false if not (e.g. already exists).
+	addRegulation(regulatorId, targetId, isObservable, monotonicity) {
+		if (this.findRegulation(regulatorId, targetId) !== undefined) return false;
+		let regulation = {
+			regulator: regulatorId, target: targetId,
+			observable: isObservable, monotonicity: monotonicity
+		}
+		this._regulations.push(regulation);
+		ModelEditor.ensureRegulation(regulation);
+		CytoscapeEditor.ensureRegulation(regulation);
+		return true;
+	},
+
+	// Remove regulation between the two variables (if it is present). Return true if remove was successful.
+	removeRegulation(regulatorId, targetId) {
+		for (var i = 0; i < this._regulations.length; i++) {
+			let reg = this._regulations[i];
+			if (reg.regulator == regulatorId && reg.target == targetId) {
+				return this._removeRegulation(reg);
+			}
+		}
+		return false;
+	},
+
+	// Remove the given regulation object from the regulations array.
+	_removeRegulation(regulation) {
+		let index = this._regulations.indexOf(regulation);
+		if (index > -1) {			
+			this._regulations.splice(index, 1);
+			CytoscapeEditor.removeRegulation(regulation.regulator, regulation.target);
+			ModelEditor.removeRegulation(regulation.regulator, regulation.target);
+			return true;
+		}
+		return false;
 	},
 
 	// Check if the name is valid - it must contain only alphanumeric characters (and _ { })

@@ -14,3 +14,14 @@ let Strings = {
 		return "Cannot use '"+name+"' as variable name.";
 	}
 }
+
+/*
+	"Data types":
+	id: Number
+	regulation: {
+		regulator: Id,
+		target: Id,
+		observable: bool,
+		monotonicity: string from EdgeMonotonicity
+	}
+*/
