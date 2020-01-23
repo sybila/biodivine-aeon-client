@@ -9,7 +9,10 @@ let LiveModel = {
 
 	// used to provide unique variable ids
 	_idCounter: 0,
+	// keys are variable ids, values are variable objects { id, name }
 	_variables: {},
+	// keys are variable ids, values are update function strings
+	_updateFunctions: {},
 	_regulations: [],
 
 	// Get the name of the variable with given id.
@@ -48,13 +51,14 @@ let LiveModel = {
 	},
 
 	// Change the name of the variable to the given value, if the name is valid.
-	// Return true if change was successful and false if not.
+	// Return undefined if the change was successful, otherwise return error string.
 	renameVariable(id, newName) {
 		let variable = this._variables[id];
 		if (variable == undefined) return;
-		if (!this._checkVariableName(newName)) {
-			alert(Strings.invalidVariableName(newName));
-			return false;
+		let error = this._checkVariableName(id, newName);
+		if (error !== undefined) {
+			error = Strings.invalidVariableName(newName) + " " + error;			
+			return error;
 		} else {
 			variable.name = newName;
 			CytoscapeEditor.renameNode(id, newName);
@@ -67,8 +71,27 @@ let LiveModel = {
 				let reg = this._regulations[i];
 				if (reg.regulator == id || reg.target == id) this._regulationChanged(reg);
 			}
-			return true;
+			return undefined;
 		}		
+	},
+
+	// Try to set the update function for given variable. If the function is not valid, return 
+	// error string, otherwise return undefined.
+	setUpdateFunction(id, functionString) {
+		let variable = this._variables[id];
+		if (variable === undefined) return "Unknown variable '"+id+"'.";
+		let error = this._checkUpdateFunction(id, functionString);
+		if (error !== undefined) {
+			error = Strings.invalidUpdateFunction(variable.name) + " " + error;
+			return error;
+		} else {
+			if (functionString.length == 0) {
+				delete this._updateFunctions[id];
+			} else {
+				this._updateFunctions[id] = functionString;
+			}			
+			// TODO: Run server analysis
+		}
 	},
 
 	// True if there exists a regulation between the two variables, return it, otherwise give undefined.
@@ -173,16 +196,24 @@ let LiveModel = {
 
 	// Check if the name is valid - it must contain only alphanumeric characters (and _ { })
 	// and it must not be a name of another variable.
-	_checkVariableName(name) {
-		if (typeof name !== "string") return false;
+	// If the name is valid, return undefined, otherwise return an error string.
+	_checkVariableName(id, name) {
+		if (typeof name !== "string") return "Name must be a string.";
 		let has_valid_chars = name.match(/^[a-z0-9{}_]+$/i) != null;
-		if (!has_valid_chars) return false;
+		if (!has_valid_chars) return "Name can only contain letters, numbers and `_`, `{`, `}`.";
 		let keys = Object.keys(LiveModel._variables);
 		for (var i = 0; i < keys.length; i++) {
 			let key = keys[i];
-			if (this._variables[key].name == name) return false;
+			let variable = this._variables[key];
+			if (variable.name == name && variable.id != id) return "Variable with this name already exists";
 		}
-		return true;		
-	}
+		return undefined;		
+	},
+
+	_checkUpdateFunction(id, functionString) {
+		// TODO
+		if (functionString.length == 0) return undefined;	// empty function is always ok
+		return "Test error...";
+	},
 
 }

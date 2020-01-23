@@ -190,6 +190,10 @@ body {
     height: 1.25em;
 }
 
+.invisible-input .error, .invisible-input.error {
+    background-color: rgba(200, 40, 40, 0.4); 
+}
+
 div.invisible-input[contenteditable] {    
     max-height: 200px;    
     padding-top: 4px;
@@ -207,6 +211,7 @@ div.invisible-input[contenteditable]:focus {
 }
 
 /* Magic that enables placeholder inside content editable. */
+/* Sadly, you still have to apply `ensurePlaceholder` to it. */
 div.invisible-input[contenteditable]:empty:not(:focus):before {
   content:attr(data-placeholder);
   color:grey;

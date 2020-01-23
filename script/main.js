@@ -15,7 +15,10 @@ let Strings = {
 	},
 	invalidVariableName(name) {
 		return "Cannot use '"+name+"' as variable name.";
-	}
+	},
+	invalidUpdateFunction(name) {
+		return "Cannot set update function for '"+name+"'.";
+	},
 }
 
 /* This can be used to properly show placeholder for content editable stuff */

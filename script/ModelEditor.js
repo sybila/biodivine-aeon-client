@@ -30,18 +30,29 @@ let ModelEditor = {
 	addVariable(id, name) {
 		let variableBox = this._variableTemplate.cloneNode(true);		
 		let variableName = variableBox.getElementsByClassName("variable-name")[0];
+		let updateFunction = variableBox.getElementsByClassName("variable-function")[0];
 		variableBox.setAttribute("variable-id", id);
 		variableBox.removeAttribute("id");
 		variableBox.classList.remove("gone");
-		variableName.value = name;
-		variableName.addEventListener("focus", (e) => {
-			// When user selects the element, make a copy of the current 
-			// value so that we can restore it if validation fails.
-			variableName.setAttribute("old-value", variableName.value);
-		})
-		variableName.addEventListener("change", (e) => {
-			if (!LiveModel.renameVariable(id, variableName.value)) {
-				variableName.value = variableName.getAttribute("old-value");
+		variableName.value = name;		
+		// On change, validate variable name and display error if needed.
+		variableName.addEventListener("change", (e) => {			
+			let error = LiveModel.renameVariable(id, variableName.value);
+			if (error !== undefined) {
+				alert(error);
+				variableName.classList.add("error");
+			} else {
+				variableName.classList.remove("error");
+			}
+		});
+		// On change, validate function and display error if needed.
+		updateFunction.addEventListener("focusout", (e) => {
+			let error = LiveModel.setUpdateFunction(id, updateFunction.textContent);
+			if (error !== undefined) {
+				alert(error);
+				updateFunction.classList.add("error");
+			} else {
+				updateFunction.classList.remove("error");
 			}
 		});
 		// Enable synchronizing hover and selected state
