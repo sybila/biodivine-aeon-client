@@ -146,7 +146,7 @@ body {
     box-shadow: 0px 2px 5px #d0d0d0;
     width: 500px;
     margin-left: 82px;
-    padding: 8px;
+    padding: 12px;
     border-radius: 8px;
     position: relative;
     overflow-y: auto;
@@ -187,7 +187,30 @@ body {
     border: none;
     font-size: 14px;
     resize: none;
-    height: 50px;
+    height: 1.25em;
+}
+
+div.invisible-input[contenteditable] {    
+    max-height: 200px;    
+    padding-top: 4px;
+    padding-bottom: 4px;
+    overflow: auto;
+    word-break: break-all;    
+    font-family: 'FiraMono';
+    transition: 0.3s;
+}
+
+div.invisible-input[contenteditable]:focus {    
+    outline: none;
+    background-color: #ECEFF1;
+    border-radius: 4px;
+}
+
+/* Magic that enables placeholder inside content editable. */
+div.invisible-input[contenteditable]:empty:not(:focus):before {
+  content:attr(data-placeholder);
+  color:grey;
+  font-style:italic;
 }
 
 .invisible-input input:focus {
@@ -275,6 +298,15 @@ body {
     transition: 0.5s;
 }
 
+.model-variable h4 {
+    width: 100%; 
+    margin-top: 8px; 
+    margin-bottom: 4px; 
+    text-transform: uppercase; 
+    font-size: 12px;
+    font-family: 'FiraMono', monospace;
+}
+
 .model-variable.hover {
     border: 2.0px #6a7ea5 dashed;
 }
@@ -289,11 +321,12 @@ body {
     padding: 4px;
     border-radius: 8px;    
     transition: 0.3s;    
-    transition: background-color 0.3s;
+    opacity: 0.5;
 }
 
 .model-variable .button:hover {
     background-color: #CFD8DC;
+    opacity: 1;
 }
 
 .model-variable-remove {
@@ -358,6 +391,10 @@ body {
 }
 
 input.center {
+    text-align: center;
+}
+
+textarea.center {
     text-align: center;
 }
 

@@ -23,6 +23,7 @@ let ModelEditor = {
 		this._modelDescription = document.getElementById("model-description");
 		this._variableTemplate = document.getElementById("model-variable-template");
 		this._regulationTemplate = document.getElementById("model-regulation-template");
+		ensurePlaceholder(document.getElementById("model-description"));
 	},
 
 	// Create a new variable box for the given id (without any regulations).
@@ -60,6 +61,7 @@ let ModelEditor = {
 		variableBox.getElementsByClassName("model-variable-remove")[0].addEventListener("click", (e) => {
 			LiveModel.removeVariable(id);
 		});		
+		ensurePlaceholder(variableBox.getElementsByClassName("variable-function")[0]);
 		this._variables.appendChild(variableBox);
 	},
 

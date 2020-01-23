@@ -57,18 +57,16 @@
 
         <div style="position: absolute;">            
 
-            <div id="tab-model-editor" class="main-panel gone">                
+            <div id="tab-model-editor" class="main-panel gone" style="padding-bottom: 0px;">
                 <div class="invisible-input full-line">
                     <input id="model-name" class="center" type="text" name="model-name" value="Model Name" placeholder="(model name)" style="font-size: 20px;">
                 </div>
-                <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.closeContent()">
-                <div class="invisible-input full-line" style="margin-top: 4px;">
-                    <textarea id="model-description" placeholder="(model description)"></textarea>
-                </div>      
+                <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.closeContent()">                
+                <div class="invisible-input full-line" id="model-description" contenteditable data-placeholder="(model description)" style="margin-top: 4px;"></div>      
 
                 <div style="height: 40px;">
-                    <h3 style="float: left;">Variables:</h3>
-                    <button id="button-add-variable" class="image-button" onclick="LiveModel.addVariable()" style="float: right;">Add variable <img src="img/add_box-24px.svg"></button>
+                    <h3 style="float: left; font-family: 'FiraMono'; text-transform: uppercase;"> ● Variables</h3>
+                    <button id="button-add-variable" class="image-button" onclick="let id = LiveModel.addVariable(); CytoscapeEditor.showNode(id);" style="float: right;">Add variable <img src="img/add_box-24px.svg"></button>
                 </div>
                 <div id="model-variables" class="full-line">                
                     <div id="model-variable-template" class="model-variable gone">
@@ -78,9 +76,10 @@
                         <img alt="Remove variable" src="img/delete-24px.svg" class="model-variable-remove button">
                         <img alt="Show variable" src="img/search-24px.svg" class="model-variable-show button">
                         <br>
-                        <h4 style="width: 100%; text-align: center; margin-top: 4px; margin-bottom: 4px;">Regulators:</h4>
+                        <h4> ● Regulators</h4>
                         <div class="model-variable-regulators full-line"></div>
-                        Update function: ...
+                        <h4> ● Update Function</h4>
+                        <div class="invisible-input full-line variable-function" contenteditable data-placeholder="(default)" style="font-size: 16px; text-align: center;"></div>
                     </div>
 
                     <div id="model-regulation-template" class="model-regulation gone">

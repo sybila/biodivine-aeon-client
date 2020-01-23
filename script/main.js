@@ -18,6 +18,17 @@ let Strings = {
 	}
 }
 
+/* This can be used to properly show placeholder for content editable stuff */
+function fixEmptyEditable(e) {
+	if (e.target.textContent.trim().length === 0) {
+		e.target.textContent = "";
+	}
+}
+
+function ensurePlaceholder(el) {
+	el.addEventListener("focusout", fixEmptyEditable);
+}
+
 /*
 	"Data types":
 	id: Number
