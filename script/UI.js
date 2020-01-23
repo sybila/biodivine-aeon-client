@@ -137,8 +137,7 @@ let UI = {
 		observability.addEventListener("click", (e) => {
 			let selected = CytoscapeEditor.getSelectedRegulationPair();
 			if (selected !== undefined) {
-				let isOn = observability.getAttribute("state") == "on";
-				LiveModel.setObservability(selected.regulator, selected.target, !isOn);
+				LiveModel.toggleObservability(selected.regulator, selected.target);				
 			}
 		});
 		menu.observabilityButton = observability;
@@ -155,11 +154,7 @@ let UI = {
 		monotonicity.addEventListener("click", (e) => {
 			let selected = CytoscapeEditor.getSelectedRegulationPair();
 			if (selected !== undefined) {
-				let current = monotonicity.getAttribute("state");
-				let nextMonotonicity = EdgeMonotonicity.unspecified;
-				if (current == EdgeMonotonicity.unspecified) nextMonotonicity = EdgeMonotonicity.activation;
-				if (current == EdgeMonotonicity.activation) nextMonotonicity = EdgeMonotonicity.inhibition;
-				LiveModel.setMonotonicity(selected.regulator, selected.target, nextMonotonicity);
+				LiveModel.toggleMonotonicity(selected.regulator, selected.target);
 			}
 		});
 		menu.monotonicityButton = monotonicity;

@@ -11,30 +11,6 @@
     src: url('font/FiraMono-Bold.ttf');
 }
 
-/* Material icons font-face: */
-@font-face {
-  font-family: 'Material Icons';
-  font-style: normal;
-  font-weight: 400;
-  src: url('font/MaterialIcons.woff2') format('woff2');
-}
-
-.material-icons {
-  font-family: 'Material Icons';
-  font-weight: normal;
-  font-style: normal;
-  font-size: 24px;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  display: inline-block;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  -webkit-font-feature-settings: 'liga';
-  -webkit-font-smoothing: antialiased;
-}
-
 /*
 @font-face {
     font-family: 'symbols';
@@ -173,14 +149,8 @@ body {
     padding: 8px;
     border-radius: 8px;
     position: relative;
-}
-
-.invisible {
-    opacity: 0;
-}
-
-.gone {
-	display: none;
+    overflow-y: auto;
+    max-height: 95vh;
 }
 
 .panel-close-button {
@@ -293,6 +263,7 @@ body {
 }
 
 .model-variable {
+    display: block;
     padding: 8px;
     background-color: #fafafa;
     margin-top: 12px;
@@ -337,12 +308,82 @@ body {
     top: 4px;
 }
 
+.model-regulation {
+    display: block;
+    width: 100%;
+    text-align: left;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    font-family: 'FiraMono', 'monospace';    
+}
+
+.model-regulation .model-regulation-observable, .model-regulation .model-regulation-monotonicity {
+    cursor: pointer;
+    user-select: none;
+}
+
+.model-regulation.hover {
+    background-color: #ECEFF1;
+    border-radius: 4px;
+}
+
+.model-regulation .model-regulation-observable:hover, .model-regulation .model-regulation-monotonicity:hover {
+    font-weight: bold;
+    font-family: 'FiraMonoBold';
+}
+
+.model-regulation span {
+    display: inline-block;
+}
+
+.model-regulation .model-regulation-regulator {
+    width: 112px;
+    text-align: right;
+    overflow-wrap: break-word;
+}
+
+.model-regulation .model-regulation-short {
+    width: 32px;
+    text-align: center;
+}
+
+.model-regulation .model-regulation-observable {
+    width: 150px;
+    text-align: center;
+}
+
+.model-regulation .model-regulation-monotonicity {
+    width: 110px;
+    text-align: center;
+}
+
 input.center {
     text-align: center;
 }
 
 button.center {
     margin: 0 auto;
+}
+
+
+.invisible {
+    opacity: 0;
+}
+
+.gone {
+    display: none;
+}
+
+.red {
+    color: #d05d5d;
+}
+
+.green {
+    color: #4abd73;
+}
+
+.grey {
+    color: #797979;
 }
 
 /*

@@ -12,6 +12,13 @@ let LiveModel = {
 	_variables: {},
 	_regulations: [],
 
+	// Get the name of the variable with given id.
+	getVariableName(id) {
+		let variable = this._variables[id];
+		if (variable === undefined) return undefined;
+		return variable.name;
+	},
+
 	// Create a new variable with a default name. Returns an id of the variable.
 	addVariable: function(position = [0,0]) {
 		let id = this._idCounter;
@@ -52,6 +59,14 @@ let LiveModel = {
 			variable.name = newName;
 			CytoscapeEditor.renameNode(id, newName);
 			ModelEditor.renameVariable(id, newName)			
+			// We also have to notify every regulation this variable appears in:
+			// (technically, we don't have to notify regulations where variable appears
+			// as target because that is not displayed right now anywhere, but we 
+			// might as well notify them anyway).
+			for (var i = 0; i < this._regulations.length; i++) {
+				let reg = this._regulations[i];
+				if (reg.regulator == id || reg.target == id) this._regulationChanged(reg);
+			}
 			return true;
 		}		
 	},
@@ -84,8 +99,7 @@ let LiveModel = {
 			observable: isObservable, monotonicity: monotonicity
 		}
 		this._regulations.push(regulation);
-		ModelEditor.ensureRegulation(regulation);
-		CytoscapeEditor.ensureRegulation(regulation);
+		this._regulationChanged(regulation);
 		return true;
 	},
 
@@ -105,8 +119,16 @@ let LiveModel = {
 		let regulation = this.findRegulation(regulatorId, targetId);
 		if (regulation !== undefined && regulation.observable != isObservable) {
 			regulation.observable = isObservable;
-			ModelEditor.ensureRegulation(regulation);
-			CytoscapeEditor.ensureRegulation(regulation);
+			this._regulationChanged(regulation);
+		}
+	},
+
+	// Switch observability of the given regulation.
+	toggleObservability(regulatorId, targetId) {
+		let regulation = this.findRegulation(regulatorId, targetId);
+		if (regulation !== undefined) {
+			regulation.observable = !regulation.observable;
+			this._regulationChanged(regulation);
 		}
 	},
 
@@ -116,9 +138,25 @@ let LiveModel = {
 		let regulation = this.findRegulation(regulatorId, targetId);
 		if (regulation !== undefined && regulation.monotonicity != monotonicity) {
 			regulation.monotonicity = monotonicity;
-			ModelEditor.ensureRegulation(regulation);
-			CytoscapeEditor.ensureRegulation(regulation);
+			this._regulationChanged(regulation);
 		}
+	},
+
+	// Switch monotonicity to next value
+	toggleMonotonicity(regulatorId, targetId) {
+		let regulation = this.findRegulation(regulatorId, targetId);
+		if (regulation !== undefined) {
+			let next = EdgeMonotonicity.unspecified;
+			if (regulation.monotonicity == EdgeMonotonicity.unspecified) next = EdgeMonotonicity.activation;
+			if (regulation.monotonicity == EdgeMonotonicity.activation) next = EdgeMonotonicity.inhibition;
+			regulation.monotonicity = next;
+			this._regulationChanged(regulation);
+		}
+	},
+
+	_regulationChanged(regulation) {
+		ModelEditor.ensureRegulation(regulation);
+		CytoscapeEditor.ensureRegulation(regulation);
 	},
 
 	// Remove the given regulation object from the regulations array.

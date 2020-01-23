@@ -77,6 +77,18 @@ let CytoscapeEditor = {
 		})
 	},
 
+	// Set the given node as selected.
+	selectNode(id) {
+		let selected = CytoscapeEditor._cytoscape.$(":selected");	// node or edge that are selected
+		if (selected.length == 1) {
+			selected.unselect();
+		}
+		let node = this._cytoscape.getElementById(id);
+		if (node !== undefined) {
+			node.select();
+		}
+	},
+
 	// Remove the node with the given ID from the graph.
 	removeNode(id) {		
 		let node = this._cytoscape.getElementById(id);
@@ -105,6 +117,18 @@ let CytoscapeEditor = {
 			node.addClass('hover');
 		} else {
 			node.removeClass('hover');
+		}
+	},
+
+	// Allow to externally set which edge is hovered - just make sure to unset it later.
+	hoverEdge(regulatorId, targetId, isHover) {
+		let edge = this._findRegulationEdge(regulatorId, targetId);
+		if (edge !== undefined) {
+			if (isHover) {
+				edge.addClass("hover");
+			} else {
+				edge.removeClass("hover");
+			}
 		}
 	},
 
@@ -220,6 +244,14 @@ let CytoscapeEditor = {
 		edge.on("unselect", (e) => {
 			UI.toggleEdgeMenu();	// hide menu
 		});
+		edge.on("mouseover", (e) => {
+			edge.addClass("hover");
+			ModelEditor.hoverRegulation(edge.data().source, edge.data().target, true);
+		});
+		edge.on("mouseout", (e) => {
+			edge.removeClass("hover");
+			ModelEditor.hoverRegulation(edge.data().source, edge.data().target, false);
+		});
 	},
 
 	initOptions: function() {
@@ -247,7 +279,7 @@ let CytoscapeEditor = {
   						'text-valign': 'center',
   						'width': 'label', 'height': 'label',
   						// a rectangle with slightly sloped edges
-  						'shape': 'barrel',
+  						'shape': 'round-rectangle',
   						// when selecting, do not display any overlay
   						'overlay-opacity': 0,
   						// other visual styles
@@ -263,7 +295,7 @@ let CytoscapeEditor = {
   				{	// When a node is highlighted by mouse, show it with a dashed blue border.
   					'selector': 'node.hover',
   					'style': {
-  						'border-width': '1.6px',
+  						'border-width': '3.0px',
   						'border-color': '#6a7ea5',
 						'border-style': 'dashed',                		
   					}
@@ -271,7 +303,7 @@ let CytoscapeEditor = {
   				{	// When a node is selected, show it with a thick blue border.
   					'selector': 'node:selected',
   					'style': {
-  						'border-width': '2.0px',
+  						'border-width': '3.0px',
   						'border-color': '#6a7ea5',
   						'border-style': 'solid',                		
   					}
@@ -287,6 +319,10 @@ let CytoscapeEditor = {
 		                'text-outline-color': '#cacaca',
 		                'font-family': 'FiraMono',
 		            }
+		        },
+		        {
+		        	'selector': 'edge.hover',
+		        	'style': { 'overlay-opacity': 0.1 },
 		        },
 		        {	// Show non-observable edges as dashed
 		            'selector': 'edge[observable]',
@@ -328,23 +364,19 @@ let CytoscapeEditor = {
   				{	// Edge handles pseudo-node for adding
 		            'selector': '.eh-handle',
 		            'style': {
-		                'background-color': '#ffffff',
-		                'color': '#6a7ea5',
-		                // Node is intentionally smaller so that it provides background
-		                // just for the `+`` cutout in the icon
-		                'width': '15px',
-		                'height': '15px',
+		                'width': '32px',
+		                'height': '32px',
 		                'shape': 'square',
-		                'font-family': 'Material Icons',
+		                'background-opacity': 0,
+		                'background-image': function(e) {
+		                	return 'data:image/svg+xml;utf8,' + encodeURIComponent(_add_box_svg);
+		                },
+		                'background-width': '32px',
+		                'background-height': '32px',
 		                'padding': 0,
 		                'overlay-opacity': 0,
 		                'border-width': 0,
 		                'border-opacity': 0,
-		                // Material icon for a box with a plus sign
-		                'label': 'add_box',
-		                'text-valign': 'center',
-		                'text-halign': 'center',
-		                'font-size': '24px',
 		            }
 		        },		        
 		        {	// Change ghost edge preview colors
@@ -396,3 +428,7 @@ let CytoscapeEditor = {
 		};
 	},
 }
+
+// Modified version of the add_box-24px.svg with color explicitly set to blue and an additional background element which makes sure the plus sign is filled.
+let _add_box_svg = '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#ffffff" d="M4 4h16v16H4z"/><path fill="#6a7ea5" d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'
+

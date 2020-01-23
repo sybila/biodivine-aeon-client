@@ -2,11 +2,11 @@ function init() {
 	UI.init();
 	ModelEditor.init();
 	CytoscapeEditor.init();
-	/*
+	
 	LiveModel.addVariable([10,100]);
 	LiveModel.addVariable([0,0]);
 	LiveModel.addRegulation(0, 1, false, EdgeMonotonicity.unspecified);
-	*/
+	
 }
 
 let Strings = {
@@ -43,7 +43,7 @@ hotkeys('f', function(event, handler) {
 	}	
 });
 
-hotkeys('r', function(event, handler) {	
+hotkeys('r,backspace', function(event, handler) {	
 	if (UI.isNodeMenuVisible()) {
 		event.preventDefault();
 		fireEvent(document.getElementById("node-menu-remove"), "click");
@@ -68,10 +68,13 @@ hotkeys('m', function(event, handler) {
 	}	
 });
 
-hotkeys('ctrl+n', function(event, handler) {	
+hotkeys('n,+', function(event, handler) {	
 	event.preventDefault();
-	LiveModel.addVariable();
+	let id = LiveModel.addVariable();
+	CytoscapeEditor.showNode(id);
 });
+
+
 
 // utility function to fire events on UI elements - we mainly need it to simulate clicks
 function fireEvent(el, etype){

@@ -29,7 +29,7 @@
             <div class="button-row">                
                 <img alt="Edit name (E)" id="node-menu-edit-name" class="button" src="img/edit-24px.svg">                
                 <img alt="Edit update function (F)" id="node-menu-edit-function" class="button" src="img/functions-24px.svg">
-                <img alt="Remove (R)" id="node-menu-remove" class="button" src="img/delete-24px.svg">
+                <img alt="Remove (⌫)" id="node-menu-remove" class="button" src="img/delete-24px.svg">
             </div>
             <br>
             <span class="hint invisible">Hint</span>
@@ -49,7 +49,7 @@
                     src-inhibition="img/swap_vert-24px.svg" alt-inhibition="Monotonicity off (M)"
                     state=""
                 >
-                <img alt="Remove (R)" id="edge-menu-remove" class="button" src="img/delete-24px.svg">
+                <img alt="Remove (⌫)" id="edge-menu-remove" class="button" src="img/delete-24px.svg">
             </div>
             <br>
             <span class="hint invisible">Hint</span>
@@ -71,16 +71,25 @@
                     <button id="button-add-variable" class="image-button" onclick="LiveModel.addVariable()" style="float: right;">Add variable <img src="img/add_box-24px.svg"></button>
                 </div>
                 <div id="model-variables" class="full-line">                
-                    <div id="model-variable-template" class="gone model-variable">
+                    <div id="model-variable-template" class="model-variable gone">
                         <div class="invisible-input">
                             <input class="variable-name" type="text" name="variable-name" value="Variable name" placeholder="(variable name)" style="font-size: 18px;">
                         </div>
                         <img alt="Remove variable" src="img/delete-24px.svg" class="model-variable-remove button">
                         <img alt="Show variable" src="img/search-24px.svg" class="model-variable-show button">
                         <br>
-                        Regulations: ...<br>
+                        <h4 style="width: 100%; text-align: center; margin-top: 4px; margin-bottom: 4px;">Regulators:</h4>
+                        <div class="model-variable-regulators full-line"></div>
                         Update function: ...
                     </div>
+
+                    <div id="model-regulation-template" class="model-regulation gone">
+                        <span class="model-regulation-regulator">Some name</span>
+                        <span class="model-regulation-short">(->)</span>
+                        <span class="model-regulation-observable">observable</span>
+                        <span class="model-regulation-monotonicity">activation</span>
+                    </div>                    
+
                 </div>                       
             </div>
 
