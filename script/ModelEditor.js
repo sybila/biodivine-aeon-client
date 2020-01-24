@@ -102,6 +102,20 @@ let ModelEditor = {
 		this._variables.appendChild(variableBox);
 	},
 
+	// Set a message that is displayed next to the update function.
+	setUpdateFunctionStatus(id, message, isError = false) {
+		let box = this._getVariableBox(id);
+		if (box !== undefined) {
+			let status = box.getElementsByClassName("variable-function-status")[0];
+			status.textContent = message;
+			if (isError) {
+				status.classList.add("red");
+			} else {
+				status.classList.remove("red");
+			}
+		}
+	},
+
 	// Allow to externally set which variable box should be hovered. (Remeber to unset afterwards)
 	hoverVariable(id, isHover) {
 		let box = this._getVariableBox(id);

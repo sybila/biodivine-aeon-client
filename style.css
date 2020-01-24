@@ -421,6 +421,13 @@ div.invisible-input[contenteditable]:empty:not(:focus):before {
     text-align: center;
 }
 
+.variable-function-status {
+    font-family: 'FiraMono', monospace;
+    font-size: 12px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
 input.center {
     text-align: center;
 }

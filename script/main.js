@@ -7,6 +7,7 @@ function init() {
 	LiveModel.addVariable([0,0]);
 	LiveModel.addRegulation(0, 1, false, EdgeMonotonicity.unspecified);
 	
+	ComputeEngine.openConnection();	// Try to automatically connect when first opened.
 }
 
 let Strings = {

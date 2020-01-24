@@ -37,6 +37,8 @@ let LiveModel = {
 		ModelEditor.addVariable(id, name);
 		ModelEditor.updateStats();
 		UI.setQuickHelpVisible(false);
+		// Just show the number of possible update functions, even though there are always two.
+		this._validateUpdateFunction(id);
 		return id;
 	},
 
@@ -100,12 +102,13 @@ let LiveModel = {
 				delete this._updateFunctions[id];
 			} else {
 				this._updateFunctions[id] = {
-					functionString: functionString,
+					// Replace all whitespace with single spaces since the model can't contain newlines.
+					functionString: functionString.replace(/\s+/, " "),
 					metadata: check,
-				};
+				};				
 			}
 			ModelEditor.updateStats();
-			// TODO: Run server analysis
+			this._validateUpdateFunction(id);
 		}
 	},
 
@@ -246,10 +249,75 @@ let LiveModel = {
 		};
 	},
 
+	// Runs analysis of the update funciton asynchronously on server.
+	_validateUpdateFunction(id) {
+		let modelFragment = this._updateFunctionModelFragment(id);
+		if (modelFragment !== undefined) {
+			ComputeEngine.validateUpdateFunction(modelFragment, (error, result) => {
+				console.log("Validate result: ", result);
+				if (error !== undefined) {
+					ModelEditor.setUpdateFunctionStatus(id, "Error: "+error, true);
+				} else {
+					ModelEditor.setUpdateFunctionStatus(id, "Possible instantiations: "+result.cardinality, false);
+				}
+			});
+		} else {
+			ModelEditor.setUpdateFunctionStatus(id, "", false);
+		}	
+	},
+
+	// Build a partial model that represents the parts necessary to analyze the update
+	// function of given variable (and nothing else). This can be then sent to the server
+	// to obtain info about the function.
+	// If the variable does not have an explicit update function, return undefined.
+	_updateFunctionModelFragment(id) {
+		let name = this.getVariableName(id);
+		let fragment = "";
+		let regulations = this.regulationsOf(id);
+		let varNames = new Set();
+		for (var i = 0; i < regulations.length; i++) {
+			if (regulations[i].regulator != id) {	// if not self-loop, save
+				varNames.add(this.getVariableName(regulations[i].regulator));
+			}			
+			fragment += this._regulationToString(regulations[i]) + "\n";
+		}
+		// If there are no regulations, we technically there are two instantiations - true and false.
+		// But the support for this is weird, so we just stop the whole process.
+		// TODO: Fix this in backend.
+		if (regulations.length == 0) {
+			return undefined;
+		}
+		// Now add fixed update function for every other variable so that 
+		// they do not create extra parameters.
+		for (let name of varNames) {
+			fragment += "$"+name+": false\n";
+		}
+		let fun = this._updateFunctions[id];
+		// If we have a specified update function, put it into model - otherwise, 
+		// keep it implicit.
+		if (fun !== undefined) {
+			fragment += "$"+name+": " + fun.functionString + "\n";		
+		}
+		return fragment;
+	},
+
+	// Output given regulation in string format understandable by our compute engine
+	_regulationToString(regulation) {
+		let regulatorName = this.getVariableName(regulation.regulator);
+		let targetName = this.getVariableName(regulation.target);
+		let arrow = "-";
+		if (regulation.monotonicity == EdgeMonotonicity.unspecified) arrow += "?";
+		if (regulation.monotonicity == EdgeMonotonicity.activation) arrow += ">";
+		if (regulation.monotonicity == EdgeMonotonicity.inhibition) arrow += "|";
+		if (!regulation.observable) arrow += "?";
+		return regulatorName + " " + arrow + " " + targetName;
+	},
+
 	// Notify editors that a regulation has been changed.
 	_regulationChanged(regulation) {
 		ModelEditor.ensureRegulation(regulation);
 		CytoscapeEditor.ensureRegulation(regulation);
+		this._validateUpdateFunction(regulation.target);
 	},
 
 	// Remove the given regulation object from the regulations array.
