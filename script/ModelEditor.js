@@ -33,7 +33,6 @@ let ModelEditor = {
 		let updateFunction = variableBox.getElementsByClassName("variable-function")[0];
 		variableBox.setAttribute("variable-id", id);
 		variableBox.removeAttribute("id");
-		variableBox.classList.remove("gone");
 		variableName.value = name;		
 		// On change, validate variable name and display error if needed.
 		variableName.addEventListener("change", (e) => {			
@@ -71,7 +70,7 @@ let ModelEditor = {
 		// Enable remove button
 		variableBox.getElementsByClassName("model-variable-remove")[0].addEventListener("click", (e) => {
 			LiveModel.removeVariable(id);
-		});		
+		});			
 		ensurePlaceholder(variableBox.getElementsByClassName("variable-function")[0]);
 		this._variables.appendChild(variableBox);
 	},
@@ -123,14 +122,38 @@ let ModelEditor = {
 	},
 
 	// Change the name of the given variable (if different - to avoid event loops).
-	renameVariable(id, newName) {
+	renameVariable(id, newName, oldName) {
 		let variableBox = this._getVariableBox(id);
 		if (variableBox !== undefined) {
 			let nameInput = variableBox.getElementsByClassName("variable-name")[0];
 			if (nameInput.value != newName) {
 				nameInput.value = newName;
 			}
-		}		
+		}	
+		// Replace occurences of the variable in the update functions:
+		let boxes = this._variables.children;
+		// Regex which matches the old name plus one extra character at the end and beginning 
+		// to verify that this is not a substring of another name.
+		let oldNameRegex = new RegExp("[^a-zA-Z0-9_{}]"+oldName+"[^a-zA-Z0-9_{}]");		
+		// The same, but name is at the very beginning
+		let oldNameStartRegex = new RegExp("^"+oldName+"[^a-zA-Z0-9_{}]");
+		// And end
+		let oldNameEndRegex = new RegExp("[^a-zA-Z0-9_{}]"+oldName+"$");
+		for (var i = 0; i < boxes.length; i++) {
+			let box = boxes[i];
+			let updateFunction = box.getElementsByClassName("variable-function")[0];
+			let content = updateFunction.textContent;
+			content = content.replace(oldNameRegex, (match) => {
+				return match[0] + newName + match[match.length - 1];	// preserve the boundary 
+			});
+			content = content.replace(oldNameStartRegex, (match) => {
+				return newName + match[match.length - 1];				// preserve the boundary 
+			});
+			content = content.replace(oldNameEndRegex, (match) => {
+				return match[0] + newName;								// preserve the boundary 
+			});
+			updateFunction.textContent = content;
+		}
 	},
 
 	// Focus on the name input of the given variable and select all text in this input.
@@ -144,6 +167,15 @@ let ModelEditor = {
 		}
 	},
 
+	focusFunctionInput(id) {
+		let variableBox = this._getVariableBox(id);
+		if (variableBox !== undefined) {
+			UI.ensureContentTabOpen(ContentTabs.modelEditor);
+			let updateFunction = variableBox.getElementsByClassName("variable-function")[0];
+			updateFunction.focus();			
+		}
+	},
+
 	// Ensure that the given regulation is shown in the editor (do not add duplicates).
 	ensureRegulation(regulation) {
 		let variableBox = this._getVariableBox(regulation.target);
@@ -154,7 +186,6 @@ let ModelEditor = {
 				row = this._regulationTemplate.cloneNode(true);
 				row.removeAttribute("id");
 				row.setAttribute("regulator-id", regulation.regulator);
-				row.classList.remove("gone");
 				variableBox.getElementsByClassName("model-variable-regulators")[0].appendChild(row);
 				let observable = row.getElementsByClassName("model-regulation-observable")[0];
 				let monotonicity = row.getElementsByClassName("model-regulation-monotonicity")[0];

@@ -60,9 +60,10 @@ let LiveModel = {
 			error = Strings.invalidVariableName(newName) + " " + error;			
 			return error;
 		} else {
+			let oldName = variable.name;
 			variable.name = newName;
 			CytoscapeEditor.renameNode(id, newName);
-			ModelEditor.renameVariable(id, newName)			
+			ModelEditor.renameVariable(id, newName, oldName);	
 			// We also have to notify every regulation this variable appears in:
 			// (technically, we don't have to notify regulations where variable appears
 			// as target because that is not displayed right now anywhere, but we 

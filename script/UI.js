@@ -199,6 +199,14 @@ let UI = {
 				ModelEditor.focusNameInput(selectedNodeId);
 			}
 		});
+		// Edit function button
+		let editFunctionButton = document.getElementById("node-menu-edit-function");
+		editFunctionButton.addEventListener("click", (e) => {
+			let selectedNodeId = CytoscapeEditor.getSelectedNodeId();
+			if (selectedNodeId !== undefined) {
+				ModelEditor.focusFunctionInput(selectedNodeId);
+			}
+		})
 	},
 
 	// Add a hover listener to all side menu items to show hint when needed.
