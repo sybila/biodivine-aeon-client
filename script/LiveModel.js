@@ -103,7 +103,7 @@ let LiveModel = {
 		return undefined;
 	},
 
-	// Return a list of regulations that cthe given id is currently target of.
+	// Return a list of regulations that the given id is currently target of.
 	regulationsOf(targetId) {
 		let result = [];
 		for (var i = 0; i < this._regulations.length; i++) {
@@ -194,6 +194,17 @@ let LiveModel = {
 		return false;
 	},
 
+	// If variable with the given name exists, return the variable object, otherwise return undefined.
+	_variableFromName(name) {
+		let keys = Object.keys(LiveModel._variables);
+		for (var i = 0; i < keys.length; i++) {
+			let key = keys[i];
+			let variable = this._variables[key];
+			if (variable.name == name) return variable;
+		}
+		return undefined;
+	},
+
 	// Check if the name is valid - it must contain only alphanumeric characters (and _ { })
 	// and it must not be a name of another variable.
 	// If the name is valid, return undefined, otherwise return an error string.
@@ -201,19 +212,212 @@ let LiveModel = {
 		if (typeof name !== "string") return "Name must be a string.";
 		let has_valid_chars = name.match(/^[a-z0-9{}_]+$/i) != null;
 		if (!has_valid_chars) return "Name can only contain letters, numbers and `_`, `{`, `}`.";
-		let keys = Object.keys(LiveModel._variables);
-		for (var i = 0; i < keys.length; i++) {
-			let key = keys[i];
-			let variable = this._variables[key];
-			if (variable.name == name && variable.id != id) return "Variable with this name already exists";
-		}
+		let existing_variable = this._variableFromName(name);
+		if (existing_variable !== undefined && existing_variable.id != id) {
+			return "Variable with this name already exists";
+		}		
 		return undefined;		
 	},
 
 	_checkUpdateFunction(id, functionString) {
-		// TODO
 		if (functionString.length == 0) return undefined;	// empty function is always ok
-		return "Test error...";
+		// First, try to tokenize the update function to get a nice representation of what is going on.
+		let tokens = _tokenize_update_function(functionString);
+		if (typeof tokens === "string") {	// tokenization failed
+			return tokens;
+		}
+		tokens = _process_function_calls(tokens);
+		if (typeof tokens === "string") {	// function call parsing failed
+			return tokens;
+		}
+		// Now perform some basic checks - we are not doing full parsing, so things like operator cardinality
+		// are not checked, but we at least want to verify that we are not using any invalid variable names
+		let names = new Set();
+		_extract_names_with_cardinalities(tokens, names);
+		// Check if variable is used as parameter
+		for (let item of names) {
+			let variable = this._variableFromName(item.name);
+			if (item.cardinality > 0) {	// higher cardinality must not be a variable!				
+				if (variable !== undefined) {
+					return "Variable '"+item.name+"' used as parameter.";
+				}
+			}
+			// if this is a variable, we have to verify that it is a regulator. If not, offer to make it one.
+			if (variable !== undefined) {
+				let regulation = this.findRegulation(variable.id, id);
+				if (regulation === undefined) {
+					let my_name = this.getVariableName(id);
+					let message = "Variable '"+variable.name+"' does not regulate '"+my_name+"'.";
+					if (confirm(message + " Do you want to create the regulation now?")) {
+						this.addRegulation(variable.id, id, true, EdgeMonotonicity.unspecified);
+					} else {
+						return message;
+					}
+				}
+			}
+		}	
+		// TODO: Check if parameters are used consistently accross functions and export them to model stats...	
+		return undefined;
 	},
 
+}
+
+/// Given a token list and a result set, output all names in the form { name: "...", cardinality: x }
+/// that occur in the function.
+function _extract_names_with_cardinalities(tokens, names) {
+	for (var i = 0; i < tokens.length; i++) {
+		let token = tokens[i];
+		if (token.token === "name") {
+			names.add({ name: token.data, cardinality: 0 });
+		}
+		if (token.token === "call") {
+			names.add({ name: token.data, cardinality: token.args.length });
+		}
+		if (token.token === "group") {
+			_extract_names_with_cardinalities(token.data, names);
+		}
+	}
+}
+
+/// In the tokenized update function, detect all occurrences of the function call pattern (i.e. x(a,b,c))
+/// and replace it with a new token which represents the function call.
+/// Returns either the modified token array or an error string if problem is found.
+function _process_function_calls(tokens) {
+	for (var i = 0; i < tokens.length; i++) {
+		let token = tokens[i];
+		if (token.token === "name" && i+1 < tokens.length && tokens[i+1].token === "group") {			
+			// we have a name that is followed by a group - this is a funciton call pattern!
+			let arg_tokens = tokens[i+1].data;
+			let args = [];
+			if (arg_tokens.length == 0) {	// nullary function call - do nothing
+			} else if (arg_tokens.length == 1) {	// unary function
+				let arg = arg_tokens[0];
+				if (arg.token !== "name") {	// argument must be a name.
+					return "Expected name, but found "+arg.text+".";
+				}
+				args.push(arg.data);				
+			} else {	// more arguments - read the whole list
+				let j = 0;
+				do {
+					let arg = arg_tokens[j];
+					if (arg.token !== "name") {	// argument must be a name.
+						return "Expected name, but found "+arg.text+".";
+					}
+					args.push(arg.data);
+					j += 1;
+					if (j < arg_tokens.length) {	// if we are not at the end, expect a comma
+						if (arg_tokens[j].token !== "comma") {
+							return "Expected ',', but found "+arg_tokens[j].text+".";
+						} else { 
+							j += 1;
+							if (j == arg_tokens.length) {
+								return "Unexpected ',' at the end of an argument list.";
+							}
+						}
+					}
+				} while (j < arg_tokens.length);
+			}	
+			token.token = "call";
+			token.args = args;
+			tokens.splice(i+1, 1);	// remove the group - i will now point to first token after group			
+		} else if (token.token === "group") { // recursively process group
+			let result = _process_function_calls(token.data);
+			if (typeof result === "string") { return result; }
+		}
+	}
+	return tokens;
+}
+
+/// Given a token tree of an update funciton, extract names which occur in the function, together with their 
+/// assumed cardinality.
+function _extract_names(tokens) {
+
+}
+
+/// Turn the given update function into an array of tokens,
+/// or an error string if tokenization fails. 
+function _tokenize_update_function(str) {
+	let result = _tokenize_update_function_recursive(str, 0, true);
+	if (result.error !== undefined) {
+		return result.error;
+	} else {
+		return result.data;
+	}
+}
+
+/// A helper function for _tokenize_update_function
+/// It also returns a continue index for recursive parsing of parenthesis.
+/// In the recursive calls, the outer call always consumes the opening parenthesis
+/// and the recursive call consumes the closing parenthesis.
+function _tokenize_update_function_recursive(str, i, top) {
+	let result = [];
+	while (i < str.length) {
+		let c = str[i];
+		i += 1;	// move to next char immediately...
+		if (/\s/.test(c)) { continue; }
+		else if (c == '!') { result.push({ token: "not", text: "!" }); }
+		else if (c == ',') { result.push({ token: "comma", text: "," }); }
+		else if (c == '&') { result.push({ token: "and", text: "&" }); }
+        else if (c == '|') { result.push({ token: "or", text: "|" }); }
+        else if (c == '^') { result.push({ token: "xor", text: "^" }); }
+        else if (c == '=') { 
+        	if (i < str.length && str[i] == '>') {
+        		i += 1;
+        		result.push({ token: "imp", text: "=>" });
+        	} else {
+        		return { error: "Expected '=>' after '='." };
+        	}        	
+        }
+        else if (c == '<') {
+        	if (i+1 < str.length && str[i] == '=' && str[i+1] =='>') {
+        		i += 2;
+        		result.push({ token: "iff", text: "<=>" });
+        	} else {
+        		return { error: "Expected '<=>' after '<'." };
+        	}
+        }
+        // '>' is invalid as a start of a token
+        else if (c == '>') {
+        	return { error: "Unexpected '>'." };
+        }
+        else if (c == ')') {
+        	if (!top) {
+        		return { data: result, continue_at: i };
+        	} else {
+        		return { error: "Unexpected ')'." };
+        	}
+        }
+        else if (c == '(') {
+        	let nested = _tokenize_update_function_recursive(str, i, false);
+        	if (nested.error === undefined) {
+        		i = nested.continue_at;
+        		result.push({ token: "group", data: nested.data, text: "(...)" });
+        	} else {
+        		return { error: nested.error };
+        	}
+        }
+        else if (/[a-z0-9{}_]+/i.test(c)) {
+        	// start of a name
+        	let name = c;
+        	while (i < str.length) {
+        		if (!/[a-z0-9{}_]+/.test(str[i])) { break; } else {
+        			name += str[i];
+        			i += 1;
+        		}
+        	}
+        	result.push({ token: "name", data: name, text: name });
+        }
+        else { return { error: "Unexpected '"+c+"'." }; }        
+	}
+	if (top) {
+		if (i < str.length) {	// this should not happen, but just in case...
+			return { error: "Unexpected '"+str[i]+"'." }
+		} else {				// strictly speaking, continue_at is useless here, but whatever
+			return { data: result, continue_at: i };
+		}		
+	} else {
+		// if not top level, we always return from the while loop.
+		return { error: "Expected ')'." };
+	}
+	return { data: result };
 }
