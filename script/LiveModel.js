@@ -11,7 +11,7 @@ let LiveModel = {
 	_idCounter: 0,
 	// keys are variable ids, values are variable objects { id, name }
 	_variables: {},
-	// keys are variable ids, values are update function strings
+	// keys are variable ids, values are update function strings with metadata { functionString, metadata }
 	_updateFunctions: {},
 	_regulations: [],
 
@@ -30,6 +30,7 @@ let LiveModel = {
 		this._variables[id] = { name: name, id: id }
 		CytoscapeEditor.addNode(id, name, position);
 		ModelEditor.addVariable(id, name);
+		ModelEditor.updateStats();
 		return id;
 	},
 
@@ -47,6 +48,7 @@ let LiveModel = {
 			delete this._variables[id];
 			CytoscapeEditor.removeNode(id);
 			ModelEditor.removeVariable(id);
+			ModelEditor.updateStats();
 		}
 	},
 
@@ -81,16 +83,20 @@ let LiveModel = {
 	setUpdateFunction(id, functionString) {
 		let variable = this._variables[id];
 		if (variable === undefined) return "Unknown variable '"+id+"'.";
-		let error = this._checkUpdateFunction(id, functionString);
-		if (error !== undefined) {
-			error = Strings.invalidUpdateFunction(variable.name) + " " + error;
+		let check = this._checkUpdateFunction(id, functionString);
+		if (typeof check === "string") {
+			error = Strings.invalidUpdateFunction(variable.name) + " " + check;
 			return error;
 		} else {
 			if (functionString.length == 0) {
 				delete this._updateFunctions[id];
 			} else {
-				this._updateFunctions[id] = functionString;
-			}			
+				this._updateFunctions[id] = {
+					functionString: functionString,
+					metadata: check,
+				};
+			}
+			ModelEditor.updateStats();
 			// TODO: Run server analysis
 		}
 	},
@@ -124,6 +130,7 @@ let LiveModel = {
 		}
 		this._regulations.push(regulation);
 		this._regulationChanged(regulation);
+		ModelEditor.updateStats();
 		return true;
 	},
 
@@ -178,6 +185,60 @@ let LiveModel = {
 		}
 	},
 
+	// Export stats object
+	stats() {
+		let maxInDegree = 0;
+		let maxOutDegree = 0;
+		let keys = Object.keys(this._variables);
+		let explicitParameterNames = new Set();
+		let parameterVars = 0;
+		for (var i = 0; i < keys.length; i++) {
+			let key = keys[i];
+			let variable = this._variables[key];
+			let regulators = 0;
+			let targets = 0;
+			for (var j = 0; j < this._regulations.length; j++) {
+				let r = this._regulations[j];
+				if (r.target == variable.id) {
+					regulators += 1;
+				}
+				if (r.regulator == variable.id) {
+					targets += 1;
+				}
+			}
+			if (regulators > maxInDegree) {
+				maxInDegree = regulators;
+			}
+			if (targets > maxOutDegree) {
+				maxOutDegree = targets;
+			}
+			if (this._updateFunctions[key] === undefined) {
+				// If the variable has implicit update function, count the function rows as parameter vars
+				parameterVars += (1 << regulators); 
+			} else {
+				let metadata = this._updateFunctions[key].metadata;
+				for (let parameter of metadata.parameters) {
+					let p_key = parameter.name+"("+parameter.cardinality+")";
+					if (!explicitParameterNames.has(p_key)) {
+						explicitParameterNames.add(p_key);
+						parameterVars += (1 << parameter.cardinality);
+					}
+				}
+			}
+		}
+		let explicitParameters = Array.from(explicitParameterNames);
+		explicitParameters.sort();
+		return { 
+			maxInDegree: maxInDegree,
+			maxOutDegree: maxOutDegree,
+			variableCount: keys.length,
+			parameterVariables: parameterVars,
+			regulationCount: this._regulations.length,
+			explicitParameters: explicitParameters,
+		};
+	},
+
+	// Notify editors that a regulation has been changed.
 	_regulationChanged(regulation) {
 		ModelEditor.ensureRegulation(regulation);
 		CytoscapeEditor.ensureRegulation(regulation);
@@ -190,6 +251,7 @@ let LiveModel = {
 			this._regulations.splice(index, 1);
 			CytoscapeEditor.removeRegulation(regulation.regulator, regulation.target);
 			ModelEditor.removeRegulation(regulation.regulator, regulation.target);
+			ModelEditor.updateStats();
 			return true;
 		}
 		return false;
@@ -220,6 +282,10 @@ let LiveModel = {
 		return undefined;		
 	},
 
+	// Run as many quick static checks on the update function as possible, returning error string if
+	// something goes wrong.
+	// If check is successful, return a metadata object which contains the parameters used in the
+	// function.
 	_checkUpdateFunction(id, functionString) {
 		if (functionString.length == 0) return undefined;	// empty function is always ok
 		// First, try to tokenize the update function to get a nice representation of what is going on.
@@ -227,18 +293,22 @@ let LiveModel = {
 		if (typeof tokens === "string") {	// tokenization failed
 			return tokens;
 		}
-		tokens = _process_function_calls(tokens);
+		tokens = this._process_function_calls(tokens);
 		if (typeof tokens === "string") {	// function call parsing failed
 			return tokens;
 		}
 		// Now perform some basic checks - we are not doing full parsing, so things like operator cardinality
 		// are not checked, but we at least want to verify that we are not using any invalid variable names
-		let names = new Set();
+		let names = new Set();			
 		_extract_names_with_cardinalities(tokens, names);
-		// Check if variable is used as parameter
+		let parameters = new Set();		
 		for (let item of names) {
 			let variable = this._variableFromName(item.name);
-			if (item.cardinality > 0) {	// higher cardinality must not be a variable!				
+			if (variable === undefined) {	// item is a parameter - save it
+				parameters.add(item);
+			}
+			// Check if variable is used as parameter
+			if (item.cardinality > 0) {	
 				if (variable !== undefined) {
 					return "Variable '"+item.name+"' used as parameter.";
 				}
@@ -255,10 +325,78 @@ let LiveModel = {
 						return message;
 					}
 				}
+			}			
+		}
+		// Check if parameters are used consistently with other functions
+		let function_keys = Object.keys(LiveModel._updateFunctions);
+		for (var i = 0; i < function_keys.length; i++) {
+			let key = function_keys[i];
+			let function_data = this._updateFunctions[key];
+			for (let parameter of function_data.metadata.parameters) {
+				for (let my_parameter of parameters) {
+					if (parameter.name == my_parameter.name && parameter.cardinality != my_parameter.cardinality) {
+						let message = "Parameter '"+my_parameter.name+"' used with "+my_parameter.cardinality+" argument(s).";
+						message += " Variable '"+this._variables[key].name+"' already uses the same parameter with "+parameter.cardinality+" argument(s).";
+						return message;
+					}
+				}
 			}
-		}	
-		// TODO: Check if parameters are used consistently accross functions and export them to model stats...	
-		return undefined;
+		}		
+		return { parameters: parameters };
+	},
+
+	/// In the tokenized update function, detect all occurrences of the function call pattern (i.e. x(a,b,c))
+	/// and replace it with a new token which represents the function call.
+	/// Returns either the modified token array or an error string if problem is found.
+	/// Note that we also check if the names in calls are variable names.
+	_process_function_calls(tokens) {
+		for (var i = 0; i < tokens.length; i++) {
+			let token = tokens[i];
+			if (token.token === "name" && i+1 < tokens.length && tokens[i+1].token === "group") {			
+				// we have a name that is followed by a group - this is a funciton call pattern!
+				let arg_tokens = tokens[i+1].data;
+				let args = [];
+				if (arg_tokens.length == 0) {	// nullary function call - do nothing
+				} else if (arg_tokens.length == 1) {	// unary function
+					let arg = arg_tokens[0];
+					if (arg.token !== "name") {	// argument must be a name.
+						return "Expected name, but found "+arg.text+".";
+					}
+					args.push(arg.data);				
+				} else {	// more arguments - read the whole list
+					let j = 0;
+					do {
+						let arg = arg_tokens[j];
+						if (arg.token !== "name") {	// argument must be a name.
+							return "Expected name, but found "+arg.text+".";
+						}
+						let variable = this._variableFromName(arg.data);
+						if (variable === undefined) {
+							return "Unknown argument '"+arg.data+"'. Only variables allowed as arguments.";
+						}
+						args.push(arg.data);
+						j += 1;
+						if (j < arg_tokens.length) {	// if we are not at the end, expect a comma
+							if (arg_tokens[j].token !== "comma") {
+								return "Expected ',', but found "+arg_tokens[j].text+".";
+							} else { 
+								j += 1;
+								if (j == arg_tokens.length) {
+									return "Unexpected ',' at the end of an argument list.";
+								}
+							}
+						}
+					} while (j < arg_tokens.length);
+				}	
+				token.token = "call";
+				token.args = args;
+				tokens.splice(i+1, 1);	// remove the group - i will now point to first token after group			
+			} else if (token.token === "group") { // recursively process group
+				let result = this._process_function_calls(token.data);
+				if (typeof result === "string") { return result; }
+			}
+		}
+		return tokens;
 	},
 
 }
@@ -273,66 +411,14 @@ function _extract_names_with_cardinalities(tokens, names) {
 		}
 		if (token.token === "call") {
 			names.add({ name: token.data, cardinality: token.args.length });
+			for (var j = 0; j < token.args.length; j++) {	// args are also names in the function
+				names.add({ name: token.args[j], cardinality: 0 });
+			}
 		}
 		if (token.token === "group") {
 			_extract_names_with_cardinalities(token.data, names);
 		}
 	}
-}
-
-/// In the tokenized update function, detect all occurrences of the function call pattern (i.e. x(a,b,c))
-/// and replace it with a new token which represents the function call.
-/// Returns either the modified token array or an error string if problem is found.
-function _process_function_calls(tokens) {
-	for (var i = 0; i < tokens.length; i++) {
-		let token = tokens[i];
-		if (token.token === "name" && i+1 < tokens.length && tokens[i+1].token === "group") {			
-			// we have a name that is followed by a group - this is a funciton call pattern!
-			let arg_tokens = tokens[i+1].data;
-			let args = [];
-			if (arg_tokens.length == 0) {	// nullary function call - do nothing
-			} else if (arg_tokens.length == 1) {	// unary function
-				let arg = arg_tokens[0];
-				if (arg.token !== "name") {	// argument must be a name.
-					return "Expected name, but found "+arg.text+".";
-				}
-				args.push(arg.data);				
-			} else {	// more arguments - read the whole list
-				let j = 0;
-				do {
-					let arg = arg_tokens[j];
-					if (arg.token !== "name") {	// argument must be a name.
-						return "Expected name, but found "+arg.text+".";
-					}
-					args.push(arg.data);
-					j += 1;
-					if (j < arg_tokens.length) {	// if we are not at the end, expect a comma
-						if (arg_tokens[j].token !== "comma") {
-							return "Expected ',', but found "+arg_tokens[j].text+".";
-						} else { 
-							j += 1;
-							if (j == arg_tokens.length) {
-								return "Unexpected ',' at the end of an argument list.";
-							}
-						}
-					}
-				} while (j < arg_tokens.length);
-			}	
-			token.token = "call";
-			token.args = args;
-			tokens.splice(i+1, 1);	// remove the group - i will now point to first token after group			
-		} else if (token.token === "group") { // recursively process group
-			let result = _process_function_calls(token.data);
-			if (typeof result === "string") { return result; }
-		}
-	}
-	return tokens;
-}
-
-/// Given a token tree of an update funciton, extract names which occur in the function, together with their 
-/// assumed cardinality.
-function _extract_names(tokens) {
-
 }
 
 /// Turn the given update function into an array of tokens,

@@ -26,6 +26,33 @@ let ModelEditor = {
 		ensurePlaceholder(document.getElementById("model-description"));
 	},
 
+	updateStats() {
+		let stats = LiveModel.stats();
+		let statsTable = document.getElementById("model-stats");
+		let rows = statsTable.getElementsByClassName("row");
+		let row1 = rows[0];
+		let row2 = rows[1];
+		let row3 = rows[2];
+		let row4 = rows[3];
+		row1.children[1].textContent = stats.variableCount;
+		row1.children[3].textContent = "2^" + stats.parameterVariables;
+		row2.children[1].textContent = stats.regulationCount;
+		row2.children[3].textContent = "2^" + (stats.parameterVariables + stats.variableCount);
+		row3.children[1].textContent = stats.maxInDegree;
+		row3.children[3].textContent = stats.maxOutDegree;		
+		if (stats.explicitParameters.length == 0) {
+			row4.children[1].textContent = "(none)";
+		} else {
+			let parametersString = "";
+			for (var i = 0; i < stats.explicitParameters.length; i++) {
+				if (i != 0) parametersString += ", ";
+				let name = stats.explicitParameters[i];
+				parametersString += name;
+			}
+			row4.children[1].textContent = parametersString;
+		}		
+	},
+
 	// Create a new variable box for the given id (without any regulations).
 	addVariable(id, name) {
 		let variableBox = this._variableTemplate.cloneNode(true);		

@@ -346,6 +346,16 @@ div.invisible-input[contenteditable]:empty:not(:focus):before {
     top: 4px;
 }
 
+#model-stats {
+    font-family: 'FiraMono', monospace;
+    margin-bottom: 8px;
+}
+
+#model-stats .value {
+    width: 50px;
+    text-align: center;
+}
+
 .model-regulation {
     display: block;
     width: 100%;

@@ -64,9 +64,18 @@
                 <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.closeContent()">                
                 <div class="invisible-input full-line" id="model-description" contenteditable data-placeholder="(model description)" style="margin-top: 4px; margin-bottom: 4px;"></div>      
 
+                <div style="height: 30px;">
+                    <h3 style="font-family: 'FiraMono'; text-transform: uppercase;"> ● Overview</h3>
+                </div>
+                <table id="model-stats">
+                    <tr class="row">    <td>Variables: </td>        <td class="value">XY</td>     <td>Parameter space size: </td>  <td class="value">XY</td> </tr>
+                    <tr class="row">    <td>Regulations: </td>      <td class="value">XY</td>     <td>Transition graph size: </td> <td class="value">XY</td> </tr>
+                    <tr class="row">    <td>Max. in-degree: </td>   <td class="value">XY</td>     <td>Max. out-degree: </td>       <td class="value">XY</td> </tr>
+                    <tr class="row">    <td colspan="2">Explicit parameters: </td>  <td colspan="2">a, b, c, </td>   </tr>
+                </table>                   
                 <div style="height: 40px;">
                     <h3 style="float: left; font-family: 'FiraMono'; text-transform: uppercase;"> ● Variables</h3>
-                    <button id="button-add-variable" class="image-button" onclick="let id = LiveModel.addVariable(); CytoscapeEditor.showNode(id);" style="float: right;">Add variable <img src="img/add_box-24px.svg"></button>
+                    <button id="button-add-variable" class="image-button" onclick="let id = LiveModel.addVariable(); CytoscapeEditor.showNode(id);" style="float: right;">Add variable (N) <img src="img/add_box-24px.svg"></button>
                 </div>
                 <div id="model-variables" class="full-line">                                    
                 </div>                       
