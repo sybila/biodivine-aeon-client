@@ -25,6 +25,28 @@
         <div id="cytoscape-editor">
         </div>
 
+
+        <div id="quick-help">
+            <h3 style="display: block; margin: 0 auto; float: right;">HELP</h3>
+            <b>Network editor actions:</b>
+            <ul>
+                <li>Double click to create a new variable.</li>
+                <li>Drag from `+` to create a new regulation.</li>
+                <li>Select element (click) to show the context menu.</li>
+            </ul>
+            <b>Keyboard shortcuts:</b>
+            <ul>
+                <li>(⌫) Remove selected element.</li>
+                <li>(N) Add new variable.</li>
+                <li>(E) Edit name of the selected variable.</li>
+                <li>(F) Edit update function of the selected variable.</li>
+                <li>(O) Change observability of the selected regulation.</li>
+                <li>(M) Change monotonicity of the selected regulation.</li>
+                <li>(H) Show this help message.</li>                
+            </ul>
+            <div style="width: 100%; text-align: center; font-size: 12px;">(this message disappears when you create the first variable)</div>            
+        </div>
+
         <!-- A menu element that is shown for selected graph nodes in the editor. -->
         <div id="node-menu" class="float-menu invisible">
             <div class="button-row">                
@@ -78,6 +100,7 @@
                     <h3 style="float: left; font-family: 'FiraMono'; text-transform: uppercase;"> ● Variables</h3>
                     <button id="button-add-variable" class="image-button" onclick="let id = LiveModel.addVariable(); CytoscapeEditor.showNode(id);" style="float: right;">Add variable (N) <img src="img/add_box-24px.svg"></button>
                 </div>
+                <div style="clear: both;"></div>
                 <div id="model-variables" class="full-line">                                    
                 </div>                       
                 <div class="templates gone">
@@ -105,13 +128,28 @@
             </div>
 
             <div id="tab-engine" class="main-panel gone">
-                <img alt="close" src="img/close-24px.svg" class="close-button" onclick="UI.closeContent()">
-                Engine panel
+                <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.closeContent()">
+                <h2 style="margin: 0 auto; font-size: 20px; text-align: center;">Compute Engine</h2>                
+                <div class="invisible-input full-line" style="margin-top: 4px; margin-bottom: 4px; font-size: 16px;">
+                    <input id="engine-address" class="center" type="text" name="engine-address" value="http://localhost:8000" placeholder="(engine address)">
+                </div>
+                <div style="height: 40px;">
+                    <h3 id="compute-engine-status" style="float: left; font-family: 'FiraMono'; text-transform: uppercase;"> ● Disconnected</h3>
+                    <button id="button-connect" class="image-button" onclick="ComputeEngine.toggleConnection((e,r) => { if (e !== undefined) alert(e); });" style="float: right;">Connect <img src="img/cloud-24px.svg"></button>
+                </div>
+                <div style="clear: both;"></div>
+                <div style="text-align: center;">
+                    <h3 style="margin: 0 auto; font-size: 14px; text-align: center; margin-bottom: 4px;">No engine running? Download binary:</h3>                    
+                    <button id="download-windows" class="image-button" style="display: inline-block; margin: 4px;">Windows <img src="img/windows-24px.svg"></button>
+                    <button id="download-windows" class="image-button" style="display: inline-block; margin: 4px;">MacOS <img src="img/macos-24px.svg"></button>
+                    <button id="download-windows" class="image-button" style="display: inline-block; margin: 4px;">Linux <img src="img/linux-24px.svg"></button>
+                </div>                
             </div>
 
             <div id="side-menu">
                 <div class="button-group">
                     <img alt="Engine" id="side-menu-engine" src="img/engine-48px.svg" class="button" tab-id="tab-engine">
+                    <span id="engine-dot">●</span>
                     <span class="hint invisible">Compute Engine</span>
                 </div>
 
@@ -123,27 +161,5 @@
             </div>
         </div>
 
-        <div id="quick-help">
-            <h3 style="display: block; margin: 0 auto; float: right;">HELP</h3>
-            <b>Network editor actions:</b>
-            <ul>
-                <li>Double click to create a new variable.</li>
-                <li>Drag from `+` to create a new regulation.</li>
-                <li>Select element (click) to show the context menu.</li>
-            </ul>
-            <b>Keyboard shortcuts:</b>
-            <ul>
-                <li>(⌫) Remove selected element.</li>
-                <li>(N) Add new variable.</li>
-                <li>(E) Edit name of the selected variable.</li>
-                <li>(F) Edit update function of the selected variable.</li>
-                <li>(O) Change observability of the selected regulation.</li>
-                <li>(M) Change monotonicity of the selected regulation.</li>
-                <li>(H) Show this help message.</li>                
-            </ul>
-            <div style="width: 100%; text-align: center; font-size: 12px;">(this message disappears when you create the first variable)</div>            
-        </div>
-
-        
     </body>
 </html>

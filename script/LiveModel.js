@@ -254,7 +254,6 @@ let LiveModel = {
 		let modelFragment = this._updateFunctionModelFragment(id);
 		if (modelFragment !== undefined) {
 			ComputeEngine.validateUpdateFunction(modelFragment, (error, result) => {
-				console.log("Validate result: ", result);
 				if (error !== undefined) {
 					ModelEditor.setUpdateFunctionStatus(id, "Error: "+error, true);
 				} else {

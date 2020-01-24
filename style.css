@@ -259,6 +259,10 @@ div.invisible-input[contenteditable]:empty:not(:focus):before {
     opacity: 1;
 }
 
+.invisible-input[disabled]:hover::after {
+    opacity: 0;
+}
+
 .invisible-input.full-line {
     width: 100%;
 }
@@ -269,6 +273,13 @@ div.invisible-input[contenteditable]:empty:not(:focus):before {
 
 .invisible-input.full-line textarea {
     width: 100%;
+}
+
+#engine-dot {
+    position: absolute;
+    left: 55px;
+    top: -20px;
+    font-size: 45px;
 }
 
 .image-button {
@@ -425,7 +436,6 @@ div.invisible-input[contenteditable]:empty:not(:focus):before {
     font-family: 'FiraMono', monospace;
     font-size: 12px;
     margin-top: 4px;
-    margin-bottom: 4px;
 }
 
 input.center {

@@ -18,6 +18,8 @@ let UI = {
 	// Contains pairs of elements of the form { button: ..., tab: ... } corresponding to the side menu.
 	_tabsAndButtons: undefined,
 
+
+
 	init: function() {
 		this.cytoscapeEditor = document.getElementById("cytoscape-editor");		
 		this._nodeMenu = document.getElementById("node-menu");
@@ -35,6 +37,34 @@ let UI = {
 		this._initNodeMenu(this._nodeMenu);
 		this._initEdgeMenu(this._edgeMenu);
 		this._initSideMenu(sideMenu);	
+	},
+
+	updateComputeEngineStatus(status) {
+		let connectButton = document.getElementById("button-connect");
+		let statusLabel = document.getElementById("compute-engine-status");
+		let addressInput = document.getElementById("engine-address");
+		let dot = document.getElementById("engine-dot");
+		if (status == "connected") {
+			addressInput.setAttribute("disabled", "1");
+			// Also do this for parent, because we want to apply some css based on this
+			// to the container as well.
+			addressInput.parentElement.setAttribute("disabled", "1");
+			statusLabel.textContent = " ● Connected";
+			statusLabel.classList.add("green");
+			statusLabel.classList.remove("red");
+			dot.classList.add("green");			
+			dot.classList.remove("red");
+			connectButton.innerHTML = "Disconnect <img src='img/cloud_off-24px.svg'>";
+		} else {
+			addressInput.removeAttribute("disabled");
+			addressInput.parentElement.removeAttribute("disabled");
+			statusLabel.textContent = " ● Disconnected";
+			statusLabel.classList.remove("green");
+			statusLabel.classList.add("red");
+			dot.classList.remove("green");
+			dot.classList.add("red");
+			connectButton.innerHTML = "Connect <img src='img/cloud-24px.svg'>";
+		}
 	},
 
 	isEdgeMenuVisible() {

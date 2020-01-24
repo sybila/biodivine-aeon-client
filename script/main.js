@@ -1,4 +1,10 @@
 function init() {
+	// Set engine address according to query parameter
+	const urlParams = new URLSearchParams(window.location.search);
+	const engineAddress = urlParams.get('engine');
+	if (engineAddress !== undefined && engineAddress.length > 0) {
+		document.getElementById("engine-address").value = engineAddress;
+	}	
 	UI.init();
 	ModelEditor.init();
 	CytoscapeEditor.init();
