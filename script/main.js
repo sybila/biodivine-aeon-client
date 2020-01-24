@@ -57,7 +57,7 @@ hotkeys('f', function(event, handler) {
 	}	
 });
 
-hotkeys('r,backspace', function(event, handler) {	
+hotkeys('backspace', function(event, handler) {	
 	if (UI.isNodeMenuVisible()) {
 		event.preventDefault();
 		fireEvent(document.getElementById("node-menu-remove"), "click");
@@ -88,6 +88,14 @@ hotkeys('n,+', function(event, handler) {
 	CytoscapeEditor.showNode(id);
 });
 
+hotkeys('h', { keyup: true }, function(event, handler) {
+	if (event.type === 'keydown') {
+		UI.setQuickHelpVisible(true);
+	}
+	if (event.type === 'keyup') {
+		UI.setQuickHelpVisible(false);
+	}	
+});
 
 
 // utility function to fire events on UI elements - we mainly need it to simulate clicks

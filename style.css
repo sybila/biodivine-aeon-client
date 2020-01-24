@@ -140,6 +140,22 @@ body {
     pointer-events: none;
 }
 
+#quick-help {
+    position: fixed; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    padding: 24px;
+    border-radius: 12px;
+    color: #ffffff;
+    background: #646464;
+    font-size: 18px;
+    font-family: 'FiraMono';
+    opacity: 0.5;
+    transition: 0.3s;
+    pointer-events: none;
+}
+
 .main-panel {
     display: block;
     background-color: #f5f5f5;

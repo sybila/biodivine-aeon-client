@@ -50,6 +50,15 @@ let UI = {
 		this.ensureContentTabOpen(undefined);
 	},
 
+	// A small utility method to show quick help.
+	setQuickHelpVisible(visible) {
+		if (visible || LiveModel.isEmpty()) {
+			document.getElementById("quick-help").classList.remove("gone");
+		} else {
+			document.getElementById("quick-help").classList.add("gone");
+		}
+	},
+
 	// Make sure the given content tab is open (for example because there is content in it that
 	// needs to be seen).
 	ensureContentTabOpen(tabId) {

@@ -15,6 +15,11 @@ let LiveModel = {
 	_updateFunctions: {},
 	_regulations: [],
 
+	// True if the model has no variables.
+	isEmpty() {
+		return Object.keys(this._variables).length == 0;
+	},
+
 	// Get the name of the variable with given id.
 	getVariableName(id) {
 		let variable = this._variables[id];
@@ -31,6 +36,7 @@ let LiveModel = {
 		CytoscapeEditor.addNode(id, name, position);
 		ModelEditor.addVariable(id, name);
 		ModelEditor.updateStats();
+		UI.setQuickHelpVisible(false);
 		return id;
 	},
 
@@ -46,9 +52,11 @@ let LiveModel = {
 				if (reg.regulator == id || reg.target == id) this._removeRegulation(reg);
 			}
 			delete this._variables[id];
+			delete this._updateFunctions[id];
 			CytoscapeEditor.removeNode(id);
 			ModelEditor.removeVariable(id);
 			ModelEditor.updateStats();
+			if (this.isEmpty()) UI.setQuickHelpVisible(true);
 		}
 	},
 
@@ -492,7 +500,13 @@ function _tokenize_update_function_recursive(str, i, top) {
         			i += 1;
         		}
         	}
-        	result.push({ token: "name", data: name, text: name });
+        	if (name == "true") {
+        		result.push({ token: "true", text: name });
+        	} else if (name == "false") {
+        		result.push({ token: "false", text: "false" });
+        	} else {
+        		result.push({ token: "name", data: name, text: name });
+        	}        	
         }
         else { return { error: "Unexpected '"+c+"'." }; }        
 	}
