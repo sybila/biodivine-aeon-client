@@ -25,28 +25,6 @@
         <div id="cytoscape-editor">
         </div>
 
-
-        <div id="quick-help">
-            <h3 style="display: block; margin: 0 auto; float: right;">HELP</h3>
-            <b>Network editor actions:</b>
-            <ul>
-                <li>Double click to create a new variable.</li>
-                <li>Drag from `+` to create a new regulation.</li>
-                <li>Select element (click) to show the context menu.</li>
-            </ul>
-            <b>Keyboard shortcuts:</b>
-            <ul>
-                <li>(⌫) Remove selected element.</li>
-                <li>(N) Add new variable.</li>
-                <li>(E) Edit name of the selected variable.</li>
-                <li>(F) Edit update function of the selected variable.</li>
-                <li>(O) Change observability of the selected regulation.</li>
-                <li>(M) Change monotonicity of the selected regulation.</li>
-                <li>(H) Show this help message.</li>                
-            </ul>
-            <div style="width: 100%; text-align: center; font-size: 12px;">(this message disappears when you create the first variable)</div>            
-        </div>
-
         <!-- A menu element that is shown for selected graph nodes in the editor. -->
         <div id="node-menu" class="float-menu invisible">
             <div class="button-row">                
@@ -78,6 +56,27 @@
             <span class="hint invisible">Hint</span>
         </div>
 
+        <div id="quick-help">
+            <h3 style="display: block; margin: 0 auto; float: right;">HELP</h3>
+            <b>Network editor actions:</b>
+            <ul>
+                <li>Double click to create a new variable.</li>
+                <li>Drag from `+` to create a new regulation.</li>
+                <li>Select element (click) to show the context menu.</li>
+            </ul>
+            <b>Keyboard shortcuts:</b>
+            <ul>
+                <li>(⌫) Remove selected element.</li>
+                <li>(N) Add new variable.</li>
+                <li>(E) Edit name of the selected variable.</li>
+                <li>(F) Edit update function of the selected variable.</li>
+                <li>(O) Change observability of the selected regulation.</li>
+                <li>(M) Change monotonicity of the selected regulation.</li>
+                <li>(H) Show this help message.</li>                
+            </ul>
+            <div style="width: 100%; text-align: center; font-size: 12px;">(this message disappears when you create the first variable)</div>            
+        </div>
+
         <div style="position: absolute;">            
 
             <div id="tab-model-editor" class="main-panel gone" style="padding-bottom: 0px;">
@@ -91,10 +90,10 @@
                     <h3 style="font-family: 'FiraMono'; text-transform: uppercase;"> ● Overview</h3>
                 </div>
                 <table id="model-stats">
-                    <tr class="row">    <td>Variables: </td>        <td class="value">XY</td>     <td>Parameter space size: </td>  <td class="value">XY</td> </tr>
-                    <tr class="row">    <td>Regulations: </td>      <td class="value">XY</td>     <td>Transition graph size: </td> <td class="value">XY</td> </tr>
-                    <tr class="row">    <td>Max. in-degree: </td>   <td class="value">XY</td>     <td>Max. out-degree: </td>       <td class="value">XY</td> </tr>
-                    <tr class="row">    <td colspan="2">Explicit parameters: </td>  <td colspan="2">a, b, c, </td>   </tr>
+                    <tr class="row">    <td>Variables: </td>        <td class="value">-</td>     <td>Parameter space size: </td>  <td class="value">-</td> </tr>
+                    <tr class="row">    <td>Regulations: </td>      <td class="value">-</td>     <td>Transition graph size: </td> <td class="value">-</td> </tr>
+                    <tr class="row">    <td>Max. in-degree: </td>   <td class="value">-</td>     <td>Max. out-degree: </td>       <td class="value">-</td> </tr>
+                    <tr class="row">    <td colspan="2">Explicit parameters: </td>  <td colspan="2">(none)</td>   </tr>
                 </table>                   
                 <div style="height: 40px;">
                     <h3 style="float: left; font-family: 'FiraMono'; text-transform: uppercase;"> ● Variables</h3>

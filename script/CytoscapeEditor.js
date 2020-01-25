@@ -196,6 +196,12 @@ let CytoscapeEditor = {
 		}
 	},
 
+	// Pan and zoom the groph to show the whole model.
+	fit() {
+		this._cytoscape.fit();
+		this._cytoscape.zoom(this._cytoscape.zoom() * 0.8);	// zomm out a bit to have some padding
+	},
+
 	// Get the position of the node with the given id, or undefined if the node does not exist.
 	getNodePosition(id) {
 		let node = this._cytoscape.getElementById(id);

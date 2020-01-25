@@ -307,20 +307,22 @@ div.invisible-input[contenteditable]:empty:not(:focus):before {
 
 .compound-button .desc {
     border-top-right-radius: 12px;
-    border-bottom-right-radius: 12px;        
-    background: #ECEFF1;
+    border-bottom-right-radius: 12px;            
     transition: 0.3s;
 }
 
 .compound-button .main {
-    
+    background: #ECEFF1;    
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;    
+    transition: 0.3s;
 }
 
 .compound-button:hover {
     background-color: #B0BEC5;
 }
 
-.compound-button:hover .desc {
+.compound-button:hover .main {
     background-color: #CFD8DC;
 }
 

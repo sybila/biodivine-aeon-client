@@ -412,7 +412,7 @@ let LiveModel = {
 			}
 		}
 
-		// TODO: We should zoom/pan the editor to show the whole model...
+		CytoscapeEditor.fit();
 
 		return undefined;	// no error
 	},
