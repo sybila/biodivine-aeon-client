@@ -26,6 +26,8 @@ let Strings = {
 	invalidUpdateFunction(name) {
 		return "Cannot set update function for '"+name+"'.";
 	},
+	modelEmpty: "Cannot export an empty model.",
+	modelWillBeErased: "This operation will overwrite your current model. Do you want to continue?",
 }
 
 /* This can be used to properly show placeholder for content editable stuff */

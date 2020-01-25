@@ -82,7 +82,7 @@
 
             <div id="tab-model-editor" class="main-panel gone" style="padding-bottom: 0px;">
                 <div class="invisible-input full-line">
-                    <input id="model-name" class="center" type="text" name="model-name" value="Model Name" placeholder="(model name)" style="font-size: 20px;">
+                    <input id="model-name" class="center" type="text" name="model-name" placeholder="(model name)" style="font-size: 20px;">
                 </div>
                 <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.closeContent()">                
                 <div class="invisible-input full-line" id="model-description" contenteditable data-placeholder="(model description)" style="margin-top: 4px; margin-bottom: 4px;"></div>      
@@ -153,7 +153,9 @@
                 <div style="width: 244px; display: block; float: left; margin-right: 6px;">
                     <h3 style="display: block; margin: 0 auto; text-align: center; margin-top: 8px; margin-bottom: 8px;">Import</h3>
 
-                    <button id="import-aeon" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">Import .aeon</span><span class="desc">Simple text format</span></button>
+                    <label for="import-aeon-input" id="import-aeon" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">Import .aeon</span><span class="desc">Simple text format</span></label>
+
+                    <input onchange='UI.importAeon(this)' id='import-aeon-input' style='display:none' type='file'>
 
                     <button id="import-sbml" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">Import SBML</span><span class="desc">Popular XML format</span></button>
 
@@ -161,7 +163,7 @@
                 <div style="width: 244px; display: inline-block; margin-left: 6px; float: right;">
                     <h3 style="display: block; margin: 0 auto; text-align: center; margin-top: 8px; margin-bottom: 8px;">Export</h3>
 
-                    <button id="export-aeon" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">Export .aeon</span><span class="desc">Simple text format</span></button>
+                    <button id="export-aeon" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;" onclick="UI.downloadAeon();"><span class="main">Export .aeon</span><span class="desc">Simple text format</span></button>
 
                     <button id="export-sbml" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">Export SBML<br><small>(parametrized)</small></span><span class="desc">Parametric extension</span></button>
 

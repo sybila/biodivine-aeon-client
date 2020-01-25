@@ -294,6 +294,7 @@ div.invisible-input[contenteditable]:empty:not(:focus):before {
     padding: 0px;
     transition: background-color 0.3s;
     border: none;
+    text-align: center;
 }
 
 .compound-button span {

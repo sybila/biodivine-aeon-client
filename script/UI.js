@@ -144,6 +144,39 @@ let UI = {
 		}
 	},
 
+	// Trigger a download of Aeon exported file of the current model (if possible)
+	downloadAeon() {
+		let modelFile = LiveModel.exportAeon();
+		if (modelFile === undefined) {
+			alert(Strings.modelEmpty);
+			return;
+		}
+		var el = document.createElement('a');
+        el.setAttribute('href', 'data:text/plain;charset=utf-8,'+encodeURIComponent(modelFile));
+        let filename = ModelEditor.getModelName();
+        if (name === undefined) {
+        	filename = "model";
+        }
+        el.setAttribute('download', filename + ".aeon");
+        el.style.display = 'none';
+        document.body.appendChild(el);
+        el.click();
+        document.body.removeChild(el);
+	},
+
+	// Import Aeon file from the given file input element (if possible)
+	importAeon(element) {
+		var file = element.files[0];
+        var fr = new FileReader();
+        fr.onload = (e) => {
+        	let error = LiveModel.importAeon(e.target.result);
+        	if (error !== undefined) {
+        		alert(error);
+        	}
+        };
+        fr.readAsText(file);
+	},
+
 	// Add a listener to each button to display hint texts when hovered.
 	// For toggle buttons, add functions that enable actual toggling of the state value.
 	_initEdgeMenu(menu) {

@@ -26,6 +26,30 @@ let ModelEditor = {
 		ensurePlaceholder(document.getElementById("model-description"));
 	},
 
+	// Return the name of this model as given by the user, or undefined if no name is set.
+	getModelName() {
+		let name = this._modelName.value;
+		if (name.length == 0) return undefined;
+		return name;
+	},
+
+	// Return the description opf this model as given by the user, or undefined if no description is given.
+	// Note that the returned string can contain HTML, but it should be one line so it
+	// should be safe to use almost anywhere.
+	getModelDescription() {
+		let description = this._modelDescription.innerHTML;
+		if (description.length == 0) return undefined;
+		return description;
+	},
+
+	setModelName(name) {
+		this._modelName.value = name;
+	},
+
+	setModelDescription(description) {
+		this._modelDescription.innerHTML = description;
+	},
+
 	updateStats() {
 		let stats = LiveModel.stats();
 		let statsTable = document.getElementById("model-stats");
@@ -72,7 +96,7 @@ let ModelEditor = {
 			}
 		});
 		// On change, validate function and display error if needed.
-		updateFunction.addEventListener("focusout", (e) => {
+		updateFunction.addEventListener("focusout", (e) => {		
 			let error = LiveModel.setUpdateFunction(id, updateFunction.textContent);
 			if (error !== undefined) {
 				alert(error);
@@ -214,6 +238,15 @@ let ModelEditor = {
 			UI.ensureContentTabOpen(ContentTabs.modelEditor);
 			let updateFunction = variableBox.getElementsByClassName("variable-function")[0];
 			updateFunction.focus();			
+		}
+	},
+
+	// Change the content of the update function string.
+	setUpdateFunction(id, functionString) {
+		let variableBox = this._getVariableBox(id);
+		if (variableBox !== undefined) {
+			let updateFunction = variableBox.getElementsByClassName("variable-function")[0];
+			updateFunction.innerHTML = functionString;
 		}
 	},
 

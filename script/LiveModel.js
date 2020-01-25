@@ -28,10 +28,15 @@ let LiveModel = {
 	},
 
 	// Create a new variable with a default name. Returns an id of the variable.
-	addVariable: function(position = [0,0]) {
+	addVariable: function(position = [0.0,0.0], name = undefined) {
 		let id = this._idCounter;
 		this._idCounter += 1;
-		let name = "v_"+(id + 1);
+		if (name === undefined) {
+			name = "v_"+(id + 1);
+		}		
+		if (position === undefined) {
+			position = [0.0, 0.0];
+		}
 		this._variables[id] = { name: name, id: id }
 		CytoscapeEditor.addNode(id, name, position);
 		ModelEditor.addVariable(id, name);
@@ -43,11 +48,11 @@ let LiveModel = {
 	},
 
 	// Remove the given variable from the model.
-	removeVariable(id) {
+	removeVariable(id, force = false) {
 		let variable = this._variables[id];
 		if (variable === undefined) return;	// nothing to remove
 		// prompt user to confirm action
-		if (confirm(Strings.removeNodeCheck(variable['name']))) {
+		if (force || confirm(Strings.removeNodeCheck(variable['name']))) {
 			// First, explicitly remove all regulations that have something to do with us.
 			for (var i = 0; i < this._regulations.length; i++) {
 				let reg = this._regulations[i];
@@ -92,13 +97,15 @@ let LiveModel = {
 	// error string, otherwise return undefined.
 	setUpdateFunction(id, functionString) {
 		let variable = this._variables[id];
-		if (variable === undefined) return "Unknown variable '"+id+"'.";
+		if (variable === undefined) {
+			return "Unknown variable '"+id+"'.";
+		}
 		let check = this._checkUpdateFunction(id, functionString);
 		if (typeof check === "string") {
 			error = Strings.invalidUpdateFunction(variable.name) + " " + check;
 			return error;
-		} else {
-			if (functionString.length == 0) {
+		} else {			
+			if (functionString.length == 0) {				
 				delete this._updateFunctions[id];
 			} else {
 				this._updateFunctions[id] = {
@@ -247,6 +254,173 @@ let LiveModel = {
 			regulationCount: this._regulations.length,
 			explicitParameters: explicitParameters,
 		};
+	},
+
+	// Export current model in Aeon text format, or undefined if model cannot be 
+	// exported (no variables).
+	exportAeon() {
+		let result = "";
+		let keys = Object.keys(this._variables);
+		if (keys.length == 0) return undefined;
+		let name = ModelEditor.getModelName();
+		if (name !== undefined) {
+			result += "#name:"+name+"\n";			
+		}
+		let description = ModelEditor.getModelDescription();
+		if (description !== undefined) {
+			result += "#description:"+description+"\n";
+		}
+		for (var i = 0; i < keys.length; i++) {
+			let id = keys[i];
+			let varName = this.getVariableName(id);
+			let position = CytoscapeEditor.getNodePosition(id);
+			if (position !== undefined) {
+				result += "#position:"+varName+":"+position+"\n";
+			}
+			let fun = this._updateFunctions[id];
+			if (fun !== undefined) {
+				result += "$"+varName+":"+fun.functionString+"\n";
+			}
+			let regulations = this.regulationsOf(id);
+			for (var j = 0; j < regulations.length; j++) {
+				result += this._regulationToString(regulations[j]) + "\n";
+			}
+		}
+		return result;
+	},
+
+	// Import model from Aeon file. If the import is successful, return undefined,
+	// otherwise return an error string.
+	importAeon(modelString) {
+		if (!this.isEmpty() && !confirm(Strings.modelWillBeErased)) {
+			// If there is some model loaded, let the user know it will be
+			// overwritten. If he decides not to do it, just return...
+			return undefined;
+		}
+		let lines = modelString.split("\n");
+		// name1 -> name2
+		let regulationRegex = /^\s*([a-zA-Z0-9_{}]+)\s*-([>|?])(\??)\s*([a-zA-Z0-9_{}]+)\s*$/;
+		// #name:content
+		let modelNameRegex = /^\s*#name:(.+)$/;
+		// #description:content
+		let modelDescriptionRegex = /^\s*#description:(.+)$/;
+		// #position:var_name:num1,num2
+		let positionRegex = /^\s*#position:([a-zA-Z0-9_{}]+):([+-]?\d+(\.\d+)?),([+-]?\d+(\.\d+)?)\s*$/;
+		// $var_name:function_data
+		let updateFunctionRegex = /^\s*\$\s*([a-zA-Z0-9_{}]+)\s*:\s*(.+)\s*$/;
+		// #...
+		let commentRegex = /^\s*#.?$/;
+
+		let modelName = "";
+		let modelDescription = "";
+		let regulations = [];
+		let positions = {};
+		let updateFunctions = {};
+
+		// First, parse all lines into intermediate objects:
+		for (let line of lines) {
+			if (line.trim().length == 0) continue;	// skip whitespace
+			let match = line.match(regulationRegex);
+			if (match !== null) {
+				let monotonicity = EdgeMonotonicity.unspecified;
+				if (match[2] == ">") monotonicity = EdgeMonotonicity.activation;
+				if (match[2] == "|") monotonicity = EdgeMonotonicity.inhibition;
+				regulations.push({
+					regulatorName: match[1], targetName: match[4],
+					monotonicity: monotonicity, observable: (match[3].length == 0),
+				});
+				continue;
+			}
+			match = line.match(modelNameRegex);
+			if (match !== null) {
+				modelName = match[1];
+				continue;
+			}
+			match = line.match(modelDescriptionRegex);
+			if (match !== null) {
+				modelDescription += match[1];
+				continue;
+			}
+			match = line.match(positionRegex);
+			if (match !== null) {
+				// The last group index is four because 3 is the decimal part of group 2.
+				positions[match[1]] = [parseFloat(match[2]), parseFloat(match[4])];
+				continue;
+			}
+			match = line.match(updateFunctionRegex);
+			if (match !== null) {
+				updateFunctions[match[1]] = match[2];
+				continue;
+			}
+			if (line.match(commentRegex) === null) {
+				return "Unexpected line in file: "+line;
+			}			
+		}
+		
+		/*
+		console.log(modelName);
+		console.log(modelDescription);
+		console.log(regulations);
+		console.log(positions);
+		console.log(updateFunctions);
+		*/
+
+		this.clear();
+
+		// Set model metadata
+		ModelEditor.setModelName(modelName);
+		ModelEditor.setModelDescription(modelDescription);
+		// Add all regulations, creating variables if needed:
+		for (let template of regulations) {			
+			// Ensure regulator and target exist at requested positions...
+			let regulator = this._variableFromName(template.regulatorName);
+			if (regulator === undefined) {
+				let position = positions[template.regulatorName];
+				regulator = this.addVariable(position, template.regulatorName);
+			} else {
+				regulator = regulator.id;
+			}
+			let target = this._variableFromName(template.targetName);
+			if (target === undefined) {
+				let position = positions[template.targetName];				
+				target = this.addVariable(position, template.targetName);
+			} else {
+				target = target.id;
+			}
+			// Create the actual regulation...
+			this.addRegulation(regulator, target, template.observable, template.monotonicity);
+		}	
+		// Set all update functions
+		let keys = Object.keys(updateFunctions);
+		for (let key of keys) {
+			let variable = this._variableFromName(key);
+			if (variable === undefined) {
+				variable = this.addVariable(positions[key], key);
+			} else {
+				variable = variable.id;
+			}			
+			// We actually have to also set the function in the model because we don't update it
+			// from the set method...
+			ModelEditor.setUpdateFunction(variable, updateFunctions[key]);			
+			let error = this.setUpdateFunction(variable, updateFunctions[key]);
+			if (error !== undefined) {
+				alert(error);
+			}
+		}
+
+		// TODO: We should zoom/pan the editor to show the whole model...
+
+		return undefined;	// no error
+	},
+
+	// Erase the whole model
+	clear() {
+		let keys = Object.keys(this._variables);
+		for (var i = 0; i < keys.length; i++) {
+			this.removeVariable(keys[i], true);
+		}
+		ModelEditor.setModelName("");
+		ModelEditor.setModelDescription("");
 	},
 
 	// Runs analysis of the update funciton asynchronously on server.
@@ -416,7 +590,7 @@ let LiveModel = {
 					}
 				}
 			}
-		}		
+		}			
 		return { parameters: parameters };
 	},
 
@@ -558,11 +732,11 @@ function _tokenize_update_function_recursive(str, i, top) {
         		return { error: nested.error };
         	}
         }
-        else if (/[a-z0-9{}_]+/i.test(c)) {
+        else if (/[a-zA-Z0-9{}_]+/.test(c)) {
         	// start of a name
         	let name = c;
         	while (i < str.length) {
-        		if (!/[a-z0-9{}_]+/.test(str[i])) { break; } else {
+        		if (!/[a-zA-Z0-9{}_]+/.test(str[i])) { break; } else {
         			name += str[i];
         			i += 1;
         		}

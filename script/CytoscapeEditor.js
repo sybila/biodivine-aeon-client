@@ -196,6 +196,16 @@ let CytoscapeEditor = {
 		}
 	},
 
+	// Get the position of the node with the given id, or undefined if the node does not exist.
+	getNodePosition(id) {
+		let node = this._cytoscape.getElementById(id);
+		if (node !== undefined) {
+			let position = node.position();
+			return [position.x, position.y];
+		} 
+		return undefined;
+	},
+
 	// Return the edge which represents regulation between the given pair of variables or undefined
 	// if such edge does not exist.
 	_findRegulationEdge(regulatorId, targetId) {
