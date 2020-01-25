@@ -44,6 +44,7 @@ let LiveModel = {
 		UI.setQuickHelpVisible(false);
 		// Just show the number of possible update functions, even though there are always two.
 		this._validateUpdateFunction(id);
+		this.saveToLocalStorage();
 		return id;
 	},
 
@@ -64,6 +65,7 @@ let LiveModel = {
 			ModelEditor.removeVariable(id);
 			ModelEditor.updateStats();
 			if (this.isEmpty()) UI.setQuickHelpVisible(true);
+			this.saveToLocalStorage();
 		}
 	},
 
@@ -89,6 +91,7 @@ let LiveModel = {
 				let reg = this._regulations[i];
 				if (reg.regulator == id || reg.target == id) this._regulationChanged(reg);
 			}
+			this.saveToLocalStorage();
 			return undefined;
 		}		
 	},
@@ -116,6 +119,7 @@ let LiveModel = {
 			}
 			ModelEditor.updateStats();
 			this._validateUpdateFunction(id);
+			this.saveToLocalStorage();
 		}
 	},
 
@@ -423,6 +427,32 @@ let LiveModel = {
 		ModelEditor.setModelDescription("");
 	},
 
+	// Save the current state of the model to local storage.
+	// TODO: This is only triggered when structure of the model changes (variables, regulations),
+	// not metadata. Change this so that metadata are also preserved.
+	saveToLocalStorage() {
+		if (!hasLocalStorage) return;
+		try {
+			if (!this.isEmpty()) {
+				localStorage.setItem('last_model', this.exportAeon());
+			}			
+		} catch (e) {
+			console.log(e);
+		}
+	},
+
+	loadFromLocalStorage() {
+		try {
+			let modelString = localStorage.getItem('last_model');
+			if (modelString !== undefined && modelString !== null && modelString.length > 0) {
+				this.importAeon(modelString);
+			}			
+		} catch (e) {
+			alert("No recent model available. Make sure 'Block third-party cookies and site data' is disabled in your browser.");
+			console.log(e);
+		}
+	},
+
 	// Runs analysis of the update funciton asynchronously on server.
 	_validateUpdateFunction(id) {
 		let modelFragment = this._updateFunctionModelFragment(id);
@@ -491,6 +521,7 @@ let LiveModel = {
 		ModelEditor.ensureRegulation(regulation);
 		CytoscapeEditor.ensureRegulation(regulation);
 		this._validateUpdateFunction(regulation.target);
+		this.saveToLocalStorage();
 	},
 
 	// Remove the given regulation object from the regulations array.
@@ -501,6 +532,7 @@ let LiveModel = {
 			CytoscapeEditor.removeRegulation(regulation.regulator, regulation.target);
 			ModelEditor.removeRegulation(regulation.regulator, regulation.target);
 			ModelEditor.updateStats();
+			this.saveToLocalStorage();
 			return true;
 		}
 		return false;

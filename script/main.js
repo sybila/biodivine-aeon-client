@@ -1,4 +1,13 @@
+hasLocalStorage = false;
+
 function init() {
+	try {
+		localStorage.setItem('testing', '1');
+		hasLocalStorage = true;
+	} catch (e) {
+		console.log("Local storage not available.");
+	}
+
 	// Set engine address according to query parameter
 	const urlParams = new URLSearchParams(window.location.search);
 	const engineAddress = urlParams.get('engine');
@@ -7,11 +16,13 @@ function init() {
 	}	
 	UI.init();
 	ModelEditor.init();
-	CytoscapeEditor.init();
+	CytoscapeEditor.init();	
 	
+	/*
 	LiveModel.addVariable([10,100]);
 	LiveModel.addVariable([0,0]);
 	LiveModel.addRegulation(0, 1, false, EdgeMonotonicity.unspecified);
+	*/
 	
 	ComputeEngine.openConnection();	// Try to automatically connect when first opened.
 }

@@ -153,12 +153,13 @@
                 <div style="width: 244px; display: block; float: left; margin-right: 6px;">
                     <h3 style="display: block; margin: 0 auto; text-align: center; margin-top: 8px; margin-bottom: 8px;">Import</h3>
 
-                    <label for="import-aeon-input" id="import-aeon" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">Import .aeon</span><span class="desc">Simple text format</span></label>
+                    <button id="import-local" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;" onclick="LiveModel.loadFromLocalStorage();"><span class="main">local<br>storage</span><span class="desc">Last loaded model</span></button>
+
+                    <label for="import-aeon-input" id="import-aeon" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">.AEON</span><span class="desc">Simple text format</span></label>                    
+
+                    <button id="import-sbml" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">.SBML</span><span class="desc">Popular XML format</span></button>
 
                     <input onchange='UI.importAeon(this)' id='import-aeon-input' style='display:none' type='file'>
-
-                    <button id="import-sbml" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">Import SBML</span><span class="desc">Popular XML format</span></button>
-
                 </div>
                 <div style="width: 244px; display: inline-block; margin-left: 6px; float: right;">
                     <h3 style="display: block; margin: 0 auto; text-align: center; margin-top: 8px; margin-bottom: 8px;">Export</h3>
