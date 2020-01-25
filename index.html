@@ -146,12 +146,50 @@
                 </div>                
             </div>
 
+            <div id="tab-import-export" class="main-panel gone">
+                <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.closeContent()">
+                <h2 style="margin: 0 auto; font-size: 20px; text-align: center; margin-bottom: 8px;">Model File</h2>
+
+                <div style="width: 244px; display: block; float: left; margin-right: 6px;">
+                    <h3 style="display: block; margin: 0 auto; text-align: center; margin-top: 8px; margin-bottom: 8px;">Import</h3>
+
+                    <button id="import-aeon" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">Import .aeon</span><span class="desc">Simple text format</span></button>
+
+                    <button id="import-sbml" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">Import SBML</span><span class="desc">Popular XML format</span></button>
+
+                </div>
+                <div style="width: 244px; display: inline-block; margin-left: 6px; float: right;">
+                    <h3 style="display: block; margin: 0 auto; text-align: center; margin-top: 8px; margin-bottom: 8px;">Export</h3>
+
+                    <button id="export-aeon" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">Export .aeon</span><span class="desc">Simple text format</span></button>
+
+                    <button id="export-sbml" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">Export SBML<br><small>(parametrized)</small></span><span class="desc">Parametric extension</span></button>
+
+                    <button id="export-sbml" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">Export SBML<br><small>(instantiated)</small></span><span class="desc">Instantiated parameters</span></button>                   
+                </div>                
+                <div style="clear: both;"></div>   
+                <h3 style="display: block; margin: 0 auto; text-align: center; margin-top: 8px; margin-bottom: 8px;">Example Models</h3>  
+
+                <button id="example-1" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">Model 1</span><span class="desc">5 variables</span></button>         
+                <button id="example-2" class="compound-button" style="margin-top: 8px; margin-bottom: 8px; float: right;"><span class="main">Model 1</span><span class="desc">5 variables</span></button>
+                <button id="example-2" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">Model 1</span><span class="desc">5 variables</span></button>
+                <button id="example-3" class="compound-button" style="margin-top: 8px; margin-bottom: 8px; float: right;"><span class="main">Model 1</span><span class="desc">5 variables</span></button>
+                <button id="example-4" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">Model 1</span><span class="desc">5 variables</span></button>
+                <button id="example-5" class="compound-button" style="margin-top: 8px; margin-bottom: 8px; float: right;"><span class="main">Model 1</span><span class="desc">5 variables</span></button>
+                <div style="clear: both;"></div>   
+            </div>
+
             <div id="side-menu">
                 <div class="button-group">
                     <img alt="Engine" id="side-menu-engine" src="img/engine-48px.svg" class="button" tab-id="tab-engine">
                     <span id="engine-dot">●</span>
                     <span class="hint invisible">Compute Engine</span>
                 </div>
+
+                <div class="button-group">
+                    <img alt="Import/Export" id="side-menu-import-export" src="img/file_copy-48px.svg" class="button" tab-id="tab-import-export">
+                    <span class="hint invisible">Import/Export</span>
+                </div> 
 
                 <div class="button-group">
                     <img alt="Model" id="side-menu-model" src="img/model-48px.svg" class="button" tab-id="tab-model-editor">
