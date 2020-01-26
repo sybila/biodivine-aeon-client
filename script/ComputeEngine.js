@@ -62,6 +62,24 @@ let ComputeEngine = {
 		}
 	},
 
+	aeonToSbml(aeonString, callback) {
+		if (!this.isConnected()) {
+			callback("Compute engine not connected.");
+			return undefined;
+		} else {
+			return this._backendRequest("/aeon_to_sbml", callback, "POST", aeonString);
+		}
+	},
+
+	aeonToSbmlInstantiated(aeonString, callback) {
+		if (!this.isConnected()) {
+			callback("Compute engine not connected.");
+			return undefined;
+		} else {
+			return this._backendRequest("/aeon_to_sbml_instantiated", callback, "POST", aeonString);
+		}
+	},
+
 	// Send a ping request. If interval is set, the ping will be repeated
 	// until connection is closed. (Callback is called only once)
 	ping(keepAlive = false, interval = 2000, callback = undefined) {

@@ -148,6 +148,14 @@ let UI = {
 		}
 	},
 
+	isLoading(status) {
+		if (status) {
+			document.getElementById("loading-indicator").classList.remove("invisible");
+		} else {
+			document.getElementById("loading-indicator").classList.add("invisible");
+		}
+	},
+
 	// Trigger a download of Aeon exported file of the current model (if possible)
 	downloadAeon() {
 		let modelFile = LiveModel.exportAeon();
@@ -159,15 +167,54 @@ let UI = {
         if (filename === undefined) {
         	filename = "model";
         }
-        self._downloadFile(filename + ".aeon", modelFile)        
+        this._downloadFile(filename + ".aeon", modelFile)        
 	},
 
 	downloadSBML() {
-		if (LiveModel.isEmpty()) {
+		let modelFile = LiveModel.exportAeon();
+		if (modelFile === undefined) {
 			alert(Strings.modelEmpty);
 			return;
 		}
-		console.log("unimplemented");
+		let filename = ModelEditor.getModelName();
+        if (filename === undefined) {
+        	filename = "model";
+        }
+        this.isLoading(true);
+		ComputeEngine.aeonToSbml(modelFile, (error, result) => {
+			this.isLoading(false);
+			if (error !== undefined) {
+				alert(error);
+			}
+			if (result !== undefined) {
+				let sbml = result.model;
+				this._downloadFile(filename + ".sbml", sbml);
+			}
+		});
+	},
+
+	// TODO: Join the with the standard export SBML function - they do almost the same thing anyway.
+	downloadSBMLInstantiated() {
+		let modelFile = LiveModel.exportAeon();
+		if (modelFile === undefined) {
+			alert(Strings.modelEmpty);
+			return;
+		}
+		let filename = ModelEditor.getModelName();
+        if (filename === undefined) {
+        	filename = "model";
+        }
+        this.isLoading(true);
+		ComputeEngine.aeonToSbmlInstantiated(modelFile, (error, result) => {
+			this.isLoading(false);
+			if (error !== undefined) {
+				alert(error);
+			}
+			if (result !== undefined) {
+				let sbml = result.model;
+				this._downloadFile(filename + "_instantiated.sbml", sbml);
+			}
+		});
 	},
 
 	_downloadFile(name, content) {
@@ -198,8 +245,9 @@ let UI = {
         var fr = new FileReader();
         fr.onload = (e) => {
         	let sbml_file = e.target.result;
+        	this.isLoading(true);
         	ComputeEngine.sbmlToAeon(sbml_file, (error, result) => {        		
-        		console.log("Received: ", result);
+        		this.isLoading(false);
 	        	if (result !== undefined) {
 	        		let aeonModel = result.model;
 	        		error = LiveModel.importAeon(aeonModel);
