@@ -349,7 +349,7 @@ div.invisible-input[contenteditable]:empty:not(:focus):before {
 
 .image-button {
     background-color: #ECEFF1;
-    display: block;
+    display: inline-block;
     border-radius: 12px;
     box-shadow: 0px 2px 5px #d0d0d0;
     height: 40px;
@@ -448,6 +448,11 @@ div.invisible-input[contenteditable]:empty:not(:focus):before {
     text-align: center;
 }
 
+#computation {
+    font-family: 'FiraMono';
+    margin-bottom: 32px;
+}
+
 .model-regulation {
     display: block;
     width: 100%;
@@ -530,6 +535,10 @@ button.center {
 
 .green {
     color: #4abd73;
+}
+
+.orange {
+    color: #EF6C00;
 }
 
 .grey {

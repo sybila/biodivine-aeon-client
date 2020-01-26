@@ -39,31 +39,98 @@ let UI = {
 		this._initSideMenu(sideMenu);	
 	},
 
-	updateComputeEngineStatus(status) {
+	updateComputeEngineStatus(status, data) {
 		let connectButton = document.getElementById("button-connect");
 		let statusLabel = document.getElementById("compute-engine-status");
 		let addressInput = document.getElementById("engine-address");
 		let dot = document.getElementById("engine-dot");
+		let cmp = document.getElementById("computation");
+		let cmpStatus = document.getElementById("computation-status");
+		let cmpProgress = document.getElementById("computation-progress");
+		let cmpCancel = document.getElementById("computation-cancel");
+		let cmpDownload = document.getElementById("computation-download");
+		// Reset classes
+		statusLabel.classList.remove("red", "green", "orange");
+		dot.classList.remove("red", "green", "orange");
+		cmpStatus.classList.remove("red", "green", "orange");
 		if (status == "connected") {
 			addressInput.setAttribute("disabled", "1");
 			// Also do this for parent, because we want to apply some css based on this
 			// to the container as well.
 			addressInput.parentElement.setAttribute("disabled", "1");
-			statusLabel.textContent = " ● Connected";
-			statusLabel.classList.add("green");
-			statusLabel.classList.remove("red");
-			dot.classList.add("green");			
-			dot.classList.remove("red");
+			statusLabel.textContent = " ● Connected";			
 			connectButton.innerHTML = "Disconnect <img src='img/cloud_off-24px.svg'>";
+			if (data !== undefined) {
+				// data about computation available
+				let status = "(none)";
+				// If there is a computation, it is probably running...
+				if (data["has_computation"]) {
+					status = "running";
+					// ...but, if it is cancelled, we are awaiting cancellation...
+					if (data["is_cancelled"]) {
+						status = "awaiting cancellation";
+					}
+					// ...but, if it is not running and it is not cancelled, then it must be done...
+					if (!data["is_running"] && !data["is_cancelled"]) {
+						status = "done";
+					}
+					// ...and, if it is not running and it is cancelled, the it is actualy cancelled.
+					if (!data["is_running"] && data["is_cancelled"]) {
+						status = "cancelled";
+					}
+				}
+				// Update server status color depending on current computation status.
+				if (status == "(none)" || status == "done" || status == "cancelled") {
+					statusLabel.classList.add("green");
+					dot.classList.add("green");																
+				} else {
+					statusLabel.classList.add("orange");
+					dot.classList.add("orange");
+				}
+				// Make status green/orange depending on state of computation.
+				if (status == "done") {
+					cmpStatus.classList.add("green");
+				} else if (status != "(none)") {
+					cmpStatus.classList.add("orange");
+				}
+				// Progress is only shown when we are runnign...
+				if (data["is_running"]) {
+					cmpProgress.parentElement.classList.remove("gone");
+				} else {
+					cmpProgress.parentElement.classList.add("gone");
+				}
+				cmp.classList.remove("gone");
+				if (data.error !== null) {
+					status += ", error: "+data.error;
+				}
+				cmpStatus.textContent = status;
+				cmpProgress.textContent = data.progress;
+				// Show cancel button if job is running and not cancelled 
+				if (data["is_running"] && !data["is_cancelled"]) {
+					cmpCancel.classList.remove("gone");
+				} else {
+					cmpCancel.classList.add("gone");
+				}
+				// Show download button if there is a job, but unless it is done, show "partial" in the button
+				if (data["has_computation"]) {
+					cmpDownload.classList.remove("gone");
+					if (status == "done") {
+						cmpDownload.innerHTML = "Download result <img src=\"img/cloud_download-24px.svg\">";
+					} else {
+						cmpDownload.innerHTML = "Download partial result <img src=\"img/cloud_download-24px.svg\">";
+					}
+				} else {
+					cmpDownload.classList.add("gone");
+				}
+			}
 		} else {
 			addressInput.removeAttribute("disabled");
 			addressInput.parentElement.removeAttribute("disabled");
 			statusLabel.textContent = " ● Disconnected";
-			statusLabel.classList.remove("green");
 			statusLabel.classList.add("red");
-			dot.classList.remove("green");
 			dot.classList.add("red");
 			connectButton.innerHTML = "Connect <img src='img/cloud-24px.svg'>";
+			cmp.classList.add("gone");
 		}
 	},
 

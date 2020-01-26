@@ -80,6 +80,24 @@ let ComputeEngine = {
 		}
 	},
 
+	startComputation(aeonString) {
+		if (aeonString === undefined) {
+			alert("Empty model.");
+			return undefined;
+		}
+		if (!this.isConnected()) {
+			callback("Compute engine not connected.");
+			return undefined;
+		} else {
+			return this._backendRequest("/start_computation", (e, r) => {
+				if (e !== undefined) {
+					console.log(e);
+					alert("Computation error: "+e);
+				}
+			}, "POST", aeonString);
+		}
+	},
+
 	// Send a ping request. If interval is set, the ping will be repeated
 	// until connection is closed. (Callback is called only once)
 	ping(keepAlive = false, interval = 2000, callback = undefined) {
@@ -95,7 +113,7 @@ let ComputeEngine = {
 				status = "connected";
 			}
 			console.log("...ping..."+status+"...");
-			UI.updateComputeEngineStatus(status);
+			UI.updateComputeEngineStatus(status, response);
 			// Schedule a ping for later if requested.
 			if (keepAlive && error === undefined) {
 				this._pingRepeatToken = setTimeout(() => { this.ping(true, interval); }, interval);
