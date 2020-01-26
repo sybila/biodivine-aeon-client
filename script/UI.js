@@ -151,13 +151,25 @@ let UI = {
 			alert(Strings.modelEmpty);
 			return;
 		}
-		var el = document.createElement('a');
-        el.setAttribute('href', 'data:text/plain;charset=utf-8,'+encodeURIComponent(modelFile));
-        let filename = ModelEditor.getModelName();
-        if (name === undefined) {
+		let filename = ModelEditor.getModelName();
+        if (filename === undefined) {
         	filename = "model";
         }
-        el.setAttribute('download', filename + ".aeon");
+        self._downloadFile(filename + ".aeon", modelFile)        
+	},
+
+	downloadSBML() {
+		if (LiveModel.isEmpty()) {
+			alert(Strings.modelEmpty);
+			return;
+		}
+		console.log("unimplemented");
+	},
+
+	_downloadFile(name, content) {
+		var el = document.createElement('a');
+        el.setAttribute('href', 'data:text/plain;charset=utf-8,'+encodeURIComponent(content));
+        el.setAttribute('download', name);
         el.style.display = 'none';
         document.body.appendChild(el);
         el.click();
