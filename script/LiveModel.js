@@ -55,9 +55,13 @@ let LiveModel = {
 		// prompt user to confirm action
 		if (force || confirm(Strings.removeNodeCheck(variable['name']))) {
 			// First, explicitly remove all regulations that have something to do with us.
+			let update_regulations_after_delete = [];
 			for (var i = 0; i < this._regulations.length; i++) {
 				let reg = this._regulations[i];
-				if (reg.regulator == id || reg.target == id) this._removeRegulation(reg);
+				if (reg.regulator == id || reg.target == id) {
+					this._removeRegulation(reg);
+					update_regulations_after_delete.push(reg.target);
+				}
 			}
 			delete this._variables[id];
 			delete this._updateFunctions[id];
@@ -66,6 +70,15 @@ let LiveModel = {
 			ModelEditor.updateStats();
 			if (this.isEmpty()) UI.setQuickHelpVisible(true);
 			this.saveToLocalStorage();
+			for (let id of update_regulations_after_delete) { 
+				// We also have to recompute the update function - the variable just became a parameter...
+					if (this._updateFunctions[id] !== undefined) {
+						// Set the function - this will mark the variable as parameter in metadata
+						this.setUpdateFunction(id, this._updateFunctions[id].functionString);
+					}
+					// And validate again.
+					this._validateUpdateFunction(id);
+			}
 		}
 	},
 

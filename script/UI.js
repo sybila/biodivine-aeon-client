@@ -117,10 +117,14 @@ let UI = {
 		} else {
 			menu.classList.remove("invisible");
 			menu.style.left = position[0] + "px";
-			menu.style.top = position[1] + "px";
+			menu.style.top = (position[1] + (60 * zoom)) + "px";
 			// Scale applies current zoom, translate ensures the middle point of menu is 
 			// actually at postion [left, top] (this makes it easier to align).
-			menu.style.transform = "scale(" + zoom + ") translate(-50%, -50%)";			
+			// Note the magic constant next to zoom: It turns out we needed smaller font
+			// size on the editor nodes (to make import more reasonable).
+			// However, that made the menu much too big, so we are sticking with "zooming out"
+			// the menu and keeping smaller sizes in the graph.
+			menu.style.transform = "scale(" + (zoom * 0.75) + ") translate(-50%, -50%)";			
 		}			
 	},
 
@@ -135,10 +139,10 @@ let UI = {
 		} else {
 			menu.classList.remove("invisible");
 			menu.style.left = position[0] + "px";
-			menu.style.top = (position[1] + (75 * zoom)) + "px";
+			menu.style.top = (position[1] + (60 * zoom)) + "px";
 			// Scale applies current zoom, translate ensures the middle point of menu is 
 			// actually at postion [left, top] (this makes it easier to align).			
-			menu.style.transform = "scale(" + zoom + ") translate(-50%, -50%)";
+			menu.style.transform = "scale(" + (zoom * 0.75) + ") translate(-50%, -50%)";
 			menu.observabilityButton.updateState(data);
 			menu.monotonicityButton.updateState(data);
 		}
@@ -185,6 +189,25 @@ let UI = {
         	if (error !== undefined) {
         		alert(error);
         	}
+        };
+        fr.readAsText(file);
+	},
+
+	importSBML(element) {
+		var file = element.files[0];
+        var fr = new FileReader();
+        fr.onload = (e) => {
+        	let sbml_file = e.target.result;
+        	ComputeEngine.sbmlToAeon(sbml_file, (error, result) => {        		
+        		console.log("Received: ", result);
+	        	if (result !== undefined) {
+	        		let aeonModel = result.model;
+	        		error = LiveModel.importAeon(aeonModel);
+	        	}
+	        	if (error !== undefined) {
+	        		alert(error);
+	        	}
+        	});        	
         };
         fr.readAsText(file);
 	},

@@ -235,7 +235,7 @@ let CytoscapeEditor = {
 		let zoom = CytoscapeEditor._cytoscape.zoom();			
 		let position = node.renderedPosition();
 		let height = node.height() * zoom;			
-		UI.toggleNodeMenu([position["x"], position["y"] + 3*height], zoom);
+		UI.toggleNodeMenu([position["x"], position["y"]], zoom);
 	},
 
 	// Update the edge menu to be shown exactly for the currently selected edge.
@@ -302,7 +302,7 @@ let CytoscapeEditor = {
 		                'padding': 12,		                
 		                'background-color': '#dddddd',
 		                'font-family': 'Fira Mono',
-		                'font-size': '24pt',
+		                'font-size': '12pt',
 		                'border-width': '1px',
 		                'border-color': '#bbbbbb',
 		                'border-style': 'solid',
@@ -311,7 +311,7 @@ let CytoscapeEditor = {
   				{	// When a node is highlighted by mouse, show it with a dashed blue border.
   					'selector': 'node.hover',
   					'style': {
-  						'border-width': '3.0px',
+  						'border-width': '2.0px',
   						'border-color': '#6a7ea5',
 						'border-style': 'dashed',                		
   					}
@@ -319,7 +319,7 @@ let CytoscapeEditor = {
   				{	// When a node is selected, show it with a thick blue border.
   					'selector': 'node:selected',
   					'style': {
-  						'border-width': '3.0px',
+  						'border-width': '2.0px',
   						'border-color': '#6a7ea5',
   						'border-style': 'solid',                		
   					}
@@ -327,7 +327,7 @@ let CytoscapeEditor = {
   				{	// General style of the graph edge
 		            'selector': 'edge',
 		            'style': {
-		                'width': 4.0,
+		                'width': 3.0,
 		                'curve-style': 'bezier',
 		                'loop-direction': '-15deg',
 		                'loop-sweep': '30deg',

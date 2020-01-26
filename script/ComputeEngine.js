@@ -53,6 +53,15 @@ let ComputeEngine = {
 		}
 	},
 
+	sbmlToAeon(sbmlString, callback) {
+		if (!this.isConnected()) {
+			callback("Compute engine not connected.");
+			return undefined;
+		} else {
+			return this._backendRequest("/sbml_to_aeon", callback, "POST", sbmlString);
+		}
+	},
+
 	// Send a ping request. If interval is set, the ping will be repeated
 	// until connection is closed. (Callback is called only once)
 	ping(keepAlive = false, interval = 2000, callback = undefined) {
