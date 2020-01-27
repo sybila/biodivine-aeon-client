@@ -11,12 +11,12 @@
     src: url('font/FiraMono-Bold.ttf');
 }
 
-/*
+
 @font-face {
     font-family: 'symbols';
     src: url('font/Symbols.ttf');
 }
-
+/*
 @font-face {
     font-family: 'BaileyReg';
     src: url("font/B3.ttf");
@@ -110,7 +110,7 @@ body {
     top: 0;
 }
 
-#side-menu .button {
+#side-menu .button, #side-menu .button-fake {
     width: 48px;
     height: 48px;
     padding: 12px;
@@ -120,15 +120,15 @@ body {
     transition: background-color 0.3s;
 }
 
-#side-menu .button.selected {
+#side-menu .button.selected, #side-menu .button-fake.selected {
     background-color: #CFD8DC;
 }
 
-#side-menu .button:hover {
+#side-menu .button:hover, #side-menu .button-fake:hover {
     background-color: #B0BEC5;
 }
 
-#side-menu .button-group {
+#side-menu .button-group, #side-menu .button-group-fake {
     background-color: #ECEFF1;
     display: block;
     border-radius: 24px;
@@ -140,7 +140,7 @@ body {
     margin-bottom: 12px;
 }
 
-#side-menu .button-group .hint {
+#side-menu .button-group .hint, #side-menu .button-group-fake .hint {
     width: 200px;
     line-height: 72px;
     display: table-cell;
@@ -506,6 +506,45 @@ div.invisible-input[contenteditable]:empty:not(:focus):before {
     font-family: 'FiraMono', monospace;
     font-size: 12px;
     margin-top: 4px;
+}
+
+.inline-button {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#tab-results .table-head {
+    font-family: 'FiraMonoBold', monospace;
+    font-weight: bold;
+}
+
+#tab-results .table-behavior {
+    font-family: 'symbols';
+    letter-spacing: 5px;
+    font-style: normal;
+}
+
+#tab-results table {
+    margin: 0 auto;
+    text-align: center;
+    font-size: 18px;
+}
+
+#tab-results td {
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+#tab-results {
+    font-family: 'FiraMono', monospace;
+}
+
+#result-legend {
+    margin-top: 16px;
+    font-size: 12px;
+    text-align: center;
 }
 
 input.center {

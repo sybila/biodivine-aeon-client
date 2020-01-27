@@ -16,15 +16,23 @@ function init() {
 	}	
 	UI.init();
 	ModelEditor.init();
-	CytoscapeEditor.init();	
-	
-	/*
-	LiveModel.addVariable([10,100]);
-	LiveModel.addVariable([0,0]);
-	LiveModel.addRegulation(0, 1, false, EdgeMonotonicity.unspecified);
-	*/
-	
+	CytoscapeEditor.init();			
 	ComputeEngine.openConnection();	// Try to automatically connect when first opened.
+
+	const requestedWitness = urlParams.get('witness');
+	if (requestedWitness !== undefined && requestedWitness !== null && requestedWitness.length > 0) {
+		ComputeEngine.getWitness(requestedWitness, (e, r) => {
+			if (e !== undefined) {
+				alert(e);
+			} else {
+				let error = LiveModel.importAeon(r.model);				
+				if (error !== undefined) {
+	        		alert(error);
+	        	}
+	        	UI.ensureContentTabOpen(ContentTabs.modelEditor);
+			}
+		}, true);
+	}
 }
 
 let Strings = {

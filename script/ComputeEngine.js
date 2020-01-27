@@ -5,6 +5,7 @@
 */
 let ComputeEngine = {
 
+	waitingForResult: false,
 	_address: "http://localhost:8000",
 	_connected: false,
 	_pingRepeatToken: undefined,
@@ -14,6 +15,10 @@ let ComputeEngine = {
 	openConnection(callback = undefined) {
 		this._address = document.getElementById("engine-address").value;
 		this.ping(true, 2000, callback);		
+	},
+
+	getAddress() {
+		return this._address;
 	},
 
 	// Open or close connection connection, depending on current status.
@@ -86,15 +91,62 @@ let ComputeEngine = {
 			return undefined;
 		}
 		if (!this.isConnected()) {
-			callback("Compute engine not connected.");
+			alert("Compute engine not connected.");
 			return undefined;
 		} else {
+			this.waitingForResult = true;
 			return this._backendRequest("/start_computation", (e, r) => {
 				if (e !== undefined) {
 					console.log(e);
-					alert("Computation error: "+e);
+					alert("Computation error: "+e);					
 				}
+				this.ping();
 			}, "POST", aeonString);
+		}
+	},
+
+	cancelComputation() {
+		if (!this.isConnected()) {
+			alert("Compute engine not connected.");
+			return undefined;
+		} else {
+			return this._backendRequest("/cancel_computation", (e, r) => {
+				if (e !== undefined) {
+					console.log(e);
+					alert("Error: "+e);					
+				}
+				this.ping();
+			}, "POST", "");
+		}
+	},
+
+	getResults(callback) {
+		if (!this.isConnected()) {
+			callback("Compute engine not connected.");
+			return undefined;
+		} else {
+			return this._backendRequest("/get_results", (e, r) => {
+				console.log(e, r);
+				if (callback !== undefined) {
+					callback(e, r);
+				}
+			}, "GET");
+		}
+	},
+
+	// Force requests connection even when ping was not established (for situations
+	// where this is the first call).
+	getWitness(witness, callback, force = false) {
+		if (!force && !this.isConnected()) {
+			callback("Compute engine not connected.");
+			return undefined;
+		} else {
+			return this._backendRequest("/get_witness/"+witness, (e, r) => {
+				console.log(e,r);
+				if (callback !== undefined) {
+					callback(e, r);
+				}
+			}, "GET");
 		}
 	},
 

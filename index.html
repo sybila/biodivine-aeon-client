@@ -11,6 +11,7 @@
         <script src="script/dependencies/cytoscape-edgehandles.js"></script>
         <script src="script/dependencies/hotkeys.min.js"></script>
 
+        <script src="script/Results.js"></script>
         <script src="script/ComputeEngine.js"></script>
         <script src="script/Examples.js"></script>
         <script src="script/LiveModel.js"></script>
@@ -144,9 +145,12 @@
                     Computation: <span id="computation-status">(none)</span><br>
                     <span>Progress: <span id="computation-progress">unknown</span><br></span>
 
-                    <div style="margin-top: 8px; text-align: center;">
-                        <button id="computation-cancel" class="image-button" onclick="" style="margin-right: 4px;">Cancel job <img src="img/cancel-24px.svg"></button>
-                    <button id="computation-download" class="image-button" onclick="" style="margin-left: 4px;">Download result <img src="img/cloud_download-24px.svg"></button>
+                    <div style="margin-top: 16px; text-align: center;">
+                        
+                        <button id="computation-cancel" class="image-button" onclick="ComputeEngine.cancelComputation();" style="margin-right: 4px;">Cancel job <img src="img/cancel-24px.svg"></button>
+
+                        <button id="computation-download" class="image-button" onclick="Results.download();" style="margin-left: 4px;">Show result <img src="img/cloud_download-24px.svg"></button>
+
                     </div>                    
                 </div>
 
@@ -192,7 +196,22 @@
                 <div style="clear: both;"></div>   
             </div>
 
+            <div id="tab-results" class="main-panel gone">
+                <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.closeContent()">
+                <h2 style="margin: 0 auto; font-size: 20px; text-align: center; margin-bottom: 8px;">Bifurcation Function</h2>
+                <div id="results">
+                    <div style="text-align: center; width: 350px; margin: 0 auto;">No results loaded. Run analysis to show bifurcation function overview for the currently loaded model.</div>
+                </div>
+                <div id='result-legend'><span class='table-behavior'>D</span> disorder | <span class='table-behavior'>O</span> oscillation | <span class='table-behavior'>S</span> stability</div>
+            </div>
+
             <div id="side-menu">
+                <div class="button-group-fake">
+                    <img alt="Compute Bifurcation" id="side-menu-compute" src="img/play_circle_filled-48px.svg" 
+                    onclick="ComputeEngine.startComputation(LiveModel.exportAeon());" class="button-fake">
+                    <span class="hint invisible">Start Analysis</span>
+                </div> 
+
                 <div class="button-group">
                     <img alt="Engine" id="side-menu-engine" src="img/engine-48px.svg" class="button" tab-id="tab-engine">
                     <span id="engine-dot">●</span>
@@ -209,6 +228,10 @@
                     <span class="hint invisible">Model Editor</span>
                 </div>  
 
+                <div class="button-group">
+                    <img alt="Model" id="side-menu-results" src="img/call_split-48px.svg" class="button" tab-id="tab-results">
+                    <span class="hint invisible">Results</span>
+                </div>  
             </div>
 
             <div id="loading-indicator" class="invisible"><img src="img/progress.gif"/><br><br>Waiting for server...</div>

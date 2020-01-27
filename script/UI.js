@@ -1,6 +1,7 @@
 let ContentTabs = {
 	engine: "tab-engine",
 	modelEditor: "tab-model-editor",
+	results: "tab-results",
 }
 
 const DOUBLE_CLICK_DELAY = 400;
@@ -37,6 +38,25 @@ let UI = {
 		this._initNodeMenu(this._nodeMenu);
 		this._initEdgeMenu(this._edgeMenu);
 		this._initSideMenu(sideMenu);	
+
+		// Init compute button (sadly we have to do this explicitly
+		// because it is not a proper menu button).
+		// Show hint popup on mouse enter when button is not selected.
+		let button = document.getElementById("side-menu-compute");
+		let group = button.parentElement;
+		let hint = group.getElementsByClassName("hint")[0];		
+		button.addEventListener("mouseenter", (e) => {
+			let selected = button.classList.contains("selected");
+			if (!selected) {
+				group.style.width = "272px";
+				hint.classList.remove("invisible");
+			}				
+		});
+		// Hide hint popup on mouse leave
+		button.addEventListener("mouseleave", (e) => {
+			group.style.width = "72px";				
+			hint.classList.add("invisible");			
+		});
 	},
 
 	updateComputeEngineStatus(status, data) {
@@ -115,12 +135,17 @@ let UI = {
 				if (data["has_computation"]) {
 					cmpDownload.classList.remove("gone");
 					if (status == "done") {
-						cmpDownload.innerHTML = "Download result <img src=\"img/cloud_download-24px.svg\">";
+						cmpDownload.innerHTML = "Show result <img src=\"img/cloud_download-24px.svg\">";
 					} else {
-						cmpDownload.innerHTML = "Download partial result <img src=\"img/cloud_download-24px.svg\">";
+						cmpDownload.innerHTML = "Show partial result <img src=\"img/cloud_download-24px.svg\">";
 					}
 				} else {
 					cmpDownload.classList.add("gone");
+				}
+
+				if (status == "done" && ComputeEngine.waitingForResult) {
+					ComputeEngine.waitingForResult = false;
+					Results.download();
 				}
 			}
 		} else {
@@ -325,6 +350,11 @@ let UI = {
         	});        	
         };
         fr.readAsText(file);
+	},
+
+	openWitness(witness) {
+		const url = window.location.origin + window.location.pathname;
+        window.open(url + '?engine=' + encodeURI(ComputeEngine.getAddress()) + "&witness="+ encodeURI(witness));
 	},
 
 	// Add a listener to each button to display hint texts when hovered.
