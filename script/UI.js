@@ -67,13 +67,14 @@ let UI = {
 		let cmp = document.getElementById("computation");
 		let cmpStatus = document.getElementById("computation-status");
 		let cmpProgress = document.getElementById("computation-progress");
+		let cmpClasses = document.getElementById("computation-classes");
 		let cmpCancel = document.getElementById("computation-cancel");
 		let cmpDownload = document.getElementById("computation-download");
 		// Reset classes
 		statusLabel.classList.remove("red", "green", "orange");
 		dot.classList.remove("red", "green", "orange");
 		cmpStatus.classList.remove("red", "green", "orange");
-		if (status == "connected") {
+		if (status == "connected") {			
 			addressInput.setAttribute("disabled", "1");
 			// Also do this for parent, because we want to apply some css based on this
 			// to the container as well.
@@ -81,10 +82,11 @@ let UI = {
 			statusLabel.textContent = " ● Connected";			
 			connectButton.innerHTML = "Disconnect <img src='img/cloud_off-24px.svg'>";
 			if (data !== undefined) {
+				console.log(data);
 				// data about computation available
 				let status = "(none)";
 				// If there is a computation, it is probably running...
-				if (data["has_computation"]) {
+				if (data["timestamp"] !== null) {
 					status = "running";
 					// ...but, if it is cancelled, we are awaiting cancellation...
 					if (data["is_cancelled"]) {
@@ -125,6 +127,11 @@ let UI = {
 				}
 				cmpStatus.textContent = status;
 				cmpProgress.textContent = data.progress;
+				if (data.num_classes !== null) {
+					cmpClasses.textContent = data.num_classes;
+				} else {
+					cmpClasses.textContent = "-";
+				}			
 				// Show cancel button if job is running and not cancelled 
 				if (data["is_running"] && !data["is_cancelled"]) {
 					cmpCancel.classList.remove("gone");
@@ -132,7 +139,7 @@ let UI = {
 					cmpCancel.classList.add("gone");
 				}
 				// Show download button if there is a job, but unless it is done, show "partial" in the button
-				if (data["has_computation"]) {
+				if (data["timestamp"] !== null) {
 					cmpDownload.classList.remove("gone");
 					if (status == "done") {
 						cmpDownload.innerHTML = "Show result <img src=\"img/cloud_download-24px.svg\">";

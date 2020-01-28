@@ -2,7 +2,9 @@ let Results = {
 
 	download() {
 		console.log("Download...")
+		UI.isLoading(true);
 		ComputeEngine.getResults((e, json) => {
+			UI.isLoading(false);
 			ComputeEngine.waitingForResult = false;
 			if (e !== undefined) {
 				alert(e);
