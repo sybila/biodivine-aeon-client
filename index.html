@@ -171,11 +171,11 @@
                 <div style="width: 244px; display: block; float: left; margin-right: 6px;">
                     <h3 style="display: block; margin: 0 auto; text-align: center; margin-top: 8px; margin-bottom: 8px;">Import</h3>
 
-                    <button id="import-local" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;" onclick="LiveModel.loadFromLocalStorage();"><span class="main">local<br>storage</span><span class="desc">Last loaded model</span></button>
+                    <button id="import-local" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;" onclick="LiveModel.loadFromLocalStorage();"><span class="main">Local<br>Storage</span><span class="desc">Last loaded model</span></button>
 
                     <label for="import-aeon-input" id="import-aeon" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">.AEON</span><span class="desc">Simple text format</span></label>                    
 
-                    <label for="import-sbml-input" id="import-sbml" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">.SBML</span><span class="desc">Popular XML format</span></label>
+                    <label for="import-sbml-input" id="import-sbml" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;"><span class="main">.SBML</span><span class="desc">Standard<br>SBML L3</span></label>
 
                     <input onchange='UI.importAeon(this)' id='import-aeon-input' style='display:none' type='file'>
                     <input onchange='UI.importSBML(this)' id='import-sbml-input' style='display:none' type='file'>
@@ -192,8 +192,10 @@
                 <div style="clear: both;"></div>   
                 <h3 style="display: block; margin: 0 auto; text-align: center; margin-top: 8px; margin-bottom: 8px;">Example Models</h3>  
 
-                <button id="example-1" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;" onclick="LiveModel.importAeon(Examples.g2a);"><span class="main">G2A</span><span class="desc">TODO description</span></button>         
-                <button id="example-2" class="compound-button" style="margin-top: 8px; margin-bottom: 8px; float: right;" onclick="LiveModel.importAeon(Examples.buddingYeastIrons);"><span class="main">Budding<br>Yeast</span><span class="desc">TODO description</span></button>                
+                <button id="example-1" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;" onclick="LiveModel.importAeon(Examples.g2a);"><span class="main">G2A</span><span class="desc">Cell<br>Division</span></button>         
+                <button id="example-2" class="compound-button" style="margin-top: 8px; margin-bottom: 8px; float: right;" onclick="LiveModel.importAeon(Examples.g2b);"><span class="main">G2B</span><span class="desc">Cell<br>Division</span></button>                
+                <button id="example-3" class="compound-button" style="margin-top: 8px; margin-bottom: 8px;" onclick="LiveModel.importAeon(Examples.buddingYeastOrlando);"><span class="main">Orlando</span><span class="desc">Budding<br>Yeast</span></button>         
+                <button id="example-4" class="compound-button" style="margin-top: 8px; margin-bottom: 8px; float: right;" onclick="LiveModel.importAeon(Examples.buddingYeastIrons);"><span class="main">Irons</span><span class="desc">Budding<br>Yeast</span></button>                
                 <div style="clear: both;"></div>   
             </div>
 
