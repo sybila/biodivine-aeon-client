@@ -47,20 +47,25 @@ Artefact evaluation instructions:
 	Once you have a model, you can click the Run Analysis button in the left menu to start the analysis.
 	In the Compute Engine panel, you should see an indication that the computation is running and
 	have the option to cancel it or download partial results. If you selected the Orlando example, 
-	the analysis should take several seconds. Once the analysis is complete, you will be presented
-	with a results table displaying possible types of behaviour in the Boolean network and the
-	number of parametrisations for which the behaviour occurs. In this table, you can click the 
-	"witness" link to open a new tab with a witness network. This is a Boolean network where all
-	update functions are fully instantiated and the network falls into the specified behaviour class.
+	the analysis should take several seconds (up to minutes on slower VMs). Once the analysis is 
+	complete, you will be presented with a results table displaying possible types of behaviour in 
+	the Boolean network and the number of parametrisations for which the behaviour occurs. In this 
+	table, you can click the  "witness" link to open a new tab with a witness network. This is a 
+	Boolean network where all update functions are fully instantiated and the network falls into the 
+	specified behaviour class.
 
 4. Modify the witness:
-	In the new tab, you can open the model editor tab and inspect the synthesized update functions
+	In the new browser tab, you can open the model editor and inspect the synthesized update functions
 	for each variable. You can then further edit these update functions. For example if you selected
-	the Orlando example, you can edit again to introduce parameters into the function for the CtrA variable 
-	and set it for example to "!CcrM | p_CtrA(CtrA, GcrA, SciP)". This will create a partially
-	parametrised function where the dependence on CcrM is fixed but the dependence on CtrA, GcrA and SciP
-	is still unknown. You can the re-run the analysis for this model and see how this new parametrisation
-	affects the behaviour.
+	the Orlando example, you can edit the update function of the CLN3 variable. You
+	can specify an update function to be for example "ACE2 & p_CLN3(YOX1, YHP1, SWI5)". This will create 
+	a partially parametrised function (p_CLN3 is the parameter) where the dependence on ACE2 is fixed 
+	but the dependence on YOX1, YHP1 and SWI5 is still unknown. You can then re-run the analysis for 
+	this model and see how this new parametrisation affects the behaviour.
+
+	For more examples of models with partially parametrised update funcitons, you can load some of 
+	the benchmark models in the "large" directory (although, as previously noted, analysis of these 
+	is only possible with higher RAM limit).
 
 Subsequently, you can try to load other benchmark models (from the small directory, unless you
 have enough RAM available) and run the analysis for them as well. 
