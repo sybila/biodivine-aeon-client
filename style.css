@@ -16,7 +16,7 @@
     font-family: 'symbols';
     src: url('font/Symbols.ttf');
 }
-/*
+
 @font-face {
     font-family: 'BaileyReg';
     src: url("font/B3.ttf");
@@ -25,7 +25,7 @@
 @font-face {
     font-family: 'BaileyBold';
     src: url("font/B2.ttf");
-}*/
+}
 
 body {
     font-family: 'Helvetica', 'Arial', sans-serif;
@@ -43,6 +43,26 @@ body {
     pointer-events: none;
     transition: 0.3s; 
 }
+
+#logo {
+    width: fit-content;
+    width: -moz-fit-content;
+    position: fixed;
+    margin: 0;
+    top: 24px;
+    right: 24px;
+    font-family: 'BaileyReg', monospace;
+    font-weight: normal;
+    color: #3a568c;
+    font-size: 2.2em;
+}
+
+#title{
+    font-family: 'BaileyBold', monospace;
+    font-weight: bold;
+    color: #d05d5d;
+}
+
 
 /*
 	The root of the model editor - just stretch across the whole page...
