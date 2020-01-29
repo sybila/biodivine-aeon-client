@@ -22,7 +22,9 @@ function init() {
 
 	const requestedWitness = urlParams.get('witness');
 	if (requestedWitness !== undefined && requestedWitness !== null && requestedWitness.length > 0) {
+		UI.isLoading(true);
 		ComputeEngine.getWitness(requestedWitness, (e, r) => {
+			UI.isLoading(false);
 			if (e !== undefined) {
 				alert(e);
 			} else {
@@ -53,12 +55,12 @@ let Strings = {
 /* This can be used to properly show placeholder for content editable stuff */
 function fixEmptyEditable(e) {
 	if (e.target.textContent.trim().length === 0) {
-		e.target.textContent = "";
+		e.target.textContent = "";		
 	}
 }
 
 function ensurePlaceholder(el) {
-	el.addEventListener("focusout", fixEmptyEditable);
+	el.addEventListener("focusout", fixEmptyEditable);	
 }
 
 /*

@@ -105,6 +105,7 @@ let ModelEditor = {
 				updateFunction.classList.remove("error");
 			}
 		});
+		updateFunction.setAttribute("data-placeholder", "$f_"+name+"(...)");
 		// Enable synchronizing hover and selected state
 		variableBox.addEventListener("mouseenter", (e) => {
 			variableBox.classList.add("hover");

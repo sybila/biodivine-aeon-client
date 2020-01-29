@@ -342,34 +342,38 @@ let UI = {
 	// Import Aeon file from the given file input element (if possible)
 	importAeon(element) {
 		var file = element.files[0];
-        var fr = new FileReader();
-        fr.onload = (e) => {
-        	let error = LiveModel.importAeon(e.target.result);
-        	if (error !== undefined) {
-        		alert(error);
-        	}
-        };
-        fr.readAsText(file);
+		if (file) {
+			var fr = new FileReader();
+	        fr.onload = (e) => {
+	        	let error = LiveModel.importAeon(e.target.result);
+	        	if (error !== undefined) {
+	        		alert(error);
+	        	}
+	        };
+	        fr.readAsText(file);
+		}        
 	},
 
 	importSBML(element) {
 		var file = element.files[0];
-        var fr = new FileReader();
-        fr.onload = (e) => {
-        	let sbml_file = e.target.result;
-        	this.isLoading(true);
-        	ComputeEngine.sbmlToAeon(sbml_file, (error, result) => {        		
-        		this.isLoading(false);
-	        	if (result !== undefined) {
-	        		let aeonModel = result.model;
-	        		error = LiveModel.importAeon(aeonModel);
-	        	}
-	        	if (error !== undefined) {
-	        		alert(error);
-	        	}
-        	});        	
-        };
-        fr.readAsText(file);
+		if (file) {
+			var fr = new FileReader();
+	        fr.onload = (e) => {
+	        	let sbml_file = e.target.result;
+	        	this.isLoading(true);
+	        	ComputeEngine.sbmlToAeon(sbml_file, (error, result) => {        		
+	        		this.isLoading(false);
+		        	if (result !== undefined) {
+		        		let aeonModel = result.model;
+		        		error = LiveModel.importAeon(aeonModel);
+		        	}
+		        	if (error !== undefined) {
+		        		alert(error);
+		        	}
+	        	});        	
+	        };
+	        fr.readAsText(file);
+		}        
 	},
 
 	openWitness(witness) {
