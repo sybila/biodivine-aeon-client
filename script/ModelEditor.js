@@ -61,7 +61,7 @@ let ModelEditor = {
 		row1.children[1].textContent = stats.variableCount;
 		row1.children[3].textContent = "2^" + stats.parameterVariables;
 		row2.children[1].textContent = stats.regulationCount;
-		row2.children[3].textContent = "2^" + (stats.parameterVariables + stats.variableCount);
+		row2.children[3].textContent = "2^" + stats.variableCount;
 		row3.children[1].textContent = stats.maxInDegree;
 		row3.children[3].textContent = stats.maxOutDegree;		
 		if (stats.explicitParameters.length == 0) {
