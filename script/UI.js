@@ -381,7 +381,7 @@ let UI = {
 			alert("Results no longer available.");
 			return;
 		}
-		const url = window.location.origin + window.location.pathname;
+		const url = window.location.pathname;
         window.open(url + '?engine=' + encodeURI(ComputeEngine.getAddress()) + "&witness="+ encodeURI(witness));
 	},
 
