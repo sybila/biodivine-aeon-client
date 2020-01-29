@@ -75,6 +75,12 @@ let CytoscapeEditor = {
 			ModelEditor.hoverVariable(id, false);		
 		});
 		node.on('select', (e) => {			
+			// deselect any previous selection - we don't support multiselection yet
+			for (let selected of this._cytoscape.$(":selected")) {
+				if (selected.data().id != id) {
+					selected.unselect();
+				}
+			}			
 			CytoscapeEditor._renderMenuForSelectedNode(node);
 			ModelEditor.selectVariable(id, true);
 		})
