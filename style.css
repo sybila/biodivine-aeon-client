@@ -547,6 +547,14 @@ div.invisible-input[contenteditable]:empty:not(:focus):before {
     color: #656565;    
 }
 
+#results:empty:after {
+    content: "Waiting for results...";
+}
+
+#results:empty {
+    text-align: center;
+}
+
 #tab-results {
     font-family: 'FiraMono', monospace;
 }

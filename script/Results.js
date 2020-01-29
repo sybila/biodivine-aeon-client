@@ -1,4 +1,12 @@
-let Results = {
+let Results = {	
+
+	clear() {
+		document.getElementById("results").innerHTML = "";
+	},
+
+	hasResults() {
+		return document.getElementById("results").getElementsByClassName("table-head").length > 0;
+	},
 
 	download() {
 		console.log("Download...")

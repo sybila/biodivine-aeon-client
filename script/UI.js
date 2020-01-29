@@ -82,7 +82,6 @@ let UI = {
 			statusLabel.textContent = " ● Connected";			
 			connectButton.innerHTML = "Disconnect <img src='img/cloud_off-24px.svg'>";
 			if (data !== undefined) {
-				console.log(data);
 				// data about computation available
 				let status = "(none)";
 				// If there is a computation, it is probably running...
@@ -149,6 +148,18 @@ let UI = {
 				} else {
 					cmpDownload.classList.add("gone");
 				}
+
+				if (data["timestamp"] !== undefined && Results.hasResults()) {
+					// show warning if data is out of date
+					ComputeEngine.setActiveComputation(data["timestamp"]);
+					if (ComputeEngine.hasActiveComputation()) {
+						document.getElementById("results-expired").classList.add("gone");
+					} else {
+						document.getElementById("results-expired").classList.remove("gone");
+					}
+				} else {
+					document.getElementById("results-expired").classList.add("gone");
+				}			
 
 				if (status == "done" && ComputeEngine.waitingForResult) {
 					ComputeEngine.waitingForResult = false;
@@ -360,6 +371,10 @@ let UI = {
 	},
 
 	openWitness(witness) {
+		if (!ComputeEngine.hasActiveComputation()) {
+			alert("Results no longer available.");
+			return;
+		}
 		const url = window.location.origin + window.location.pathname;
         window.open(url + '?engine=' + encodeURI(ComputeEngine.getAddress()) + "&witness="+ encodeURI(witness));
 	},

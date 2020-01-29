@@ -9,6 +9,9 @@ let ComputeEngine = {
 	_address: "http://localhost:8000",
 	_connected: false,
 	_pingRepeatToken: undefined,
+	// a timestamp of last successfully started computation
+	// if status returns a different timestamp, we know results are out of date
+	_lastComputation: undefined,
 
 	// Open connection, taking up to date address from user input.
 	// Callback is called upon first ping.
@@ -19,6 +22,19 @@ let ComputeEngine = {
 
 	getAddress() {
 		return this._address;
+	},
+
+	// indicate that this is the computation the server currently stores
+	setActiveComputation(timestamp) {
+		if (this._lastComputation != timestamp) {
+			// if timestamp changed, switch to undefined.
+			this._lastComputation = undefined;
+		}
+	},
+
+	// return true if the computation on server is also the one we remember last
+	hasActiveComputation() {
+		return this._lastComputation !== undefined;
 	},
 
 	// Open or close connection connection, depending on current status.
@@ -85,7 +101,7 @@ let ComputeEngine = {
 		}
 	},
 
-	startComputation(aeonString) {
+	startComputation(aeonString) {		
 		if (aeonString === undefined) {
 			alert("Empty model.");
 			return undefined;
@@ -94,12 +110,16 @@ let ComputeEngine = {
 			alert("Compute engine not connected.");
 			return undefined;
 		} else {
+			Results.clear();
 			this.waitingForResult = true;
 			return this._backendRequest("/start_computation", (e, r) => {
 				if (e !== undefined) {
 					console.log(e);
 					alert("Computation error: "+e);					
-				}
+				} else {
+					console.log("Started computation ",r.timestamp);
+					this._lastComputation = r.timestamp;
+				}				
 				this.ping();
 			}, "POST", aeonString);
 		}
@@ -136,7 +156,7 @@ let ComputeEngine = {
 
 	// Force requests connection even when ping was not established (for situations
 	// where this is the first call).
-	getWitness(witness, callback, force = false) {
+	getWitness(witness, callback, force = false) {		
 		if (!force && !this.isConnected()) {
 			callback("Compute engine not connected.");
 			return undefined;
