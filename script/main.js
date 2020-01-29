@@ -4,6 +4,7 @@ function init() {
 	try {
 		localStorage.setItem('testing', '1');
 		hasLocalStorage = true;
+		console.log("Local storage available.");
 	} catch (e) {
 		console.log("Local storage not available.");
 	}

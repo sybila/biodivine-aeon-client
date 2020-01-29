@@ -38,6 +38,20 @@ let CytoscapeEditor = {
 		});
 	},
 
+	layoutCose() {
+		this._cytoscape.layout({
+                name: 'cose',
+                padding: 250,
+                animate: true,
+                nodeRepulsion: function(node) { return 100000; },
+                animate: true,
+                animationDuration: 300,
+                refresh: 20,
+                fit: true,
+                nodeDimensionsIncludeLabels: true,
+        }).start();
+	},
+
 	// Return an id of the selected node, or undefined if nothing is selected.
 	getSelectedNodeId() {
 		let node = CytoscapeEditor._cytoscape.nodes(":selected");
@@ -285,6 +299,8 @@ let CytoscapeEditor = {
 	            nodeRepulsion: function(node) { return 100000; },
 	            nodeDimensionsIncludeLabels: true,
         	},
+        	boxSelectionEnabled: false,
+  			selectionType: 'single',
   			style: [
   				{ 	// Style of the graph nodes
   					'selector': 'node[name]',

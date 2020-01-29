@@ -93,7 +93,7 @@
                 </div>
                 <table id="model-stats">
                     <tr class="row">    <td>Variables: </td>        <td class="value">-</td>     <td>Parameter space size: </td>  <td class="value">-</td> </tr>
-                    <tr class="row">    <td>Regulations: </td>      <td class="value">-</td>     <td>Transition graph size: </td> <td class="value">-</td> </tr>
+                    <tr class="row">    <td>Regulations: </td>      <td class="value">-</td>     <td>State space size: </td> <td class="value">-</td> </tr>
                     <tr class="row">    <td>Max. in-degree: </td>   <td class="value">-</td>     <td>Max. out-degree: </td>       <td class="value">-</td> </tr>
                     <tr class="row">    <td colspan="2">Explicit parameters: </td>  <td colspan="2">(none)</td>   </tr>
                 </table>                   
@@ -158,7 +158,7 @@
                     <h3 style="margin: 0 auto; font-size: 14px; text-align: center; margin-bottom: 4px;">No engine running? Download binary:</h3>                                        
                     <button id="download-windows" class="image-button" style="display: inline-block; margin: 4px;">Windows <img src="img/windows-24px.svg"></button>
                     <a href="https://github.com/sybila/biodivine-aeon-server/releases/download/v0.1.0/biodivine-aeon-server-macos.zip"><button id="download-windows" class="image-button" style="display: inline-block; margin: 4px;">MacOS <img src="img/macos-24px.svg"></button></a>
-                    <a href="https://github.com/sybila/biodivine-aeon-server/releases/download/v0.1.0/biodivine-aeon-server-linux.zip" target="_blank"><button id="download-windows" class="image-button" style="display: inline-block; margin: 4px;">Linux <img src="img/linux-24px.svg"></button></a>
+                    <a href="https://github.com/sybila/biodivine-aeon-server/releases/download/v0.1.0/biodivine-aeon-server-linux.zip"><button id="download-windows" class="image-button" style="display: inline-block; margin: 4px;">Linux <img src="img/linux-24px.svg"></button></a>
                 </div>                
             </div>
 
@@ -227,6 +227,12 @@
                     <img alt="Model" id="side-menu-model" src="img/model-48px.svg" class="button" tab-id="tab-model-editor">
                     <span class="hint invisible">Model Editor</span>
                 </div>  
+
+                <div class="button-group-fake">
+                    <img alt="Auto Layout" id="side-menu-layout" src="img/view_quilt-48px.svg" 
+                    onclick="CytoscapeEditor.layoutCose();" class="button-fake">
+                    <span class="hint invisible">Apply Layout</span>
+                </div> 
 
                 <div class="button-group">
                     <img alt="Model" id="side-menu-results" src="img/call_split-48px.svg" class="button" tab-id="tab-results">
