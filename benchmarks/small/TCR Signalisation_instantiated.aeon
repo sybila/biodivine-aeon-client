@@ -1,0 +1,41 @@
+#name:TCR Signalisation
+#description:<div class="field-label" style="font-weight: bold; color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">Info:</div><div class="field-label" style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">Parametrized version of the TCR signalisation model from GinSim. The model has been simplified by removing all unnecessary output nodes (preserving long term behaviour). This is the original non-parametric version of the model.</div><div class="field-label" style="font-weight: bold; color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;"><br></div><div class="field-label" style="font-weight: bold; color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">Summary:&nbsp;</div><div class="field-items" style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;"><div class="field-item odd"><p style="margin-top: 0.5em; margin-bottom: 0.9em;">Klamt et al. proposed in&nbsp;<a href="http://ginsim.org/node/78#ref1" title="Reference 1" style="color: rgb(119, 119, 119);">[1]</a>&nbsp;a Boolean model of the TCR signalling pathway. The model encompasses 40 regulatory components. In this version of the model an auto-regulation has been added on each&nbsp;input.</p><p style="margin-top: 0.5em; margin-bottom: 0.9em;"><b>Analysis</b></p><p style="margin-top: 0.5em; margin-bottom: 0.9em;">This model has been studied in&nbsp;<a href="http://ginsim.org/node/78#ref2" title="Reference 2" style="color: rgb(119, 119, 119);">[2]</a>, using novel algorithms for the analysis of feedback circuits and the determination of stable states. The stable state analysis shows seven stable states, listed bellow. Each stable state corresponds to a different input combination, except "111". Indeed, the systems shows an oscilatory behaviour under full activation.</p><p style="margin-top: 0.5em; margin-bottom: 0.9em;"></p><center><br><table border="1" cellspacing="0" style="border-collapse: collapse; width: 1109px; font-size: 1em;"><tbody style="border: none;"><tr><th style="text-align: left; padding: 0.1em 0.4em; border-bottom: 1px solid rgb(204, 204, 204); background-color: rgb(238, 255, 187);">CD45</th><th style="text-align: left; padding: 0.1em 0.4em; border-bottom: 1px solid rgb(204, 204, 204); background-color: rgb(238, 255, 187);">CD8</th><th style="text-align: left; padding: 0.1em 0.4em; border-bottom: 1px solid rgb(204, 204, 204); background-color: rgb(238, 255, 187);">TCRlig</th><th style="text-align: left; padding: 0.1em 0.4em; border-bottom: 1px solid rgb(204, 204, 204); background-color: rgb(238, 255, 187);">TCRbind</th><th style="text-align: left; padding: 0.1em 0.4em; border-bottom: 1px solid rgb(204, 204, 204); background-color: rgb(238, 255, 187);">PAGCsk</th><th style="text-align: left; padding: 0.1em 0.4em; border-bottom: 1px solid rgb(204, 204, 204); background-color: rgb(238, 255, 187);">Fyn</th><th style="text-align: left; padding: 0.1em 0.4em; border-bottom: 1px solid rgb(204, 204, 204); background-color: rgb(238, 255, 187);">TCRphos</th><th style="text-align: left; padding: 0.1em 0.4em; border-bottom: 1px solid rgb(204, 204, 204); background-color: rgb(238, 255, 187);">Ikb</th></tr><tr><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">*</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">1</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">1</td></tr><tr><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">*</td><td style="padding: 0.1em 0.4em;">1</td><td style="padding: 0.1em 0.4em;">1</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">1</td></tr><tr><td style="padding: 0.1em 0.4em;">1</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">1</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">1</td></tr><tr><td style="padding: 0.1em 0.4em;">1</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">1</td><td style="padding: 0.1em 0.4em;">1</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">1</td><td style="padding: 0.1em 0.4em;">1</td><td style="padding: 0.1em 0.4em;">1</td></tr><tr><td style="padding: 0.1em 0.4em;">1</td><td style="padding: 0.1em 0.4em;">1</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">1</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">0</td><td style="padding: 0.1em 0.4em;">1</td></tr></tbody></table><p style="margin-top: 0.5em; margin-bottom: 0.9em;"></p></center><p style="margin-top: 0.5em; margin-bottom: 0.9em;"></p><div class="legend"><b>Table 1.</b>&nbsp;7 stable states of the model. A "*" means "all possible expression levels (i.e. 0 or 1). The expression level of all other variables is 0.</div><p style="margin-top: 0.5em; margin-bottom: 0.9em;">The feedback circuit analysis shows nine circuits, besides the three auto-activation on the inputs. Only one of these circuits is functional: (ZAP70, cCbl). This negative circuit is functional in presence of LCK and TCRphos which can only be maintained in presence of the three inputs. This circuit drives the oscillatory behaviour observed under full activation.</p></div></div>
+#position:CD45:11,31
+$CD45:CD45
+CD45 -> CD45
+#position:CD8:78,31
+$CD8:CD8
+CD8 -> CD8
+#position:TCRlig:195,29
+$TCRlig:TCRlig
+TCRlig -> TCRlig
+#position:TCRbind:327.84534733938375,168.29187720003932
+$TCRbind:(TCRlig & !cCbl)
+TCRlig -> TCRbind
+cCbl -| TCRbind
+#position:cCbl:335,301
+$cCbl:ZAP70
+ZAP70 -> cCbl
+#position:PAGCsk:183.44116736182693,99.70410092583916
+$PAGCsk:!TCRbind
+TCRbind -| PAGCsk
+#position:LCK:82,208
+$LCK:((CD45 & CD8) & !PAGCsk)
+CD45 -> LCK
+CD8 -> LCK
+PAGCsk -| LCK
+#position:Fyn:196.18895879547205,181.14794953708042
+$Fyn:(((CD45 & !TCRbind) & LCK) | (CD45 & TCRbind))
+CD45 -> Fyn
+TCRbind -> Fyn
+LCK -> Fyn
+#position:ZAP70:87,302
+$ZAP70:((LCK & !cCbl) & TCRphos)
+LCK -> ZAP70
+cCbl -| ZAP70
+TCRphos -> ZAP70
+#position:TCRphos:203,261
+$TCRphos:(((!TCRbind & Fyn) | ((TCRbind & !LCK) & Fyn)) | (TCRbind & LCK))
+TCRbind -> TCRphos
+LCK -> TCRphos
+Fyn -> TCRphos

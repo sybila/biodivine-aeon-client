@@ -1,0 +1,39 @@
+#name:Budding yeast cell cycle (Orlando)
+#description:<span style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;"><b>Info:</b><br>An instantiated version of a smaller variant of the budding yeast model from GinSim. The model is stable and should be computable in several seconds.<br><br><b>Model description: </b><br>This model is a direct transcription of the Boolean model published by Orlando et al.&nbsp;</span><a href="http://ginsim.org/node/33#ref1" title="Reference 1" style="color: rgb(119, 119, 119); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">[1]</a><span style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">. Synchronous simulation of this model yields a cyclic attractor gathering most trajectories in the state transition graph, which is robust to parameter choice, as reported in&nbsp;</span><a href="http://ginsim.org/node/33#ref1" title="Reference 1" style="color: rgb(119, 119, 119); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">[1]</a><span style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">. However, asynchronous simulations all lead to a stable state with all variables OFF, whatever the parameter set proposed by the authors, indicating that the oscillations observed in the synchronous simulations may not be sustained. See&nbsp;</span><a href="http://ginsim.org/node/33#ref2" title="Reference 2" style="color: rgb(119, 119, 119); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">[2]</a><font color="#535353" face="sans-serif, Arial, Verdana, Helvetica"><span style="font-size: 13.28px;">&nbsp;for more details. </span></font><br><br><b style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">Citation:</b><br><font color="#535353" face="sans-serif, Arial, Verdana, Helvetica"><span style="font-size: 13.28px;">FAURÉ, Adrien; THIEFFRY, Denis. Logical modelling of cell cycle control in eukaryotes: a comparative study. Molecular BioSystems, 2009, 5.12: 1569-1581.</span></font><br><br>
+#position:CLN3:128,68
+$CLN3:(((!YOX1 & ACE2) & SWI5) | (((YOX1 & !YHP1) & ACE2) & SWI5))
+YOX1 -| CLN3
+YHP1 -| CLN3
+ACE2 -> CLN3
+SWI5 -> CLN3
+#position:MBF:219,96
+$MBF:CLN3
+CLN3 -> MBF
+#position:SBF:281,138
+$SBF:(((((!MBF & !YOX1) & CLN3) | (((!MBF & YOX1) & !YHP1) & CLN3)) | (MBF & !YOX1)) | ((MBF & YOX1) & !YHP1))
+MBF -> SBF
+YOX1 -| SBF
+YHP1 -| SBF
+CLN3 -> SBF
+#position:YOX1:297,175
+$YOX1:(MBF & SBF)
+MBF -> YOX1
+SBF -> YOX1
+#position:YHP1:286,254
+$YHP1:((!MBF & SBF) | MBF)
+MBF -> YHP1
+SBF -> YHP1
+#position:HCM1:305,217
+$HCM1:(MBF & SBF)
+MBF -> HCM1
+SBF -> HCM1
+#position:SFF:186,302
+$SFF:(SBF & HCM1)
+SBF -> SFF
+HCM1 -> SFF
+#position:ACE2:74,276
+$ACE2:SFF
+SFF -> ACE2
+#position:SWI5:47,207
+$SWI5:SFF
+SFF -> SWI5

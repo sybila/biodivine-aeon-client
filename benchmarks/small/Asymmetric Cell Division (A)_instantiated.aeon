@@ -1,0 +1,27 @@
+#name:Asymmetric Cell Division A
+#description:<span style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;"><b>Info:</b><br>A fully instantiated version of the model taken directly from GinSim. The model should be trivial to analyse and have one stable attractor.<br><br><b>Model description:&nbsp;</b><br><i>Caulobacter crescentus</i></span><span style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">&nbsp;is a model organism for the study of asymmetric division and cell type differentiation, as its cell division cycle generates a pair of daughter cells that differ from one another in their morphology and behaviour. One of these cells (called stalked) develops a structure that allows it to attach to solid surfaces and is the only one capable of dividing, while the other (called swarmer) develops a flagellum that allows it to move in liquid media and divides only after differentiating into a stalked cell type. Although many genes, proteins, and other molecules involved in the asymmetric division exhibited by&nbsp;</span><i style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">C. Crescentus</i><font color="#535353" face="sans-serif, Arial, Verdana, Helvetica"><span style="font-size: 13.28px;">&nbsp;have been discovered and characterised&nbsp;during decades, it remains as a challenging task to understand how cell properties arise from the high number of interactions between these molecular components. This chapter describes a modeling approach based on the Boolean logic framework that provides a means for the integration of knowledge and study of the emergence of asymmetric division. The text illustrates how the simulation of simple logic models gives valuable insight into the dynamic behaviour of the regulatory and signalling&nbsp;networks driving the emergence of the phenotypes exhibited by&nbsp;</span></font><i style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">C. crescentus</i><font color="#535353" face="sans-serif, Arial, Verdana, Helvetica"><span style="font-size: 13.28px;">. These models provide useful tools for the characterisation&nbsp;and analysis of other complex biological networks.</span><br><br><b style="font-size: 13.28px;">Citation:<br></b><span style="font-size: 13.28px;">Sánchez-Osorio, Ismael, Carlos A. Hernández-Martínez, and Agustino Martínez-Antonio. "Modeling Asymmetric Cell Division in Caulobacter crescentus Using a Boolean Logic Approach." Asymmetric Cell Division in Development, Differentiation and Cancer. Springer, Cham, 2017. 1-21.</span><br></font>
+#position:CtrA:419,94
+$CtrA:((((!CtrA & GcrA) & !CcrM) & !SciP) | ((CtrA & !CcrM) & !SciP))
+CtrA -> CtrA
+GcrA -> CtrA
+CcrM -| CtrA
+SciP -| CtrA
+#position:GcrA:325,135
+$GcrA:(!CtrA & DnaA)
+CtrA -| GcrA
+DnaA -> GcrA
+#position:CcrM:462,222
+$CcrM:((CtrA & !CcrM) & !SciP)
+CtrA -> CcrM
+CcrM -| CcrM
+SciP -| CcrM
+#position:SciP:506,133
+$SciP:(CtrA & !DnaA)
+CtrA -> SciP
+DnaA -| SciP
+#position:DnaA:374,224
+$DnaA:(((CtrA & !GcrA) & !DnaA) & CcrM)
+CtrA -> DnaA
+GcrA -| DnaA
+DnaA -| DnaA
+CcrM -> DnaA

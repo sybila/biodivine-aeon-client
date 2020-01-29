@@ -1,0 +1,96 @@
+#name:Budding yeast cell cycle
+#description:<b style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">Info:</b><br><font color="#535353" face="sans-serif, Arial, Verdana, Helvetica"><span style="font-size: 13.28px;">A version of a non-trivial model of a yeast cell cycle taken from GinSim. The model has a parametrised update function for the Clb2 variable. The model analysis is fairly non-trivial (due to relatively large state space), but should be doable in several minutes and consume no more than 3GB of RAM. The model has three types of behaviour - stable, disordered and combination of both.</span></font><br><br><b style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">Model description:</b><br><font color="#535353" face="sans-serif, Arial, Verdana, Helvetica"><span style="font-size: 13.28px;">This model is a direct transcription of the Boolean model published by Irons&nbsp;</span></font><a href="http://ginsim.org/node/35#ref1" title="Reference 1" style="color: rgb(119, 119, 119); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">[1]</a><span style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">, except for the specific temporisation system. Synchronous simulation of this model recovers the results obtained by Irons in absence of time delays (Fig. 3B in&nbsp;</span><a href="http://ginsim.org/node/35#ref1" title="Reference 1" style="color: rgb(119, 119, 119); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">[1]</a><font color="#535353" face="sans-serif, Arial, Verdana, Helvetica"><span style="font-size: 13.28px;">), i.e. a single, cyclic attractor qualitatively consistent with available kinetic data.</span></font><br><br><b style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">Citation:<br></b><div style=""><font color="#535353" face="sans-serif, Arial, Verdana, Helvetica"><span style="font-size: 13.28px;">IRONS, D. J. Logical analysis of the budding yeast cell cycle. Journal of theoretical biology, 2009, 257.4: 543-559.</span></font></div><div style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;"><br></div>
+#position:SMBF:342,141
+$SMBF:(((((!Cln3 & !SMBF) & Cln2) & !Clb2) | ((!Cln3 & SMBF) & !Clb2)) | (Cln3 & !Clb2))
+Cln3 -> SMBF
+SMBF -> SMBF
+Cln2 -> SMBF
+Clb2 -| SMBF
+#position:Yhp1:463,95
+$Yhp1:SMBF
+SMBF -> Yhp1
+#position:Cln3:403,58
+$Cln3:!Yhp1
+Yhp1 -| Cln3
+#position:Cln2:143,74
+$Cln2:SMBF
+SMBF -> Cln2
+#position:Clb2:225,269
+$Clb2:!CKI & (B | Clb2) & f_Clb2(Clb2, SFF, Cdc20, Cdh1)
+Clb2 -> Clb2
+SFF -> Clb2
+Cdc20 -| Clb2
+CKI -| Clb2
+Cdh1 -| Clb2
+B -> Clb2
+#position:SFF:313,314
+$SFF:(((((((!Clb2 & !Cdc20) & !CKI) & B) | ((((!Clb2 & Cdc20) & !CKI) & !Cdh1) & B)) | ((((Clb2 & !SFF) & !Cdc20) & !CKI) & B)) | (((((Clb2 & !SFF) & Cdc20) & !CKI) & !Cdh1) & B)) | (Clb2 & SFF))
+Clb2 -> SFF
+SFF -> SFF
+Cdc20 -| SFF
+CKI -| SFF
+Cdh1 -| SFF
+B -> SFF
+#position:Cdc20:363,436
+$Cdc20:((Clb2 & SFF) & M)
+Clb2 -> Cdc20
+SFF -> Cdc20
+M -> Cdc20
+#position:CKI:68,167
+$CKI:((((((((!Cln2 & !Clb5) & !Clb2) & !Swi5) & CKI) | (((!Cln2 & !Clb5) & !Clb2) & Swi5)) | ((((!Cln2 & !Clb5) & Clb2) & Cdc14) & Swi5)) | (((!Cln2 & Clb5) & Cdc14) & Swi5)) | ((Cln2 & Cdc14) & Swi5))
+Cln2 -| CKI
+Clb5 -| CKI
+Clb2 -| CKI
+Cdc14 -> CKI
+Swi5 -> CKI
+CKI -> CKI
+#position:Cdh1:412,235
+$Cdh1:(((((!Cln2 & !Clb5) & !Clb2) | (((!Cln2 & !Clb5) & Clb2) & Cdc14)) | ((!Cln2 & Clb5) & Cdc14)) | (Cln2 & Cdc14))
+Cln2 -| Cdh1
+Clb5 -| Cdh1
+Clb2 -| Cdh1
+Cdc14 -> Cdh1
+#position:B:256,37
+$B:(((((!Cln2 & !Clb5) & B) & !CD) | ((!Cln2 & Clb5) & !CD)) | (Cln2 & !CD))
+Cln2 -> B
+Clb5 -> B
+B -> B
+CD -| B
+#position:Clb5:482,179
+$Clb5:(SMBF & !Cdc20)
+SMBF -> Clb5
+Cdc20 -| Clb5
+#position:M:260,489
+$M:((((!Clb2 & M) & !CD) | (((Clb2 & !S) & M) & !CD)) | ((Clb2 & S) & !CD))
+Clb2 -> M
+S -> M
+M -> M
+CD -| M
+#position:Cdc14:68,354
+$Cdc14:(FEAR & MEN)
+FEAR -> Cdc14
+MEN -> Cdc14
+#position:Swi5:184,340
+$Swi5:((!Clb2 & SFF) | ((Clb2 & SFF) & Cdc14))
+Clb2 -| Swi5
+SFF -> Swi5
+Cdc14 -> Swi5
+#position:CD:6,240
+$CD:(((FEAR & Cdc14) & M) & !CD)
+FEAR -> CD
+Cdc14 -> CD
+M -> CD
+CD -| CD
+#position:S:554,219
+$S:(((((!Clb5 & !Clb2) & S) & !CD) | ((!Clb5 & Clb2) & !CD)) | (Clb5 & !CD))
+Clb5 -> S
+Clb2 -> S
+S -> S
+CD -| S
+#position:FEAR:195,443
+$FEAR:Cdc20
+Cdc20 -> FEAR
+#position:MEN:120,418
+$MEN:(Clb2 & FEAR)
+Clb2 -> MEN
+FEAR -> MEN

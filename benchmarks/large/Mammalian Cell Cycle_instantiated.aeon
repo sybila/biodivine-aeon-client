@@ -1,0 +1,55 @@
+#name:Mammalian Cell Cycle
+#description:<div class="field-label" style="font-weight: bold; color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">Summary:&nbsp;</div><div class="field-items" style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;"><div class="field-item odd"><p style="margin-top: 0.5em; margin-bottom: 0.9em;">On the basis of a previous modelling study by Novak and Tyson&nbsp;<a href="http://ginsim.org/node/4#ref1" title="Reference 1" style="color: rgb(119, 119, 119);">[1]</a>&nbsp;, we have recently proposed a generic Boolean model of the core network controlling the restriction point of the mammalian cell cycle&nbsp;<a href="http://ginsim.org/node/4#ref2" title="Reference 2" style="color: rgb(119, 119, 119);">[2]</a>.</p><p style="margin-top: 0.5em; margin-bottom: 0.9em;">For proper logical parameter values, the simulation of this Boolean model leads to dynamical behaviours (sequences of activations and inactivations of key regulatory products) in qualitative agreement with current experimental data.</p><p style="margin-top: 0.5em; margin-bottom: 0.9em;">However, as kinetic details are still lacking, many different (in)activation pathways are compatible with existing data, including fully synchronous transition pathways. To further evaluate these different possibilities, we have analysed the asymptotical behaviour of this network under synchronous versus asynchronous updating assumptions. Furthermore, we consider intermediate updating strategies to improve the computation of asymptotical properties depending on available kinetic data. This approach has been implemented through user-defined priority classes in the logical modelling and simulation software GINsim.</p></div></div>
+#position:CycD:224,13
+#position:Rb:19,221
+$Rb:(((((!CycD & !CycE) & !CycA) & !CycB) | ((((!CycD & !CycE) & CycA) & p27) & !CycB)) | (((!CycD & CycE) & p27) & !CycB))
+CycD -| Rb
+CycE -| Rb
+CycA -| Rb
+p27 -> Rb
+CycB -| Rb
+#position:CycE:222,94
+$CycE:(!Rb & E2F)
+Rb -| CycE
+E2F -> CycE
+#position:CycA:222,211
+$CycA:(((((((!Rb & !E2F) & CycA) & !Cdc20) & !cdh1) | (((((!Rb & !E2F) & CycA) & !Cdc20) & cdh1) & !UbcH10)) | (((!Rb & E2F) & !Cdc20) & !cdh1)) | ((((!Rb & E2F) & !Cdc20) & cdh1) & !UbcH10))
+Rb -| CycA
+E2F -> CycA
+CycA -> CycA
+Cdc20 -| CycA
+cdh1 -| CycA
+UbcH10 -| CycA
+#position:p27:361,183
+$p27:(((((!CycD & !CycE) & !CycA) & !CycB) | ((((!CycD & !CycE) & CycA) & p27) & !CycB)) | ((((!CycD & CycE) & !CycA) & p27) & !CycB))
+CycD -| p27
+CycE -| p27
+CycA -| p27
+p27 -> p27
+CycB -| p27
+#position:CycB:220,417
+$CycB:(!Cdc20 & !cdh1)
+Cdc20 -| CycB
+cdh1 -| CycB
+#position:E2F:101,187
+$E2F:(((!Rb & !CycA) & !CycB) | (((!Rb & CycA) & p27) & !CycB))
+Rb -| E2F
+CycA -| E2F
+p27 -> E2F
+CycB -| E2F
+#position:Cdc20:220,278
+$Cdc20:CycB
+CycB -> Cdc20
+#position:cdh1:304,323
+$cdh1:((((((!CycA & !Cdc20) & !CycB) | (!CycA & Cdc20)) | ((CycA & !p27) & Cdc20)) | (((CycA & p27) & !Cdc20) & !CycB)) | ((CycA & p27) & Cdc20))
+CycA -| cdh1
+p27 -> cdh1
+Cdc20 -> cdh1
+CycB -| cdh1
+#position:UbcH10:156,326
+$UbcH10:(((((((!CycA & !Cdc20) & !cdh1) | ((((!CycA & !Cdc20) & cdh1) & UbcH10) & CycB)) | ((!CycA & Cdc20) & !cdh1)) | (((!CycA & Cdc20) & cdh1) & UbcH10)) | (CycA & !cdh1)) | ((CycA & cdh1) & UbcH10))
+CycA -> UbcH10
+Cdc20 -> UbcH10
+cdh1 -| UbcH10
+UbcH10 -> UbcH10
+CycB -> UbcH10

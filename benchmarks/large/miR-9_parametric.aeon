@@ -1,0 +1,19 @@
+#name:miR-9
+#description:<font color="#535353" face="sans-serif, Arial, Verdana, Helvetica"><span style="font-size: 13.28px;">Info: A very simple example model that can be easily computed on any device. lt has six types of behaviour - interestingly, there is exactly one where four stable states appear.<br><br>This Boolean model displays the subtle role of miR-9 in the course of neural specification in zebrafish.</span></font><br><br><font color="#535353" face="sans-serif, Arial, Verdana, Helvetica"><span style="font-size: 13.28px;">Citaiton: COOLEN, Marion, et al. miR-9 controls the timing of neurogenesis through the direct inhibition of antagonistic factors. Developmental cell, 2012, 22.5: 1052-1064.</span></font><br>
+#position:Her6:137,194
+miR9 -|? Her6
+N -|? Her6
+#position:miR9:285,76
+Her6 -|? miR9
+N -|? miR9
+#position:N:420,331
+HuC ->? N
+#position:Zic5:285,198
+miR9 -|? Zic5
+N -|? Zic5
+#position:HuC:429,199
+miR9 -|? HuC
+P -|? HuC
+#position:P:139,329
+Her6 ->? P
+Zic5 ->? P

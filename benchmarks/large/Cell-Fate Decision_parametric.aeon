@@ -1,0 +1,54 @@
+#name:Cell-Fate Decision
+#description:<div class="field-label" style="font-weight: bold; color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">Into:</div><div class="field-label" style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">Fully parametrised version of the cell-fate decision model from GinSim. We removed several input variables and changed them into parameters instead. We also removed three output nodes as these do not change the type of long-term behaviour. The analysis should be doable using 32GB of RAM. The model contains a lot of possible sink states (up to 6 stable attractors) and in rare occasions also a disordered attractor (overall 7 possible types of behaviour).</div><div class="field-label" style="font-weight: bold; color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;"><br></div><div class="field-label" style="font-weight: bold; color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">Model description:&nbsp;</div><div class="field-items" style=""><div class="field-item odd" style=""><p style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px; margin-top: 0.5em; margin-bottom: 0.9em;">This model provides a generic high-level view of the interplays between NFκB pro-survival pathway, RIP1-dependent necrosis, and the apoptosis pathway in response to death receptor-mediated signals.</p><p style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px; margin-top: 0.5em; margin-bottom: 0.9em;">Wild type simulations demonstrate robust segregation of cellular responses to receptor engagement. Model simulations recapitulate documented phenotypes of protein knockdowns and enable the prediction of the effects of novel knockdowns. In silico experiments simulate the outcomes following ligand removal at different stages, and suggest experimental approaches to further validate and specialise the model for particular cell types.</p><p style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px; margin-top: 0.5em; margin-bottom: 0.9em;">This analysis gives specific predictions regarding cross-talks between the three pathways, as well as the transient role of RIP1 protein in necrosis, and confirms the phenotypes of novel perturbations. Our wild type and mutant simulations provide novel insights to restore apoptosis in defective cells. The model analysis expands our understanding of how cell fate decision is made.</p><p style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px; margin-top: 0.5em; margin-bottom: 0.9em;">The original model focuses on the interplay between three pathways activated in response to the same signal&nbsp;<a href="http://ginsim.org/node/227#ref1" title="Reference 1" style="color: rgb(119, 119, 119);">[1]</a>.</p><p style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px; margin-top: 0.5em; margin-bottom: 0.9em;">This model has then been adapted for multiscale analysis&nbsp;<a href="http://ginsim.org/node/227#ref2" title="Reference 2" style="color: rgb(119, 119, 119);">[2]</a>.</p><p style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px; margin-top: 0.5em; margin-bottom: 0.9em;"><b>Citation:&nbsp;</b><span style="font-size: 13.28px;">CALZONE, Laurence, et al. Mathematical modelling of cell-fate decision in response to death receptor engagement. PLoS computational biology, 2010, 6.3.</span></p></div></div>
+#position:CASP8:670,184
+CASP3 -> CASP8
+cFLIP -| CASP8
+#position:RIP1:211,181
+CASP8 -| RIP1
+#position:CASP3:547.1862934362933,666.3026061776061
+XIAP -| CASP3
+apoptosome -> CASP3
+#position:cFLIP:256,301
+NFkB -> cFLIP
+#position:XIAP:298,552
+NFkB -> XIAP
+SMAC -| XIAP
+#position:apoptosome:655,556
+ATP -> apoptosome
+Cyt_c -> apoptosome
+XIAP -| apoptosome
+#position:NFkB:19,508
+IKK -> NFkB
+CASP3 -| NFkB
+#position:RIP1ub:101,249
+RIP1 -> RIP1ub
+cIAP -> RIP1ub
+#position:cIAP:155,398
+NFkB -> cIAP
+SMAC -| cIAP
+cIAP -> cIAP
+#position:SMAC:399,481
+MOMP -> SMAC
+#position:IKK:19,315
+RIP1ub -> IKK
+#position:MOMP:673,394
+BAX -> MOMP
+MPT -> MOMP
+#position:RIP1K:330,255
+RIP1 -> RIP1K
+#position:ATP:532,518
+MPT -| ATP
+#position:Cyt_c:668,477
+MOMP -> Cyt_c
+#position:BAX:674,287
+CASP8 -> BAX
+BCL2 -| BAX
+#position:BCL2:531,349
+NFkB -> BCL2
+#position:ROS:352.2017374517374,359.992277992278
+RIP1K -> ROS
+NFkB -| ROS
+MPT -> ROS
+#position:MPT:536,436
+BCL2 -| MPT
+ROS -> MPT

@@ -1,0 +1,72 @@
+#name:Drosophila cell cycle (oscillating)
+#description:<div class="field-label" style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px; font-weight: bold;">Info:</div><div class="field-label" style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">A fairly large model of a cell cycle taken from GinSim. This is an instantiation that has one oscillating and one stable component.</div><div class="field-label" style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px; font-weight: bold;"><br></div><div class="field-label" style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px; font-weight: bold;">Description:&nbsp;</div><div class="field-label" style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;"><span style="font-size: 13.28px;">We derived this model from published data on drosophila cell cycle, completed when necessary with information transferred from other organisms, principally mammals, using orthology relationships between regulatory components. It can be used to simulate the canonical cell cycle, syncytial cycles, as well as endocycles.</span></div><div class="field-label" style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;"><span style="font-size: 13.28px;"><br></span></div><div class="field-label"><span style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;"><b>Citation:</b>&nbsp;</span><font color="#535353" face="sans-serif, Arial, Verdana, Helvetica"><span style="font-size: 13.28px;">FAURÉ, Adrien; THIEFFRY, Denis. Logical modelling of cell cycle control in eukaryotes: a comparative study. Molecular BioSystems, 2009, 5.12: 1569-1581.</span></font></div>
+#position:CycD:-162.7365141966757,-195.19753066732375
+$CycD:true
+#position:Rb:-200.86720247727683,-37.127113254093814
+$Rb:(Rux | ((CycA & (!CycD | !CycE)) | (!CycA & (!CycB | (!CycD | !CycE)))))
+CycD -| Rb
+Rux -> Rb
+CycA -| Rb
+CycE -| Rb
+CycB -| Rb
+#position:Rux:-9.285271758436888,-60.47321974556504
+$Rux:(Rux | (!CycE | (!CycD | (!CycA & !CycB))))
+Rux -> Rux
+CycA -| Rux
+CycB -| Rux
+CycD -| Rux
+CycE -| Rux
+#position:CycA:75.30466925742192,-144.2894106506073
+$CycA:((E2F & (!Fzr | (!Fzy | !Rb))) | (!E2F & (!Fzr | !Fzy)))
+Rb -| CycA
+Fzy -| CycA
+E2F -> CycA
+Fzr -| CycA
+#position:CycE:-13.695028518562115,-195.91814239142528
+$CycE:(E2F | (!Rb | (!Dap | !Ago)))
+Rb -| CycE
+E2F -> CycE
+Dap -| CycE
+Ago -| CycE
+#position:CycB:-102.26642978310466,84.13821064305384
+$CycB:(Stg | (!Wee | (!Fzy | !Fzr)))
+Wee -| CycB
+Fzy -| CycB
+Fzr -| CycB
+Stg -> CycB
+#position:E2F:202.55700874740705,-23.9385482039125
+$E2F:(Rux | ((Rb & !CycB) | (!Rb & (!CycA | !CycB))))
+Rb -| E2F
+Rux -> E2F
+CycA -| E2F
+CycB -| E2F
+#position:Dap:114.54988529308746,-199.30243088681286
+$Dap:(CycE | !Notch)
+CycE -> Dap
+Notch -| Dap
+#position:Ago:11.093896129973082,-277.49273645836274
+$Ago:false
+#position:Notch:290.11856432145424,-50.114017290802686
+$Notch:true
+#position:Fzy:-5.127233152232778,178.171352040089
+$Fzy:(CycB | !Rux)
+Rux -| Fzy
+CycB -> Fzy
+#position:Fzr:118.87052847715817,181.80262864854285
+$Fzr:(Rux | (Notch | (!CycA | (!CycB | !CycE))))
+Rux -> Fzr
+CycA -| Fzr
+CycE -| Fzr
+Notch -> Fzr
+CycB -| Fzr
+#position:Wee:-192.58545165961954,82.62036086104456
+$Wee:(!CycB | Rux)
+Rux -> Wee
+CycB -| Wee
+#position:Stg:291.2206048342704,102.7056729136613
+$Stg:(E2F | (CycB | (!Rb | (!Rux | !Notch))))
+Rb -| Stg
+Rux -| Stg
+E2F -> Stg
+Notch -| Stg
+CycB -> Stg

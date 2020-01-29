@@ -1,0 +1,47 @@
+#name:ERBB receptor-regulated G1/S
+#description:<h2 style="padding-bottom: 5px; margin: 10px 0px;"></h2><font color="#777777" face="sans-serif, Arial, Verdana, Helvetica" style=""><span style="font-size: 14.608px;"><b>Info: </b>A reduced version of the ERBB model taken from ginsim. Variables with no inputs have been inlined as parameters. The computation is quite fast since the model contain only different numbers of stable states.<br><br><b>Modeling ERBB receptor-regulated G1/S transition to find novel targets for de novo trastuzumab resistance</b></span></font><h2 style="padding-bottom: 5px; margin: 10px 0px;"><span style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">In breast cancer, overexpression of the transmembrane tyrosine kinase ERBB2 is an adverse prognostic marker, and occurs in almost 30% of the patients. For therapeutic intervention, ERBB2 is targeted by monoclonal antibody</span><span style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">&nbsp;</span><i style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">trastuzumab</i><span style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">&nbsp;</span><span style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">in adjuvant settings; however, de novo resistance to this antibody is still a serious issue, requiring the identification of additional targets to overcome resistance. In this study, we have combined computational simulations, experimental testing of simulation results, and finally reverse engineering of a protein interaction network to define potential therapeutic strategies for de novo</span><span style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">&nbsp;</span><i style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">trastuzumab</i><span style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">&nbsp;</span><span style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">resistant breast cancer.</span><br></h2><h3 style="margin: 15px 0px 0px; font-size: 14.608px; color: rgb(119, 119, 119); font-family: sans-serif, Arial, Verdana, Helvetica;">Results</h3><p style="margin-top: 0.5em; margin-bottom: 0.9em; color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">First, we employed Boolean logic to model regulatory interactions and simulated single and multiple protein loss-of-functions. Then, our simulation results were tested experimentally by producing single and double knockdowns of the network components and measuring their effects on G1/S transition during cell cycle progression. Combinatorial targeting of ERBB2 and EGFR did not affect the response to&nbsp;<i>trastuzumab</i>&nbsp;in&nbsp;<i>de novo</i>&nbsp;resistant cells, which might be due to decoupling of receptor activation and cell cycle progression. Furthermore, examination of c-MYC in resistant as well as in sensitive cell lines, using a specific chemical inhibitor of c-MYC (alone or in combination with&nbsp;<i>trastuzumab</i>), demonstrated that both&nbsp;<i>trastuzumab</i>&nbsp;sensitive and resistant cells responded to c-MYC perturbation.</p><h3 style="margin: 15px 0px 0px; font-size: 14.608px; color: rgb(119, 119, 119); font-family: sans-serif, Arial, Verdana, Helvetica;">Conclusion</h3><p style="margin-top: 0.5em; margin-bottom: 0.9em; color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">In this study, we connected ERBB signaling with G1/S transition of the cell cycle via two major cell signaling pathways and two key transcription factors, to model an interaction network that allows for the identification of novel targets in the treatment of&nbsp;<i>trastuzumab</i>&nbsp;resistant breast cancer. Applying this new strategy, we found that, in contrast to&nbsp;<i>trastuzumab</i>&nbsp;sensitive breast cancer cells, combinatorial targeting of ERBB receptors or of key signaling intermediates does not have potential for treatment of de novo&nbsp;<i>trastuzumab</i>&nbsp;resistant cells. Instead, c-MYC was identified as a novel potential target protein in breast cancer cells.</p><p style="margin-top: 0.5em; margin-bottom: 0.9em; color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">Citation: SAHIN, Özgür, et al. Modeling ERBB receptor-regulated G1/S transition to find novel targets for de novo trastuzumab resistance. BMC systems biology, 2009, 3.1: 1.</p>
+#position:AKT1:337,235
+$AKT1:((((((((!IGF1R & !ERBB1) & !ERBB2_3) & !ERBB1_2) & ERBB1_3) | (((!IGF1R & !ERBB1) & !ERBB2_3) & ERBB1_2)) | ((!IGF1R & !ERBB1) & ERBB2_3)) | (!IGF1R & ERBB1)) | IGF1R)
+IGF1R -> AKT1
+#position:IGF1R:447.0358829084041,234.64778092540132
+AKT1 -> IGF1R
+ERalpha -> IGF1R
+#position:CyclinE1:682,475
+MYC -> CyclinE1
+#position:CDK2:600,603
+CyclinE1 -> CDK2
+p21 -| CDK2
+p27 -| CDK2
+#position:p21:554,470
+AKT1 -| p21
+CDK4 -| p21
+MYC -| p21
+#position:p27:366,471
+AKT1 -| p27
+CDK2 -| p27
+CDK4 -| p27
+MYC -| p27
+#position:CyclinD1:151,481
+AKT1 -> CyclinD1
+ERalpha -> CyclinD1
+MEK1 -> CyclinD1
+MYC -> CyclinD1
+#position:CDK4:277,601
+CyclinD1 -> CDK4
+p21 -| CDK4
+p27 -| CDK4
+#position:CDK6:439,579
+CyclinD1 -> CDK6
+#position:ERalpha:191,356
+AKT1 -> ERalpha
+MEK1 -> ERalpha
+#position:MEK1:571,246
+$MEK1:((((((((!IGF1R & !ERBB1) & !ERBB2_3) & !ERBB1_2) & ERBB1_3) | (((!IGF1R & !ERBB1) & !ERBB2_3) & ERBB1_2)) | ((!IGF1R & !ERBB1) & ERBB2_3)) | (!IGF1R & ERBB1)) | IGF1R)
+IGF1R -> MEK1
+#position:MYC:650,355
+AKT1 -> MYC
+ERalpha -> MYC
+MEK1 -> MYC
+#position:pRB1:422,673
+CDK4 -> pRB1
+CDK6 -> pRB1

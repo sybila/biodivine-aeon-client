@@ -1,0 +1,63 @@
+#name:FGF Signalling pathway
+#description:<div class="field-label" style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;"><b>Info:</b></div><div class="field-label" style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;"><br></div><div class="field-label" style="font-weight: bold; color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;"><br></div><div class="field-label" style="font-weight: bold; color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">Description:&nbsp;</div><div class="field-items" style=""><div class="field-item odd" style=""><p style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px; margin-top: 0.5em; margin-bottom: 0.9em;">Drosophila genome encodes two FGF receptors, HTL (Heartless) and BTL (Breathless), which are required for the morphogenesis of different tissues. BTL is expressed in the tracheae, while HTL is expressed in embryonic mesoderm and was first identified because of its essential role in heart development. BTL ligand, BNL is encoded by the branchless gene (<a href="http://ginsim.org/node/102#ref1" title="Reference 1" style="color: rgb(119, 119, 119);">[1]</a>). THS (Thisbe) and PYR (Pyramus) function in a partially redundant fashion to activate heartless (htl). Upon ligand binding receptor dimerization triggers the canonical DRK/SOS/RAS/RAF/DSOR1/RL pathway. In contrast with other RTKs, Stumps is needed to trigger signal transduction (see&nbsp;<a href="http://ginsim.org/node/102#ref2" title="Reference 2" style="color: rgb(119, 119, 119);">[2]</a>;&nbsp;<a href="http://ginsim.org/node/102#ref3" title="Reference 3" style="color: rgb(119, 119, 119);">[3]</a>). Stumps is a cytoplasmic protein expressed in cells also expressing the FGF receptors. The presence of an ankyrin repeat, a coiled-coil structure and many tyrosines suggests that Stumps could bind SH2 domains of proteins such as DRK or CSW (<a href="http://ginsim.org/node/102#ref4" title="Reference 4" style="color: rgb(119, 119, 119);">[4]</a>). As a result, DRK recruits the guanine nucleotide exchange factor SOS (Son of sevenless), which catalyzes the exchange of GDP bound to RAS for GTP. Activated RAS then promotes the activation of RAF (Pole hole), DSOR1, and eventually that of RL (Rolled). RL can activate transcription through the inactivation of transcriptional co-repressors such as Anterior Open (AOP), as well as through the activation of transcriptional activators such as PNT (Pointed, with two forms denote by suffixes P1 and P2) (<a href="http://ginsim.org/node/102#ref5" title="Reference 5" style="color: rgb(119, 119, 119);">[5]</a>;&nbsp;<a href="http://ginsim.org/node/102#ref6" title="Reference 6" style="color: rgb(119, 119, 119);">[6]</a>). The negative regulator STY (Sprouty) acts downstream of SOS but upstream of RAS and RAF, by recruiting GAP1 and blocking the ability of DRK to bind to its positive effector. Our model enables the simulation of pathway responses to different ligand combinations. In this regard, we define four initial states to simulate different behavior of the pathway. The first initial state reproduces the signalling through the receptor HTL (bound by Pyr and Ths), the second initial state corresponds to the signalling through the receptor BTL, the third initial state corresponds to the involvement of the inhibitor Sprouty during signalling conditions and the fourth initial state corresponds to the absence of signalling (no ligands binding). Each of these initial states lead to a specific stable state representative of in vivo conditions.</p><p style="margin-top: 0.5em; margin-bottom: 0.9em;"><font color="#535353" face="sans-serif, Arial, Verdana, Helvetica"><span style="font-size: 13.28px;"><b>Cite:</b> MBODJ, Abibatou, et al. Logical modelling of Drosophila signalling pathways. Molecular BioSystems, 2013, 9.9: 2248-2258.</span></font><br></p></div></div>
+#position:Ths:102,21
+#position:Htl:162,84
+$Htl:((!Ths & Pyr) | Ths)
+Ths -> Htl
+Pyr -> Htl
+#position:Pyr:222,23
+#position:Bnl:317,22
+#position:Btl:309,83
+$Btl:Bnl
+Bnl -> Btl
+#position:stumps:229,139
+$stumps:((!Htl & Btl) | Htl)
+Htl -> stumps
+Btl -> stumps
+#position:Drk:227,209
+$Drk:(stumps & Csw)
+stumps -> Drk
+Csw -> Drk
+#position:Csw:369,208
+#position:Sos:230,278
+$Sos:Drk
+Drk -> Sos
+#position:Ras:227,351
+$Ras:((Sos & !Gap1) | ((Sos & Gap1) & !Sty))
+Sos -> Ras
+Gap1 -| Ras
+Sty -| Ras
+#position:Gap1:116,346
+$Gap1:PLCg
+PLCg -> Gap1
+#position:Sty:371,350
+#position:PLCg:111,210
+$PLCg:Drk
+Drk -> PLCg
+#position:Raf:225,436
+$Raf:(((Ras & Cnk) & Src42) & Ksr)
+Ras -> Raf
+Cnk -> Raf
+Src42 -> Raf
+Ksr -> Raf
+#position:Cnk:370,396
+#position:Src42:376,446
+#position:Ksr:367,492
+#position:Dsor1:232,515
+$Dsor1:Raf
+Raf -> Dsor1
+#position:Rl:231,579
+$Rl:(Dsor1 & Msk)
+Dsor1 -> Rl
+Msk -> Rl
+#position:Msk:108,573
+#position:Aop:158,630
+$Aop:!Rl
+Rl -| Aop
+#position:Pnt:299,626
+$Pnt:Rl
+Rl -> Pnt
+#position:Targets:235,683
+$Targets:(!Aop & Pnt)
+Aop -| Targets
+Pnt -> Targets

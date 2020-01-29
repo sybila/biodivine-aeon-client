@@ -1,0 +1,49 @@
+#name:Fission Yeast Cell Cycle
+#description:<div class="field-label" style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;"><b>Info:</b></div><div class="field-label" style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">Fission Yeast model imported from GinSim.&nbsp;</div><div class="field-label" style="font-weight: bold; color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;"><br></div><div class="field-label" style="font-weight: bold; color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">Summary:&nbsp;</div><div class="field-items" style=""><div class="field-item odd" style=""><h3 style="color: rgb(119, 119, 119); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 14.608px; margin: 15px 0px 0px;">Direct transcription</h3><p style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px; margin-top: 0.5em; margin-bottom: 0.9em;">This model is a direct transcription of the Boolean model published by Davidich &amp; Bornholdt&nbsp;<a href="http://ginsim.org/node/37#ref1" title="Reference 1" style="color: rgb(119, 119, 119);">[1]</a>. Dynamical rules are defined on the basis of the network structure, as the sum of the positive and negative influences exerted on each nodes by its regulators. (Fig. 1, bottom left in&nbsp;<a href="http://ginsim.org/node/37#ref2" title="Reference 2" style="color: rgb(119, 119, 119);">[2]</a>; see text for more details).</p><p style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px; margin-top: 0.5em; margin-bottom: 0.9em;">The model yields a main stable state, corresponding to G0/G1, that gathers most trajectories in the state transition graph; and several alternative, artefactual states.</p><h3 style="color: rgb(119, 119, 119); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 14.608px; margin: 15px 0px 0px;">Adaptation</h3><p style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px; margin-top: 0.5em; margin-bottom: 0.9em;">This model is derived from the Boolean model published by Davidich &amp; Bornholdt&nbsp;<a href="http://ginsim.org/node/37#ref1" title="Reference 1" style="color: rgb(119, 119, 119);">[1]</a>. The two Boolean components representing the different levels of activity of Cdc2_Cdc13 have been replaced by a ternary component. In addition, the loops originally placed on Start, SK, PP, and Slp1 nodes have been removed, as they do not represent true auto-regulations, and compensated by the introduction of priorities to account for the maintenance of the start signal and its effect on Rum1 and Ste9.</p><p style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px; margin-top: 0.5em; margin-bottom: 0.9em;">For proper logical rules, the model has a single stable state, corresponding to the G1 state of Davidich &amp; Bornholdt (with only Ste9, Rum1 and Wee1_Mick1 activated). This means that the other 11 spurious stable states obtained by these authors have been eliminated.</p><p style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px; margin-top: 0.5em; margin-bottom: 0.9em;">Activation of Start leads to SK inactivation and then to inhibition of Ste9 and Rum 1, launching a to a sequence of state transitions matching that defined by Davidich &amp; Bornholdt&nbsp;<a href="http://ginsim.org/node/37#ref1" title="Reference 1" style="color: rgb(119, 119, 119);">[1]</a>, as well as available kinetic data (see Model Documentation for proper setting of the logical simulation).</p><div style=""><b style="color: rgb(83, 83, 83); font-family: sans-serif, Arial, Verdana, Helvetica; font-size: 13.28px;">Cite:&nbsp;</b><font color="#535353" face="sans-serif, Arial, Verdana, Helvetica"><span style="font-size: 13.28px;">FAURÉ, Adrien; THIEFFRY, Denis. Logical modelling of cell cycle control in eukaryotes: a comparative study. Molecular BioSystems, 2009, 5.12: 1569-1581.</span></font></div></div></div>
+#position:Start:126,8
+$Start:false
+#position:SK:126,56
+$SK:Start
+Start -> SK
+#position:Ste9:70,101
+$Ste9:((((((((!SK & !Cdc2_Cdc13) & !Ste9) & !Cdc2_Cdc13_A) & PP) | (((!SK & !Cdc2_Cdc13) & Ste9) & !Cdc2_Cdc13_A)) | ((((!SK & !Cdc2_Cdc13) & Ste9) & Cdc2_Cdc13_A) & PP)) | ((((!SK & Cdc2_Cdc13) & Ste9) & !Cdc2_Cdc13_A) & PP)) | ((((SK & !Cdc2_Cdc13) & Ste9) & !Cdc2_Cdc13_A) & PP))
+SK -| Ste9
+Cdc2_Cdc13 -| Ste9
+Ste9 -> Ste9
+Cdc2_Cdc13_A -| Ste9
+PP -> Ste9
+#position:Cdc2_Cdc13:104,154
+$Cdc2_Cdc13:((!Ste9 & !Rum1) & !Slp1)
+Ste9 -| Cdc2_Cdc13
+Rum1 -| Cdc2_Cdc13
+Slp1 -| Cdc2_Cdc13
+#position:Rum1:176,101
+$Rum1:((((((((!SK & !Cdc2_Cdc13) & !Rum1) & !Cdc2_Cdc13_A) & PP) | (((!SK & !Cdc2_Cdc13) & Rum1) & !Cdc2_Cdc13_A)) | ((((!SK & !Cdc2_Cdc13) & Rum1) & Cdc2_Cdc13_A) & PP)) | ((((!SK & Cdc2_Cdc13) & Rum1) & !Cdc2_Cdc13_A) & PP)) | ((((SK & !Cdc2_Cdc13) & Rum1) & !Cdc2_Cdc13_A) & PP))
+SK -| Rum1
+Cdc2_Cdc13 -| Rum1
+Rum1 -> Rum1
+Cdc2_Cdc13_A -| Rum1
+PP -> Rum1
+#position:Slp1:11,273
+$Slp1:Cdc2_Cdc13_A
+Cdc2_Cdc13_A -> Slp1
+#position:Cdc2_Cdc13_A:78,311
+$Cdc2_Cdc13_A:((((!Ste9 & !Rum1) & !Slp1) & !Wee1_Mik1) & Cdc25)
+Ste9 -| Cdc2_Cdc13_A
+Rum1 -| Cdc2_Cdc13_A
+Slp1 -| Cdc2_Cdc13_A
+Wee1_Mik1 -| Cdc2_Cdc13_A
+Cdc25 -> Cdc2_Cdc13_A
+#position:PP:22,215
+$PP:Slp1
+Slp1 -> PP
+#position:Wee1_Mik1:226,296
+$Wee1_Mik1:((((!Cdc2_Cdc13 & !Wee1_Mik1) & PP) | (!Cdc2_Cdc13 & Wee1_Mik1)) | ((Cdc2_Cdc13 & Wee1_Mik1) & PP))
+Cdc2_Cdc13 -| Wee1_Mik1
+Wee1_Mik1 -> Wee1_Mik1
+PP -> Wee1_Mik1
+#position:Cdc25:152,210
+$Cdc25:((((!Cdc2_Cdc13 & Cdc25) & !PP) | ((Cdc2_Cdc13 & !Cdc25) & !PP)) | (Cdc2_Cdc13 & Cdc25))
+Cdc2_Cdc13 -> Cdc25
+Cdc25 -> Cdc25
+PP -| Cdc25
