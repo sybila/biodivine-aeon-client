@@ -28,9 +28,13 @@ let Results = {
 		        var table = '';
 		        result.forEach(({ sat_count, phenotype })=> {
 		            var behavior = phenotype.map(x => x[0]).sort().join('');
+		            let behaviorString = behavior;
+		            if (behaviorString == 0) {
+		            	behaviorString = "<span style=\"font-family: 'FiraMono'; letter-spacing: normal;\">unclassified</span>";
+		            }
 		            table += `
 		            	<tr>
-		            		<td class="table-behavior">${behavior}</td>
+		            		<td class="table-behavior">${behaviorString}</td>
 		            		<td class="table-sat-count">${sat_count}</td>
 		            		<td><span class="inline-button" onclick="UI.openWitness('${behavior}');">Witness</span></td>
 		            	</tr>
