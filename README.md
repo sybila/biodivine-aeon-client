@@ -1,0 +1,3 @@
+## Aeon Client
+
+This is a web based user interface for the [Aeon](http://biodivine.fi.muni.cz/aeon) tool. The project contains a static HTML+JS website. To run the GUI locally, you simply need to download the contents of this repository and open `index.html` in your favourite browser. To deploy the GUI on your server, proceed as with any other static website (i.e. copy the files to the desired directory and configure the server to make them publicly available).
