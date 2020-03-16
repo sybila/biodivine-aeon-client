@@ -42,6 +42,7 @@ let Results = {
 		        });
 
 		        table = `
+		        	<div class="center">Total number of classes: ${result.length}</div>
 		        	<table>
 		        		<tr class='table-head'>
 		        			<td>Behavior<br>class</td>
@@ -51,8 +52,10 @@ let Results = {
 		        		${table}
 		        	</table>
 		        `;
-		        if (json.isPartial) {
+		        if (json.isPartial) {	// if the computation is not finished, add 
 		        	table = "<h4 class='orange' style='text-align:center;'>Warning: These are partial results from an unfinished computation.</h4>" + table;
+		        } else {
+		        	table = "<div class='center'>Elapsed: " + (json.elapsed/1000) + "s</div>" + table;
 		        }
 		        document.getElementById("results").innerHTML = table;
 		        UI.ensureContentTabOpen(ContentTabs.results);

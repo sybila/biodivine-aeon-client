@@ -597,6 +597,11 @@ button.center {
     margin: 0 auto;
 }
 
+div.center {
+    margin: 0 auto;
+    text-align: center;
+}
+
 
 .invisible {
     opacity: 0;
