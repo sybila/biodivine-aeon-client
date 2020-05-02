@@ -65,9 +65,10 @@ body {
 
 
 /*
-	The root of the model editor - just stretch across the whole page...
+	The root of the model editor and attractor visualization 
+    - just stretch across the whole page...
 */
-#cytoscape-editor {
+#cytoscape-editor, #visjs-container {
 	position: absolute;
     left: 0;
     right: 0;
