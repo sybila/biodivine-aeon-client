@@ -39,7 +39,7 @@ function init() {
 		document.getElementById("engine-address").value = engineAddress;
 	}	
 
-    UI.init();
+    //UI.init();
 
     var request = ComputeEngine._backendRequest('/get_attractors/' + reqBeh, (e, r) => {
         if (e !== undefined) {

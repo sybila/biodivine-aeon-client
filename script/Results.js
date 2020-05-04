@@ -37,6 +37,7 @@ let Results = {
 		            		<td class="table-behavior">${behaviorString}</td>
 		            		<td class="table-sat-count">${sat_count}</td>
 		            		<td><span class="inline-button" onclick="UI.openWitness('${behavior}');">Witness</span></td>
+		            		<td><span class="inline-button" onclick="UI.openExplorer('${behavior}');">Attractor</span></td>
 		            	</tr>
 		            `;
 		        });

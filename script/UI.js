@@ -385,6 +385,16 @@ let UI = {
         window.open(url + '?engine=' + encodeURI(ComputeEngine.getAddress()) + "&witness="+ encodeURI(witness));
 	},
 
+    openExplorer(behavior) {
+		if (!ComputeEngine.hasActiveComputation()) {
+			alert("Results no longer available.");
+			return;
+		}
+		const url = 'explorer.html';
+        window.open(url + '?engine=' + encodeURI(ComputeEngine.getAddress()) + "&behavior="+ encodeURI(behavior));
+    },
+
+
 	// Add a listener to each button to display hint texts when hovered.
 	// For toggle buttons, add functions that enable actual toggling of the state value.
 	_initEdgeMenu(menu) {
