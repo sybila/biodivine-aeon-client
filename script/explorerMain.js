@@ -38,25 +38,52 @@ function init() {
 	if (engineAddress !== undefined && engineAddress !== null && engineAddress.length > 0) {
 		document.getElementById("engine-address").value = engineAddress;
 	}	
-
-    //UI.init();
-
+    // get the attractors
     var request = ComputeEngine._backendRequest('/get_attractors/' + reqBeh, (e, r) => {
         if (e !== undefined) {
             alert(e);
         } else {
             RESULT = r;
+            
             for (var i = 0; i < RESULT.attractors.length; i++) {
                 RESULT.attractors[i].vis = edgesToVisFormat(RESULT.attractors[i].graph);
             }
-
             addLabels();
             displayAll();
-
-            network.on('click', x => console.log(x.nodes));
+            network.on('click', nodeClick); 
         }
     }, 'get', null);
 
+}
+
+function nodeClick(e) {
+    // the 'l' comes from the attractor labels that have to be ignored
+    var panel = document.getElementById("explorer-valuations");
+    var text  = document.getElementById("explorer-valuations-text");
+    if (e.nodes.length != 1 || e.nodes[0][0] == 'l') {
+        panel.style.display = 'none'; 
+        return;
+    }
+    panel.style.display = 'block'; 
+    console.log(e.nodes[0])
+ 
+    document.getElementById("explorer-valuations-text").innerHTML = stateToHtml(e.nodes[0]);
+    console.log(e.nodes)
+}
+
+function stateToHtml(state) {
+    result = "";
+    for (var i = 0; i < state.length; i++) {
+        result += '<span class="valuation-pair"><span style="font-weight:bold">'
+               + (state[i] == "0" ? "!" : "")
+               + '</span>'+ RESULT.variables[i] + '</span>';
+    }
+
+    return result;
+}
+
+function generateWitness() {
+    RESULT.model.model.split('\n').filter(x => x[0] == '$');
 }
 
 function edgesToVisFormat(array) {
