@@ -623,6 +623,18 @@ div.center {
     top: 28px;
 }
 
+#explorer-update-functions li {
+    padding: 8px 0;
+}
+
+.explorer-fnName {
+    padding-right: 10px;
+}
+
+.explorer-fnName::after {
+    content: ':';
+}
+
 .valuation-pair {
     margin: 0 8px;
 }

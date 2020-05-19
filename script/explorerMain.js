@@ -51,6 +51,7 @@ function init() {
             addLabels();
             displayAll();
             network.on('click', nodeClick); 
+            document.getElementById('explorer-update-functions').innerHTML = generateWitness()
         }
     }, 'get', null);
 
@@ -83,7 +84,20 @@ function stateToHtml(state) {
 }
 
 function generateWitness() {
-    RESULT.model.model.split('\n').filter(x => x[0] == '$');
+    return RESULT.model.model.split('\n')
+                 .filter(x => x[0] == '$')
+                 .map(x => x.slice(1))
+                 .map(x => x.split(':'))
+                 .map(x => '<span class="explorer-fnName">'
+                    + x[0].trim() + '</span><span class="explorer-fnValue">'
+                    + x[1].trim() + '</span>')
+                 .reverse()
+                 .reduce((a, x) => '<li>' +x+ '</li>' + a, '');
+}
+
+function witnessPanelVisible(show = true) {
+    document.getElementById('explorer-witness-panel').style.display =
+        show? 'block': 'none';
 }
 
 function edgesToVisFormat(array) {

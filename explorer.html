@@ -25,8 +25,16 @@
 
     <body onload="init()">
 
-
         <h1 id='logo'>Aeon/<span id='title'>BIODIVINE</span></h1>
+
+        <div style="position:absolute" id="explorer-witness-panel" class="main-panel gone">
+            <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="witnessPanelVisible(false)">
+                    <h2 style="margin: 0 auto; font-size: 20px; text-align: center; margin-bottom: 8px;">Witness update functions</h2>
+                    <ul id='explorer-update-functions' style='list-style:none'></ul>
+                </div>
+            </div>
+        </div>
+
 
         <!-- A container for the graph vizualization -->
         <div id="visjs-container"></div>
@@ -34,132 +42,15 @@
         <!-- A valuation panel -->
         <div style="display:none" id="explorer-valuations"><div id="explorer-valuations-text"></div></div>
 
-        <!-- -->
+        <!-- A witness panel -->
+        <div id="explorer-witness-panel"><div id="explorer-witness-text"><div></div>
+
+        <!-- engine address  -->
         <div id="engine-address" style="display:none">http://localhost:8000/</div>
-        
-        <div id="quick-help" style="display:none">
-            <h3 style="display: block; margin: 0 auto; float: right;">HELP</h3>
-            <b>Network editor actions:</b>
-            <ul>
-                <li>Double click to create a new variable.</li>
-                <li>Drag from `+` to create a new regulation.</li>
-                <li>Select element (click) to show the context menu.</li>
-            </ul>
-            <b>Keyboard shortcuts:</b>
-            <ul>
-                <li>(⌫) Remove selected element.</li>
-                <li>(N) Add new variable.</li>
-                <li>(E) Edit name of the selected variable.</li>
-                <li>(F) Edit update function of the selected variable.</li>
-                <li>(O) Change observability of the selected regulation.</li>
-                <li>(M) Change monotonicity of the selected regulation.</li>
-                <li>(H) Show this help message.</li>                
-            </ul>
-            <div style="width: 100%; text-align: center; font-size: 12px;">(this message disappears when you create the first variable)</div>            
-        </div>
 
         <div style="position: absolute;">            
-
-            <div id="tab-model-editor" class="main-panel gone" style="padding-bottom: 0px;">
-                <div class="invisible-input full-line">
-                    <input id="model-name" class="center" type="text" name="model-name" placeholder="(model name)" style="font-size: 20px;">
-                </div>
-                <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.closeContent()">                
-                <div class="invisible-input full-line" id="model-description" contenteditable data-placeholder="(model description)" style="margin-top: 4px; margin-bottom: 4px;"></div>      
-
-                <div style="height: 30px;">
-                    <h3 style="font-family: 'FiraMono'; text-transform: uppercase;"> ● Overview</h3>
-                </div>
-                <table id="model-stats">
-                    <tr class="row">    <td>Variables: </td>        <td class="value">-</td>     <td>Parameter space size: </td>  <td class="value">-</td> </tr>
-                    <tr class="row">    <td>Regulations: </td>      <td class="value">-</td>     <td>State space size: </td> <td class="value">-</td> </tr>
-                    <tr class="row">    <td>Max. in-degree: </td>   <td class="value">-</td>     <td>Max. out-degree: </td>       <td class="value">-</td> </tr>
-                    <tr class="row">    <td colspan="2">Explicit parameters: </td>  <td colspan="2">(none)</td>   </tr>
-                </table>                   
-                <div style="height: 40px;">
-                    <h3 style="float: left; font-family: 'FiraMono'; text-transform: uppercase;"> ● Variables</h3>
-                    <button id="button-add-variable" class="image-button" onclick="let id = LiveModel.addVariable(); CytoscapeEditor.showNode(id);" style="float: right;">Add variable (N) <img src="img/add_box-24px.svg"></button>
-                </div>
-                <div style="clear: both;"></div>
-                <div id="model-variables" class="full-line"></div>                       
-                <div class="templates gone">
-                    <div id="model-variable-template" class="model-variable">
-                        <div class="invisible-input">
-                            <input class="variable-name" type="text" name="variable-name" value="Variable name" placeholder="(variable name)" style="font-size: 18px;" spellcheck='false' autocorrect='off'>
-                        </div>
-                        <img alt="Remove variable" src="img/delete-24px.svg" class="model-variable-remove button">
-                        <img alt="Show variable" src="img/search-24px.svg" class="model-variable-show button">
-                        <br>
-                        <h4> ● Regulators</h4>
-                        <div class="model-variable-regulators full-line"></div>
-                        <h4> ● Update Function</h4>
-                        <div class="invisible-input full-line variable-function" contenteditable data-placeholder="(default)" spellcheck='false' autocorrect='off' style="font-size: 16px; text-align: center;"></div>
-                        <div class="variable-function-status"></div>
-                    </div>
-
-                    <div id="model-regulation-template" class="model-regulation">
-                        <span class="model-regulation-regulator">Some name</span>
-                        <span class="model-regulation-short">(->)</span>
-                        <span class="model-regulation-observable">observable</span>
-                        <span class="model-regulation-monotonicity">activation</span>
-                    </div>                    
-                </div>
-            </div>
-
-
-            <div id="tab-help" class="main-panel gone" style="font-family: 'FiraMono';">
-                <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.closeContent()">
-                <h2 style="margin: 0 auto; font-size: 20px; text-align: center; margin-bottom: 8px;">Help</h2>
-                
-                <p>Aeon is a tool for analysing <b style="font-family: 'FiraMonoBold';">long-term behaviour
-                of Boolean networks with parameters</b>. Use the editor to create a new network, or import your own
-                from .sbml or .aeon. You can leave the update functions in the network blank (this will automatically
-                consider all admissible instantiations of such function) or specify an exact update function.
-                In the update function, you can use <b style="font-family: 'FiraMonoBold';">arbitrary uninterpreted functions as parameters</b> (see Budding Yeast-Irons example). Aeon will then automatically consider all admissible instantiations of such functions when analysing the model.</p>
-
-                <p>Once your network is ready, you can run the long-term behaviour analysis which will
-                show you the behaviour classes of the model. The classes are separated based on
-                <b style="font-family: 'FiraMonoBold';">stable, oscillating or disordered</b> behaviour.
-                For each class, you can generate a <b style="font-family: 'FiraMonoBold';">witness network</b> that exihibits the specified behaviour.</p>
-
-                <h3>Manual</h3>
-
-                Full description of the functionality Aeon provides is available in the <a href="http://biodivine.fi.muni.cz/aeon/aeon-manual.pdf">tool manual</a>.
-
-
-                <h3>Quick Help</h3>
-                <b>Network editor actions:</b>
-                <ul>
-                    <li>Double click to create a new variable.</li>
-                    <li>Drag from `+` to create a new regulation.</li>
-                    <li>Select element (click) to show the context menu.</li>
-                </ul>
-                <b>Keyboard shortcuts:</b>
-                <ul>
-                    <li>(⌫) Remove selected element.</li>
-                    <li>(N) Add new variable.</li>
-                    <li>(E) Edit name of the selected variable.</li>
-                    <li>(F) Edit update function of the selected variable.</li>
-                    <li>(O) Change observability of the selected regulation.</li>
-                    <li>(M) Change monotonicity of the selected regulation.</li>
-                    <li>(H) Show this help message.</li>                
-                </ul>
-
-                <h3>Attributions</h3>
-
-                <p>Compute Engine: crossbeam, rayon, rocket, json.</p>
-
-                <p>Online client: vis.js, material icons, hotkeys.</p>
-
-            </div>
-
             <div id="side-menu">
-
-                <div class="button-group">
-                    <img alt="Help" id="side-menu-help" src="img/help-48px.svg" class="button" tab-id="tab-help">
-                    <span class="hint invisible">Help</span>
-                </div>  
-                <div class="button-group">
+                <div class="button-group" onclick='witnessPanelVisible()'>
                     <img alt="Update functions" id="side-menu-functions" src="img/functions-48px.svg" class="button" tab-id="tab-functions">
                     <span class="hint invisible">Update functions</span>
                 </div>  
