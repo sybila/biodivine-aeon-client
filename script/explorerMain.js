@@ -37,6 +37,7 @@ function init() {
 
 	if (engineAddress !== undefined && engineAddress !== null && engineAddress.length > 0) {
 		document.getElementById("engine-address").value = engineAddress;
+        ComputeEngine._address = engineAddress;
 	}	
     // get the attractors
     var request = ComputeEngine._backendRequest('/get_attractors/' + reqBeh, (e, r) => {
