@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Biodivine/Aeon</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="style.css" type="text/css">        
+
+        <script src="script/dependencies/cytoscape.min.js"></script>
+        <script src="script/dependencies/lodash.js"></script>
+        <script src="script/dependencies/hotkeys.min.js"></script>        
+
+        <script src="script/ComputeEngine.js"></script>                
+        <script src="script/CytoscapeTreeEditor.js"></script>                
+        <script src="script/treeExplorerMain.js"></script>
+        <style>
+            .vis-network:focus, canvas:focus { outline:none; }
+        </style>
+    </head>
+
+    <body onload="init()">
+
+        <h1 id='logo'>Aeon/<span id='title'>BIODIVINE</span></h1>
+
+        <div style="position:absolute" id="explorer-witness-panel" class="main-panel gone">
+            <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="witnessPanelVisible(false)">
+                    <h2 style="margin: 0 auto; font-size: 20px; text-align: center; margin-bottom: 8px;">Witness update functions</h2>
+                    <ul id='explorer-update-functions' style='list-style:none'></ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="cytoscape-editor">
+        </div>
+
+        <div id="node-info" class="main-panel gone" style="width: 350px; margin: 0; float: left;">
+            <h4>Mixed Node [123]</h4>
+            <table>
+                <tr>
+                    <td>Behaviour</td>
+                    <td>Witness Count</td>
+                    <td>Portion</td>
+                </tr>
+                <tr>
+                    <td>S, S</td>
+                    <td>123456</td>
+                    <td>95%</td>
+                </tr>
+                <tr>
+                    <td>S, O</td>
+                    <td>12345</td>
+                    <td>5%</td>
+                </tr>   
+                <tr>
+                    <td>D</td>
+                    <td>1234</td>
+                    <td>1%</td>
+                </tr>             
+            </table>
+
+            <h4>Possible decision attributes:</h4>
+            <div>
+                <span>[12] A -> B is activation</span>
+                <div style="float: right; text-align: right;">
+                    <span>IG: 0.1234</span><br>
+                    <span>Count: 5</span><br>
+                    <button>Expand</button>
+                </div>                                                                
+                <table style="text-align: center; margin: 0 auto;">
+                    <tr>
+                        <td colspan="3">Negative</td>
+                        <td colspan="3">Positive</td>
+                    </tr>
+                    <tr>
+                        <td>S, S</td>
+                        <td>1234</td>
+                        <td>60%</td>
+                        <td>O</td>
+                        <td>1234</td>
+                        <td>80%</td>
+                    </tr>
+                </table>                
+            </div>
+
+            <div>
+                <span>[12] A -> B is activation</span>
+                <div style="float: right; text-align: right;">
+                    <span>IG: 0.1234</span><br>
+                    <span>Count: 5</span><br>
+                    <button>Expand</button>
+                </div>                                                                
+                <table style="text-align: center; margin: 0 auto;">
+                    <tr>
+                        <td colspan="3">Negative</td>
+                        <td colspan="3">Positive</td>
+                    </tr>
+                    <tr>
+                        <td>S, S</td>
+                        <td>1234</td>
+                        <td>60%</td>
+                        <td>O</td>
+                        <td>1234</td>
+                        <td>80%</td>
+                    </tr>
+                </table>                
+            </div>
+
+            <div>
+                <span>[12] A -> B is activation</span>
+                <div style="float: right; text-align: right;">
+                    <span>IG: 0.1234</span><br>
+                    <span>Count: 5</span><br>
+                    <button>Expand</button>
+                </div>                                                                
+                <table style="text-align: center; margin: 0 auto;">
+                    <tr>
+                        <td colspan="3">Negative</td>
+                        <td colspan="3">Positive</td>
+                    </tr>
+                    <tr>
+                        <td>S, S</td>
+                        <td>1234</td>
+                        <td>60%</td>
+                        <td>O</td>
+                        <td>1234</td>
+                        <td>80%</td>
+                    </tr>
+                </table>                
+            </div>
+        </div>
+
+        <div id="loading-indicator" class="invisible"><img src="img/progress.gif"/><br><br>Waiting for server...</div>
+
+    </body>
+</html>

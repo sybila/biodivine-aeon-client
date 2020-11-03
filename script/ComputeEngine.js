@@ -15,8 +15,12 @@ let ComputeEngine = {
 
 	// Open connection, taking up to date address from user input.
 	// Callback is called upon first ping.
-	openConnection(callback = undefined) {
-		this._address = document.getElementById("engine-address").value;
+	openConnection(callback = undefined, address = undefined) {
+		if (address !== undefined && address !== null) {
+			this._address = address;
+		} else if (document.getElementById("engine-address") != null) {
+			this._address = document.getElementById("engine-address").value;
+		}
 		this.ping(true, 2000, callback);		
 	},
 
@@ -52,7 +56,9 @@ let ComputeEngine = {
 			clearTimeout(this._pingRepeatToken);
 			this._pingRepeatToken = undefined;
 			this._connected = false;
-			UI.updateComputeEngineStatus("disconnected");
+			if (typeof UI !== 'undefined') {
+				UI.updateComputeEngineStatus("disconnected");
+			}			
 			return true;
 		} else {
 			return false;
@@ -170,6 +176,36 @@ let ComputeEngine = {
 		}
 	},
 
+	getBifurcationTree(callback, force = false) {
+		if (!force && !this.isConnected()) {
+			callback("Compute engine not connected.");
+			return undefined;
+		} else {
+			return this._backendRequest("/get_bifurcation_tree/", (e, r) => {
+				console.log(e,r);
+				if (callback !== undefined) {
+					callback(e, r);
+				}
+			}, "GET");
+		}
+	},
+
+	getDecisionAttributes(node, callback) {
+		return this._backendRequest("/get_attributes/"+node, (e, r) => {
+			if (callback !== undefined) {
+				callback(e, r);
+			}
+		});
+	},
+
+	selectDecisionAttribute(node, attr, callback) {
+		return this._backendRequest("/apply_attribute/"+node+"/"+attr, (e, r) => {
+			if (callback !== undefined) {
+				callback(e, r);
+			}
+		}, "POST");
+	},
+
 	// Send a ping request. If interval is set, the ping will be repeated
 	// until connection is closed. (Callback is called only once)
 	ping(keepAlive = false, interval = 2000, callback = undefined) {
@@ -184,8 +220,10 @@ let ComputeEngine = {
 			if (this._connected) {
 				status = "connected";
 			}
-			console.log("...ping..."+status+"...");
-			UI.updateComputeEngineStatus(status, response);
+			//console.log("...ping..."+status+"...");
+			if (typeof UI !== 'undefined') {
+				UI.updateComputeEngineStatus(status, response);
+			}			
 			// Schedule a ping for later if requested.
 			if (keepAlive && error === undefined) {
 				this._pingRepeatToken = setTimeout(() => { this.ping(true, interval); }, interval);
