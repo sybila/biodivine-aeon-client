@@ -93,12 +93,16 @@ let LiveModel = {
 		if (force || confirm(Strings.removeNodeCheck(variable['name']))) {
 			// First, explicitly remove all regulations that have something to do with us.
 			let update_regulations_after_delete = [];
+			let to_remove = [];
 			for (var i = 0; i < this._regulations.length; i++) {
 				let reg = this._regulations[i];
 				if (reg.regulator == id || reg.target == id) {
-					this._removeRegulation(reg);
-					update_regulations_after_delete.push(reg.target);
+					to_remove.push(reg);					
 				}
+			}
+			for (reg of to_remove) {
+				this._removeRegulation(reg);
+				update_regulations_after_delete.push(reg.target);
 			}
 			delete this._variables[id];
 			delete this._updateFunctions[id];
