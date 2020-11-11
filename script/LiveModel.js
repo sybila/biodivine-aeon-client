@@ -48,6 +48,43 @@ let LiveModel = {
 		return id;
 	},
 
+	// Remove constant variables, substituting them with parameters.
+	// If force is true, also remove variables with explicit update functions,
+	// otherwise only remove true constants...
+	pruneConstants(force = false) {
+		var to_remove = [];
+		for (const [id, variable] of Object.entries(this._variables)) {
+			var is_constant = true;
+			is_constant = is_constant & this.regulationsOf(id).length == 0;
+			if (!force) {
+				is_constant = is_constant & this._updateFunctions[id] === undefined;
+			}			
+			if (is_constant) { 
+				to_remove.push(id); 
+			}
+		}
+		console.log("To remove: ", to_remove);
+		for (id of to_remove) {
+			this.removeVariable(id, true);
+		}
+		return to_remove.length;
+	},
+
+	// Remove output variables, i.e. variables that have no outgoing regulations.
+	pruneOutputs() {
+		var to_remove = [];
+		for (const [id, variable] of Object.entries(this._variables)) {
+			if (this.regulationsFrom(id).length == 0) { 
+				to_remove.push(id); 
+			}
+		}
+		console.log("To remove: ", to_remove);
+		for (id of to_remove) {
+			this.removeVariable(id, true);
+		}
+		return to_remove.length;
+	},
+
 	// Remove the given variable from the model.
 	removeVariable(id, force = false) {
 		let variable = this._variables[id];
@@ -56,12 +93,16 @@ let LiveModel = {
 		if (force || confirm(Strings.removeNodeCheck(variable['name']))) {
 			// First, explicitly remove all regulations that have something to do with us.
 			let update_regulations_after_delete = [];
+			let to_remove = [];
 			for (var i = 0; i < this._regulations.length; i++) {
 				let reg = this._regulations[i];
 				if (reg.regulator == id || reg.target == id) {
-					this._removeRegulation(reg);
-					update_regulations_after_delete.push(reg.target);
+					to_remove.push(reg);					
 				}
+			}
+			for (reg of to_remove) {
+				this._removeRegulation(reg);
+				update_regulations_after_delete.push(reg.target);
 			}
 			delete this._variables[id];
 			delete this._updateFunctions[id];
@@ -151,6 +192,16 @@ let LiveModel = {
 		for (var i = 0; i < this._regulations.length; i++) {
 			let reg = this._regulations[i];
 			if (reg.target == targetId) result.push(reg);
+		}
+		return result;
+	},
+
+	// Return a list of regulations that the given id is a regulator of.
+	regulationsFrom(regulatorId) {
+		let result = [];
+		for (var i = 0; i < this._regulations.length; i++) {
+			let reg = this._regulations[i];
+			if (reg.regulator == regulatorId) result.push(reg);
 		}
 		return result;
 	},
