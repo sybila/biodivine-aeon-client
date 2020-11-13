@@ -63,6 +63,13 @@ body {
     color: #d05d5d;
 }
 
+#version {
+    display: inline-block;
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+}
+
 
 /*
 	The root of the model editor and attractor visualization 
