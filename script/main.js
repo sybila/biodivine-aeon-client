@@ -3,6 +3,16 @@ let EXPECTED_ENGINE_VERSION = "0.3.0-SNAPSHOT"
 hasLocalStorage = false;
 
 function init() {
+	// Safari security alert
+	let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+	if (isSafari) {
+		alert(
+			"At the moment, security measures in Safari may prevent you from connecting to the AEON compute engine.\n\n" + 
+			"You can still use the editor to view, modify and export models. While we work on this issue, you " + 
+			"can access full AEON functionaliy in Google Chrome."
+		);
+	}
+
 	// Update version links and label to match expected engine version:
 	let version_string = "v"+EXPECTED_ENGINE_VERSION;
 	document.getElementById("version").innerHTML = version_string;
