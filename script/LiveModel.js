@@ -14,6 +14,11 @@ let LiveModel = {
 	// keys are variable ids, values are update function strings with metadata { functionString, metadata }
 	_updateFunctions: {},
 	_regulations: [],
+	// We use this to indicate that there is a batch of changes to the model that are being processed,
+	// and we therefore shouldn't run intensive tasks (like function consistency checks on server).
+	// It is the responsibility of the user of this flag to re-run these tasks AFTER the changes are done.
+	// Currently we use this only in import.
+	_disable_dynamic_validation: false,
 
 	// True if the model has no variables.
 	isEmpty() {
@@ -338,6 +343,9 @@ let LiveModel = {
 			// overwritten. If he decides not to do it, just return...
 			return undefined;
 		}*/
+		// Disable on-the-fly server checks.
+		this._disable_dynamic_validation = true;
+
 		let lines = modelString.split("\n");
 		// name1 -> name2
 		let regulationRegex = /^\s*([a-zA-Z0-9_{}]+)\s*-([>|?])(\??)\s*([a-zA-Z0-9_{}]+)\s*$/;
@@ -451,6 +459,13 @@ let LiveModel = {
 
 		CytoscapeEditor.fit();
 
+		// Re-enable server checks and run them.
+		this._disable_dynamic_validation = false;
+		for (let variable of Object.keys(this._variables)) {
+			this._validateUpdateFunction(variable);
+		}
+
+
 		return undefined;	// no error
 	},
 
@@ -492,6 +507,7 @@ let LiveModel = {
 
 	// Runs analysis of the update funciton asynchronously on server.
 	_validateUpdateFunction(id) {
+		if (this._disable_dynamic_validation) return;
 		let modelFragment = this._updateFunctionModelFragment(id);
 		if (modelFragment !== undefined) {
 			ComputeEngine.validateUpdateFunction(modelFragment, (error, result) => {
