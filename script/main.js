@@ -1,6 +1,23 @@
+let EXPECTED_ENGINE_VERSION = "0.3.0-SNAPSHOT"
+
 hasLocalStorage = false;
 
 function init() {
+	// Update version links and label to match expected engine version:
+	let version_string = "v"+EXPECTED_ENGINE_VERSION;
+	document.getElementById("version").innerHTML = version_string;
+	document.getElementById("engine-link-windows").href = document
+		.getElementById("engine-link-windows")
+		.href.replace("VERSION", version_string);
+	
+	document.getElementById("engine-link-macos").href = document
+		.getElementById("engine-link-macos")
+		.href.replace("VERSION", version_string);
+
+	document.getElementById("engine-link-linux").href = document
+		.getElementById("engine-link-linux")
+		.href.replace("VERSION", version_string);
+
 	try {
 		localStorage.setItem('testing', '1');
 		hasLocalStorage = true;
