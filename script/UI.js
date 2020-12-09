@@ -126,7 +126,7 @@ let UI = {
 				if (data.error !== null) {
 					status += ", error: "+data.error;
 				}
-				cmpStatus.textContent = status;
+				cmpStatus.innerHTML = status;
 				cmpProgress.textContent = data.progress;
 				if (data.num_classes !== null) {
 					cmpClasses.textContent = data.num_classes;
