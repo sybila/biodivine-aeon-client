@@ -1,4 +1,3 @@
-
 /*
 	Compute engine object maintains connection to the rust backend that will actually
 	do the work for us.
@@ -21,7 +20,19 @@ let ComputeEngine = {
 		} else if (document.getElementById("engine-address") != null) {
 			this._address = document.getElementById("engine-address").value;
 		}
-		this.ping(true, 2000, callback);		
+		this.ping(true, 2000, function(error, ping) {
+			if (ping["version"] != EXPECTED_ENGINE_VERSION) {
+				alert(
+					"Your AEON client version is " + EXPECTED_ENGINE_VERSION + 
+					", but your compute engine version is " + ping["version"] + ". \n\n" +
+					"You may encounter compatibility issues. For best experience, please " +
+					"download recommended engine binary from the `Compute Engine` panel."
+				);
+			}
+			if (callback !== undefined) {
+				callback(error, ping);
+			}
+		});		
 	},
 
 	getAddress() {

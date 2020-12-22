@@ -132,7 +132,7 @@ let ModelEditor = {
 		let box = this._getVariableBox(id);
 		if (box !== undefined) {
 			let status = box.getElementsByClassName("variable-function-status")[0];
-			status.textContent = message;
+			status.innerHTML = message;
 			if (isError) {
 				status.classList.add("red");
 			} else {

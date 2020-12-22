@@ -14,6 +14,11 @@ let LiveModel = {
 	// keys are variable ids, values are update function strings with metadata { functionString, metadata }
 	_updateFunctions: {},
 	_regulations: [],
+	// We use this to indicate that there is a batch of changes to the model that are being processed,
+	// and we therefore shouldn't run intensive tasks (like function consistency checks on server).
+	// It is the responsibility of the user of this flag to re-run these tasks AFTER the changes are done.
+	// Currently we use this only in import.
+	_disable_dynamic_validation: false,
 
 	// True if the model has no variables.
 	isEmpty() {
@@ -48,6 +53,43 @@ let LiveModel = {
 		return id;
 	},
 
+	// Remove constant variables, substituting them with parameters.
+	// If force is true, also remove variables with explicit update functions,
+	// otherwise only remove true constants...
+	pruneConstants(force = false) {
+		var to_remove = [];
+		for (const [id, variable] of Object.entries(this._variables)) {
+			var is_constant = true;
+			is_constant = is_constant & this.regulationsOf(id).length == 0;
+			if (!force) {
+				is_constant = is_constant & this._updateFunctions[id] === undefined;
+			}			
+			if (is_constant) { 
+				to_remove.push(id); 
+			}
+		}
+		console.log("To remove: ", to_remove);
+		for (id of to_remove) {
+			this.removeVariable(id, true);
+		}
+		return to_remove.length;
+	},
+
+	// Remove output variables, i.e. variables that have no outgoing regulations.
+	pruneOutputs() {
+		var to_remove = [];
+		for (const [id, variable] of Object.entries(this._variables)) {
+			if (this.regulationsFrom(id).length == 0) { 
+				to_remove.push(id); 
+			}
+		}
+		console.log("To remove: ", to_remove);
+		for (id of to_remove) {
+			this.removeVariable(id, true);
+		}
+		return to_remove.length;
+	},
+
 	// Remove the given variable from the model.
 	removeVariable(id, force = false) {
 		let variable = this._variables[id];
@@ -56,12 +98,16 @@ let LiveModel = {
 		if (force || confirm(Strings.removeNodeCheck(variable['name']))) {
 			// First, explicitly remove all regulations that have something to do with us.
 			let update_regulations_after_delete = [];
+			let to_remove = [];
 			for (var i = 0; i < this._regulations.length; i++) {
 				let reg = this._regulations[i];
 				if (reg.regulator == id || reg.target == id) {
-					this._removeRegulation(reg);
-					update_regulations_after_delete.push(reg.target);
+					to_remove.push(reg);					
 				}
+			}
+			for (reg of to_remove) {
+				this._removeRegulation(reg);
+				update_regulations_after_delete.push(reg.target);
 			}
 			delete this._variables[id];
 			delete this._updateFunctions[id];
@@ -151,6 +197,16 @@ let LiveModel = {
 		for (var i = 0; i < this._regulations.length; i++) {
 			let reg = this._regulations[i];
 			if (reg.target == targetId) result.push(reg);
+		}
+		return result;
+	},
+
+	// Return a list of regulations that the given id is a regulator of.
+	regulationsFrom(regulatorId) {
+		let result = [];
+		for (var i = 0; i < this._regulations.length; i++) {
+			let reg = this._regulations[i];
+			if (reg.regulator == regulatorId) result.push(reg);
 		}
 		return result;
 	},
@@ -314,6 +370,9 @@ let LiveModel = {
 			// overwritten. If he decides not to do it, just return...
 			return undefined;
 		}
+		// Disable on-the-fly server checks.
+		this._disable_dynamic_validation = true;
+
 		let lines = modelString.split("\n");
 		// name1 -> name2
 		let regulationRegex = /^\s*([a-zA-Z0-9_{}]+)\s*-([>|?])(\??)\s*([a-zA-Z0-9_{}]+)\s*$/;
@@ -427,6 +486,13 @@ let LiveModel = {
 
 		CytoscapeEditor.fit();
 
+		// Re-enable server checks and run them.
+		this._disable_dynamic_validation = false;
+		for (let variable of Object.keys(this._variables)) {
+			this._validateUpdateFunction(variable);
+		}
+
+
 		return undefined;	// no error
 	},
 
@@ -468,6 +534,7 @@ let LiveModel = {
 
 	// Runs analysis of the update funciton asynchronously on server.
 	_validateUpdateFunction(id) {
+		if (this._disable_dynamic_validation) return;
 		let modelFragment = this._updateFunctionModelFragment(id);
 		if (modelFragment !== undefined) {
 			ComputeEngine.validateUpdateFunction(modelFragment, (error, result) => {

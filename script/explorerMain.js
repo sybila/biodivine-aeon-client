@@ -76,9 +76,13 @@ function nodeClick(e) {
 function stateToHtml(state) {
     result = "";
     for (var i = 0; i < state.length; i++) {
-        result += '<span class="valuation-pair"><span style="font-weight:bold">'
-               + (state[i] == "0" ? "!" : "")
-               + '</span>'+ RESULT.variables[i] + '</span>';
+        let is_false = (state[i] == "0" || state[i] == "⊥");
+        let is_dynamic = (state[i] == "0" || state[i] == "1");
+        result +=   '<span ' + 
+                        'class="valuation-pair ' + (is_dynamic ? (is_false ? "red" : "green") : "grey") + '" ' +
+                        'style="font-weight: ' + (is_dynamic ? "bold" : "normal") + '"' +
+                    '>' + 
+                    (is_false ? "!" : "") + RESULT.variables[i] + '</span>';
     }
 
     return result;
@@ -113,12 +117,12 @@ function edgesToVisFormat(array) {
         }
     }
 
-    return { edges, nodes: Array.from(nodes).map(x => ({id:x, label:x})) };
+    return { edges, nodes: Array.from(nodes).map(x => ({id:x, label:x.replaceAll(/[⊥⊤]/gi, "-")})) };
 }
 
 function showState(string) {
     for (var i = 0; i < string.length; i++) {
-        console.log(RESULT.variables[i], string[i] == '0'? 'false': 'true');
+        console.log(RESULT.variables[i], (string[i] == '0' || string[i] == '⊥') ? 'false': 'true');
     }
 }
 
