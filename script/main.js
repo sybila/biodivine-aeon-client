@@ -1,4 +1,4 @@
-let EXPECTED_ENGINE_VERSION = "0.3.0-beta.1"
+let EXPECTED_ENGINE_VERSION = "0.4.0-SNAPSHOT"
 
 hasLocalStorage = false;
 
@@ -42,6 +42,7 @@ function init() {
 	if (engineAddress !== undefined && engineAddress !== null && engineAddress.length > 0) {
 		document.getElementById("engine-address").value = engineAddress;
 	}	
+	
 	UI.init();
 	ModelEditor.init();
 	CytoscapeEditor.init();			
