@@ -22,9 +22,25 @@ function init() {
 				}
 
 				CytoscapeEditor.applyTreeLayout();				
+				CytoscapeEditor.fit();				
 			}			
 		}, true);
 	})});
+}
+
+function removeNode(nodeId) {
+	ComputeEngine.deleteDecision(nodeId, (e, r) => {
+		console.log(r);		
+		if (r.removed.length > 0) {
+			for (removed of r.removed) {
+				CytoscapeEditor.removeNode(removed);
+			} 
+		}
+		if (r.node !== undefined) {
+			CytoscapeEditor.ensureNode(r.node);
+			CytoscapeEditor.refreshSelection(r.node.id);
+		}
+	});
 }
 
 function selectAttribute(node, attr) {
@@ -40,6 +56,7 @@ function selectAttribute(node, attr) {
 			}
 		}
 		CytoscapeEditor.applyTreeLayout();
+		CytoscapeEditor.refreshSelection();
 	});
 }
 

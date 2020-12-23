@@ -228,6 +228,14 @@ let ComputeEngine = {
 		}, "POST");
 	},
 
+	deleteDecision(nodeId, callback) {
+		return this._backendRequest("/revert_decision/"+nodeId, (e, r) => {
+			if (callback !== undefined) {
+				callback(e, r);
+			}
+		}, "POST");
+	},
+
 	// Send a ping request. If interval is set, the ping will be repeated
 	// until connection is closed. (Callback is called only once)
 	ping(keepAlive = false, interval = 2000, callback = undefined) {

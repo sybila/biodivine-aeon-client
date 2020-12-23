@@ -18,8 +18,34 @@ let CytoscapeEditor = {
 		this._cytoscape.on('select', (e) => {
 			console.log(e.target.data());
 			let data = e.target.data();
-			if (data.type == "leaf") {
+			if (data.action == 'remove') {
+				// This is a remove button for a specifc tree node.
+				removeNode(data.targetId);
+			} else if (data.type == "leaf") {
 				this._showLeafPanel(data)
+			} else if (data.type == "decision") {
+				let currentPosition = e.target.position();
+				// Show close button
+				let closeButton = {					
+					classes: ['remove-button'],
+					grabbable: false,
+					data: {
+						action: 'remove',
+						targetId: e.target.data().id,
+					},
+					position: {
+						// 12 is half the radius of the close icon
+						x: currentPosition.x + e.target.width() / 2 + 12,
+						y: currentPosition.y - e.target.height() / 2 - 12,
+					}
+				};
+				let node = CytoscapeEditor._cytoscape.add(closeButton);
+				node.on('mouseover', (e) => {
+					node.addClass('hover');	
+				});
+				node.on('mouseout', (e) => {
+					node.removeClass('hover');			
+				});
 			} else if (data.type == "unprocessed") {
 				let tab = document.getElementById("node-info");
 				let loading = document.getElementById("loading-indicator");
@@ -88,11 +114,29 @@ let CytoscapeEditor = {
 			}
 		});
 		this._cytoscape.on('unselect', (e) => {
+			// Clear remove button
+			CytoscapeEditor._cytoscape.$(".remove-button").remove()
+			// Close panels
 			let nodeInfo = document.getElementById("node-info");
 			nodeInfo.classList.add("gone");
 			let leafInfo = document.getElementById("leaf-info");
 			leafInfo.classList.add("gone");
 		})
+	},
+
+	// Triggers all necessary events to update UI after graph update
+	refreshSelection(targetId) {
+		let selected = CytoscapeEditor._cytoscape.$(":selected");	// node or edge that are selected
+		if (selected.length > 0) {
+			selected.unselect();			
+		}
+		if (targetId === undefined) {
+			if (selected.length > 0) {
+				selected.select();
+			}
+		} else {
+			CytoscapeEditor._cytoscape.getElementById(targetId).select();
+		}		
 	},
 
 	getSelectedNodeId() {
@@ -151,6 +195,29 @@ let CytoscapeEditor = {
 		                'border-style': 'solid',
 		                'text-max-width': 150,
 		                'text-wrap': 'wrap',
+  					}
+  				},
+  				{
+  					'selector': '.remove-button',
+  					'style': {
+  						'text-valign': 'top',
+  						'text-halign': 'right',
+  						'shape': 'round-rectangle',
+  						'background-opacity': 0,
+		                'background-image': function(e) {
+		                	return 'data:image/svg+xml;utf8,' + encodeURIComponent(_remove_svg);
+		                },
+		                'background-width': '24px',
+		                'background-height': '24px',
+  						'width': '32px', 
+  						'height': '32px',
+  					}
+  				},
+  				{
+  					'selector': '.remove-button.hover',
+  					'style': {
+  						'background-width': '32px',
+		                'background-height': '32px',  						
   					}
   				},
   				{	// When a node is selected, show it with a thick blue border.
@@ -254,6 +321,12 @@ let CytoscapeEditor = {
 		}
 	},
 
+	// Pan and zoom the groph to show the whole model.
+	fit() {
+		this._cytoscape.fit();
+		this._cytoscape.zoom(this._cytoscape.zoom() * 0.8);	// zoom out a bit to have some padding
+	},
+
 	_applyTreeData(data, treeData) {
 		if (data.id != treeData.id) {
 			error("Updating wrong node.");
@@ -285,6 +358,13 @@ let CytoscapeEditor = {
 		return JSON.parse(cls).map(x => x[0]).sort().join('');
 	},
 
+	removeNode(nodeId) {
+		let e = this._cytoscape.getElementById(nodeId);
+		if (e.length > 0) {
+			e.remove();
+		}
+	},
+
 	applyTreeLayout() {
 		this._cytoscape.layout({
 			name: 'dagre',
@@ -299,3 +379,7 @@ let CytoscapeEditor = {
 	},
 
 }
+
+// Modified version of the cancel-24px.svg with color explicitly set to red and an additional background element which makes sure the X is filled.
+let _remove_svg = '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#ffffff" d="M4 6h14v14H6z"/><path fill="#d05d5d" d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'
+
