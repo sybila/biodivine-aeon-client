@@ -228,6 +228,7 @@ let CytoscapeEditor = {
 		if (node !== undefined && node.length > 0) {
 			let data = node.data();
 			this._applyTreeData(data, treeData);
+			this._cytoscape.style().update();	//redraw graph
 			return node;
 		} else {
 			let data = this._applyTreeData({ id: treeData.id }, treeData);
@@ -244,6 +245,7 @@ let CytoscapeEditor = {
 		let edge = this._cytoscape.edges("[source = \""+sourceId+"\"][target = \""+targetId+"\"]");
 		if (edge.length >= 1) {
 			// Edge exists
+			this._cytoscape.style().update();	//redraw graph
 		} else {
 			// Make new edge
 			this._cytoscape.add({
