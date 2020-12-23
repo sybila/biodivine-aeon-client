@@ -95,19 +95,7 @@ let CytoscapeEditor = {
 	initOptions: function() {
 		return {
 			container: document.getElementById("cytoscape-editor"),			
-			// Some sensible default auto-layout algorithm
-  			layout: {
-	            animate: true,
-	            animationDuration: 300,
-	            animationThreshold: 250,
-	            refresh: 20,
-	            fit: true,
-	            name: 'cose',
-	            padding: 250,
-	            nodeRepulsion: function(node) { return 100000; },
-	            nodeDimensionsIncludeLabels: true,
-        	},        	
-        	boxSelectionEnabled: false,
+			boxSelectionEnabled: false,
   			selectionType: 'single', 
   			style: [
   				{ 	// Style of the graph nodes
@@ -118,16 +106,16 @@ let CytoscapeEditor = {
   						// put label in the middle of the node (vertically)
   						'text-valign': 'center',
   						'width': 'label', 'height': 'label',
-  						'shape': 'rectangle',
+  						'shape': 'round-rectangle',
   						// when selecting, do not display any overlay
   						'overlay-opacity': 0,
   						// other visual styles
-		                'padding': 6,		                
+		                'padding': "12",		   
 		                'background-color': '#dddddd',
 		                //'background-opacity': '0',
-		                //'font-family': 'symbols',
+		                'font-family': 'FiraMono',
 		                'font-size': '12pt',
-		                'border-width': '0px',
+		                'border-width': '1px',
 		                'border-color': '#bbbbbb',
 		                'border-style': 'solid',
 		                'text-max-width': 150,
@@ -137,9 +125,64 @@ let CytoscapeEditor = {
   				{	// When a node is selected, show it with a thick blue border.
   					'selector': 'node:selected',
   					'style': {
-  						'border-width': '2.0px',
+  						'border-width': '4.0px',
   						'border-color': '#6a7ea5',
   						'border-style': 'solid',                		
+  					}
+  				},
+  				{
+  					'selector': 'node[type = "unprocessed"]',
+  					'style': {  						
+  						'background-color': '#EFEFEF',
+  						'border-color': '#616161',
+  					}
+  				},
+  				{
+  					'selector': 'node[type = "leaf"]',
+  					'style': {  						
+  						'border-color': '#546E7A',
+  						'font-family': 'symbols',
+  						'font-size': '16pt',
+  					}  					
+  				},
+  				{
+  					'selector': 'node[subtype = "disorder"]',
+  					'style': {
+  						'background-color': '#FFE0B2',
+  					}  					
+  				},
+  				{
+  					'selector': 'node[subtype = "oscillation"]',
+  					'style': {
+  						'background-color': '#F0F4C3',
+  					}  					
+  				},
+  				{
+  					'selector': 'node[subtype = "stability"]',
+  					'style': {
+  						'background-color': '#B2DFDB',
+  					}  					
+  				},
+  				{
+  					'selector': 'edge',
+  					'style': {
+  						'curve-style': 'taxi',
+  						'taxi-direction': 'vertical',
+  						'target-arrow-shape': 'triangle',  						
+  					}
+  				},
+  				{
+  					'selector': 'edge[positive = "true"]',
+  					'style': {
+  						'line-color': '#4abd73',
+		                'target-arrow-color': '#4abd73',
+  					}
+  				},
+  				{
+  					'selector': 'edge[positive = "false"]',
+  					'style': {
+  						'line-color': '#d05d5d',
+		                'target-arrow-color': '#d05d5d',
   					}
   				},
   				/*{
@@ -173,7 +216,7 @@ let CytoscapeEditor = {
 		} else {
 			// Make new edge
 			this._cytoscape.add({
-				group: 'edges', data: { source: sourceId, target: targetId, positive: positive }
+				group: 'edges', data: { source: sourceId, target: targetId, positive: positive.toString() }
 			})
 		}
 	},
@@ -185,10 +228,20 @@ let CytoscapeEditor = {
 		data.treeData = treeData;
 		data.type = treeData.type;
 		if (treeData.type == "leaf") {
-			data.label = this._normalizeClass(treeData.class);			
-			data.label += "(" + treeData.cardinality + ")";
+			let normalizedClass = this._normalizeClass(treeData.class);
+			if (normalizedClass.includes("D")) {
+				data.subtype = "disorder";
+			} else if (normalizedClass.includes("O")) {
+				data.subtype = "oscillation";			
+			} else {
+				data.subtype = "stability";
+			}
+			data.label = normalizedClass;
+			//data.label += "\n(" + treeData.cardinality + ")";
 		} else if (treeData.type == "decision") {
 			data.label = treeData.attribute_name;
+		} else if (treeData.type == "unprocessed" ) {
+			data.label = "Mixed Phenotype\n" + "(" + treeData.classes.length + " types)";
 		} else {
 			data.label = treeData.type + "(" + treeData.id + ")";
 		}

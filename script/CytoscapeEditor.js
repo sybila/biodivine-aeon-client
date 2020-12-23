@@ -323,7 +323,7 @@ let CytoscapeEditor = {
   						// other visual styles
 		                'padding': 12,		                
 		                'background-color': '#dddddd',
-		                'font-family': 'Fira Mono',
+		                'font-family': 'FiraMono',
 		                'font-size': '12pt',
 		                'border-width': '1px',
 		                'border-color': '#bbbbbb',

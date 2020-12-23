@@ -193,7 +193,6 @@ let ComputeEngine = {
 			return undefined;
 		} else {
 			return this._backendRequest("/get_bifurcation_tree/", (e, r) => {
-				console.log(e,r);
 				if (callback !== undefined) {
 					callback(e, r);
 				}

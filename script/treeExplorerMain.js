@@ -7,21 +7,23 @@ function init() {
 	
 	CytoscapeEditor.init();
 
-	ComputeEngine.getBifurcationTree((e, r) => {
-		for (node of r) {
-			console.log("Node: ", node);
-			CytoscapeEditor.ensureNode(node);
-		}
-		for (node of r) {
-			if (node.type == "decision") {
-				CytoscapeEditor.ensureEdge(node.id, node.left, false);
-				CytoscapeEditor.ensureEdge(node.id, node.right, true);
+	document.fonts.load('1rem "symbols"').then(() => {
+	document.fonts.load('1rem "FiraMono"').then(() => {
+		ComputeEngine.getBifurcationTree((e, r) => {		
+			for (node of r) {
+				console.log("Node: ", node);
+				CytoscapeEditor.ensureNode(node);
 			}
-		}
+			for (node of r) {
+				if (node.type == "decision") {
+					CytoscapeEditor.ensureEdge(node.id, node.left, false);
+					CytoscapeEditor.ensureEdge(node.id, node.right, true);
+				}
+			}
 
-		CytoscapeEditor.applyTreeLayout();
-	}, true);	
-
+			CytoscapeEditor.applyTreeLayout();				
+		}, true);
+	})});
 }
 
 function selectAttribute(node, attr) {

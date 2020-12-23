@@ -10,29 +10,20 @@
         <script src="script/dependencies/lodash.js"></script>
         <script src="script/dependencies/hotkeys.min.js"></script>        
 
+        <script src="script/const.js"></script>
         <script src="script/ComputeEngine.js"></script>                
         <script src="script/CytoscapeTreeEditor.js"></script>                
         <script src="script/treeExplorerMain.js"></script>
-        <style>
-            .vis-network:focus, canvas:focus { outline:none; }
-        </style>
+        
     </head>
 
     <body onload="init()">
 
-        <h1 id='logo'>Aeon/<span id='title'>BIODIVINE</span></h1>
-
-        <div style="position:absolute" id="explorer-witness-panel" class="main-panel gone">
-            <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="witnessPanelVisible(false)">
-                    <h2 style="margin: 0 auto; font-size: 20px; text-align: center; margin-bottom: 8px;">Witness update functions</h2>
-                    <ul id='explorer-update-functions' style='list-style:none'></ul>
-                </div>
-            </div>
-        </div>
-
         <div id="cytoscape-editor">
         </div>
 
+        <h1 id='logo'>Aeon/<span id='title'>BIODIVINE</span></h1>
+    
         <div id="node-info" class="main-panel gone" style="width: 350px; margin: 0; float: left;">
             <h4>Mixed Node [123]</h4>
             <table>
