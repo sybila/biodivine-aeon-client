@@ -39,8 +39,7 @@ function init() {
 		document.getElementById("engine-address").value = engineAddress;
         ComputeEngine._address = engineAddress;
 	}	
-    // get the attractors
-    var request = ComputeEngine._backendRequest('/get_attractors/' + reqBeh, (e, r) => {
+    let callback = function(e, r) {
         if (e !== undefined) {
             alert(e);
         } else {
@@ -54,7 +53,16 @@ function init() {
             network.on('click', nodeClick); 
             document.getElementById('explorer-update-functions').innerHTML = generateWitness()
         }
-    }, 'get', null);
+    }
+    // get the attractors    
+    if (reqBeh !== undefined && reqBeh !== null) {
+        var request = ComputeEngine._backendRequest('/get_attractors/' + reqBeh, callback, 'GET', null);
+    } else {
+        const requestedTreeWitness = urlParams.get('tree_witness'); // Should be a node id.
+        if (requestedTreeWitness !== undefined && requestedTreeWitness !== null) {
+            var request = ComputeEngine._backendRequest('/get_tree_attractors/' + requestedTreeWitness, callback, 'GET', null);
+        }
+    }
 
 }
 
