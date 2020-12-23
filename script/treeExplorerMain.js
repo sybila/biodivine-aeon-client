@@ -42,3 +42,13 @@ function selectAttribute(node, attr) {
 		CytoscapeEditor.applyTreeLayout();
 	});
 }
+
+/* Open witness network for the currently selected tree node. */
+function openTreeWitness() {
+	let node = CytoscapeEditor.getSelectedNodeId();
+	if (node === undefined) {
+		return;
+	}
+	const url = window.location.pathname.replace("tree_explorer.html", "index.html");
+    window.open(url + '?engine=' + encodeURI(ComputeEngine.getAddress()) + "&tree_witness="+ encodeURI(node));
+}

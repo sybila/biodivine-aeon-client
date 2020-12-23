@@ -17,14 +17,31 @@
         
     </head>
 
-    <body onload="init()">
+    <body onload="init()" id="tree-explorer">
 
         <div id="cytoscape-editor">
         </div>
 
         <h1 id='logo'>Aeon/<span id='title'>BIODIVINE</span></h1>
     
-        <div id="node-info" class="main-panel gone" style="width: 350px; margin: 0; float: left;">
+        <div id="leaf-info" class="main-panel fira-mono gone">
+            <div class="center" style="margin: 16px;">
+                <span style="position: relative; top: -20px; font-size: 14px;">Phenotype</span><br>
+                <span class="symbols" id="leaf-phenotype" style="font-size: 50px;">DDS</span>                            
+            </div>            
+            <div>
+                <span style="float: left;">Witness count: <span id="leaf-witness-count">12345</span></span>
+                <span class="inline-button" onclick="openTreeWitness();" style="float: right;">Witness</span>                
+                <div style="clear: both;"></div>
+            </div>
+
+            <span style="font-weight: bold; margin-top: 16px; display: inline-block; margin-bottom: 8px;">Necessary conditions:</span>
+
+            <div id="leaf-necessary-conditions">Foo</div>
+
+        </div>
+
+        <div id="node-info" class="main-panel gone">
             <h4>Mixed Node [123]</h4>
             <table>
                 <tr>

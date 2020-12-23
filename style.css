@@ -210,6 +210,11 @@ body {
     max-height: 95vh;
 }
 
+#tree-explorer .main-panel {
+    margin: 0 auto; 
+    float: left;
+}
+
 .panel-close-button {
     width: 24px;
     height: 24px;
@@ -671,6 +676,14 @@ div.center {
 
 .grey {
     color: #797979;
+}
+
+.symbols {
+    font-family: symbols;
+}
+
+.fira-mono {
+    font-family: FiraMono, monospace;
 }
 
 /*

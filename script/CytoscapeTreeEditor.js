@@ -18,7 +18,9 @@ let CytoscapeEditor = {
 		this._cytoscape.on('select', (e) => {
 			console.log(e.target.data());
 			let data = e.target.data();
-			if (data.type == "unprocessed") {
+			if (data.type == "leaf") {
+				this._showLeafPanel(data)
+			} else if (data.type == "unprocessed") {
 				let tab = document.getElementById("node-info");
 				let loading = document.getElementById("loading-indicator");
 				loading.classList.remove("invisible");
@@ -86,9 +88,38 @@ let CytoscapeEditor = {
 			}
 		});
 		this._cytoscape.on('unselect', (e) => {
-			let tab = document.getElementById("node-info");
-			tab.classList.add("gone");
+			let nodeInfo = document.getElementById("node-info");
+			nodeInfo.classList.add("gone");
+			let leafInfo = document.getElementById("leaf-info");
+			leafInfo.classList.add("gone");
 		})
+	},
+
+	getSelectedNodeId() {
+		node = CytoscapeEditor._cytoscape.nodes(":selected");
+		if (node.length == 0) return undefined;
+		return node.data().id;
+	},
+
+	_showLeafPanel(data) {
+		document.getElementById("leaf-info").classList.remove("gone");
+		document.getElementById("leaf-phenotype").innerHTML = data.label;
+		document.getElementById("leaf-witness-count").innerHTML = data.treeData.cardinality;
+		let conditions = "";
+		let pathId = data.id;
+		let source = this._cytoscape.edges("[target = \""+pathId+"\"]");	
+		while (source.length != 0) {
+			console.log(source);
+			let data = source.data();
+			let is_positive = data.positive === "true";
+			let color = is_positive ? "green" : "red";
+			let pathId = data.source;
+			console.log(pathId);
+			let attribute = this._cytoscape.getElementById(pathId).data().treeData.attribute_name;
+			conditions += "<span class='" + color + "'> ‣ " + attribute + "</span><br>";
+			source = this._cytoscape.edges("[target = \""+pathId+"\"]");
+		}
+		document.getElementById("leaf-necessary-conditions").innerHTML = conditions;
 	},
 
 

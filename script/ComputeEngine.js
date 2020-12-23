@@ -179,11 +179,23 @@ let ComputeEngine = {
 			return undefined;
 		} else {
 			return this._backendRequest("/get_witness/"+witness, (e, r) => {
-				console.log(e,r);
 				if (callback !== undefined) {
 					callback(e, r);
 				}
 			}, "GET");
+		}
+	},
+
+	getTreeWitness(nodeId, callback, force = false) {
+		if (!force && !this.isConnected()) {
+			callback("Compute engine not connected.");
+			return undefined;
+		} else {
+			return this._backendRequest("/get_tree_witness/"+nodeId, (e, r) => {
+				if (callback !== undefined) {
+					callback(e, r);
+				}
+			}, "GET");	
 		}
 	},
 

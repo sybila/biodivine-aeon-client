@@ -46,21 +46,29 @@ function init() {
 	CytoscapeEditor.init();			
 	ComputeEngine.openConnection();	// Try to automatically connect when first opened.
 
+	let witnessCallback = function(e, r) {
+		UI.isLoading(false);
+		if (e !== undefined) {
+			alert(e);
+		} else {
+			let error = LiveModel.importAeon(r.model);				
+			if (error !== undefined) {
+        		alert(error);
+        	}
+        	UI.ensureContentTabOpen(ContentTabs.modelEditor);
+		}
+	}
+
 	const requestedWitness = urlParams.get('witness');
 	if (requestedWitness !== undefined && requestedWitness !== null && requestedWitness.length > 0) {
 		UI.isLoading(true);
-		ComputeEngine.getWitness(requestedWitness, (e, r) => {
-			UI.isLoading(false);
-			if (e !== undefined) {
-				alert(e);
-			} else {
-				let error = LiveModel.importAeon(r.model);				
-				if (error !== undefined) {
-	        		alert(error);
-	        	}
-	        	UI.ensureContentTabOpen(ContentTabs.modelEditor);
-			}
-		}, true);
+		ComputeEngine.getWitness(requestedWitness, witnessCallback, true);
+	}
+
+	const requestedTreeWitness = urlParams.get('tree_witness');	// Should be a node id.
+	if (requestedTreeWitness !== undefined && requestedTreeWitness !== null) {
+		UI.isLoading(true);
+		ComputeEngine.getTreeWitness(requestedTreeWitness, witnessCallback, true);
 	}
 }
 
