@@ -285,7 +285,7 @@ let CytoscapeEditor = {
 
 	applyTreeLayout() {
 		this._cytoscape.layout({
-			name: 'breadthfirst',
+			name: 'dagre',
 			spacingFactor: 1.0,
 			roots: [0],
 			directed: true,
