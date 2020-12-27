@@ -16,6 +16,20 @@ function init() {
 	
 	CytoscapeEditor.init();
 
+	let checkbox = document.getElementById("mass-distribution");
+	let label = document.getElementById("mass-distribution-label");
+	checkbox.addEventListener('change', (event) => {
+	  	if (event.target.checked) {
+    		CytoscapeEditor.setMassEnabled();
+    		label.classList.add("primary");
+    		label.classList.add("bold");
+  		} else {
+    		CytoscapeEditor.setMassDisabled();
+    		label.classList.remove("primary");
+    		label.classList.remove("bold");
+  		}
+	});
+
 	document.fonts.load('1rem "symbols"').then(() => {
 	document.fonts.load('1rem "FiraMono"').then(() => {
 		ComputeEngine.getBifurcationTree((e, r) => {		

@@ -13,6 +13,7 @@ let CytoscapeEditor = {
 	// Reference to the cytoscape library "god object"
 	_cytoscape: undefined,
 	_totalCardinality: 0.0,
+	_showMass: false,
 	
 	init: function() {
 		this._cytoscape = cytoscape(this.initOptions());			
@@ -223,6 +224,7 @@ let CytoscapeEditor = {
   						'shape': 'round-rectangle',
   						// when selecting, do not display any overlay
   						'overlay-opacity': 0,
+  						'opacity': 'data(opacity)',
   						// other visual styles
 		                'padding': "12",		   
 		                'background-color': '#dddddd',
@@ -360,6 +362,34 @@ let CytoscapeEditor = {
 		}
 	},
 
+	setMassEnabled() {
+		this._showMass = true;
+		for (node of this._cytoscape.nodes()) {			
+			let data = node.data();
+			if (data.treeData !== undefined) {				
+				data.opacity = this._computeMassOpacity(data.treeData.cardinality);
+			}			
+		}
+		this._cytoscape.style().update();	//redraw graph
+	},
+
+	setMassDisabled() {
+		this._showMass = false;
+		for (node of this._cytoscape.nodes()) {
+			let data = node.data();
+			data.opacity = 1.0;
+		}
+		this._cytoscape.style().update();	//redraw graph
+	},
+
+	_computeMassOpacity(cardinality) {
+		if (cardinality === undefined) {
+			return 1.0;
+		}
+		let percent = Math_dimPercent(cardinality, this._totalCardinality);
+		return (percent / 100.0) * (percent / 100.0);
+	},
+
 	// Pan and zoom the groph to show the whole model.
 	fit() {
 		this._cytoscape.fit();
@@ -393,6 +423,11 @@ let CytoscapeEditor = {
 		} else {
 			data.label = treeData.type + "(" + treeData.id + ")";
 		}
+		let opacity = 1.0;
+		if (this._showMass) {
+			opacity = this._computeMassOpacity(treeData.cardinality);
+		}
+		data.opacity = opacity;
 		return data;
 	},
 
