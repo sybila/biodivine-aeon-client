@@ -653,6 +653,34 @@ div.center {
     display: inline-block;
 }
 
+/* Behaviour table styles used by the tree explorer. */
+.behavior-table {
+    width: 450px;
+    margin: 0 auto;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    text-align: center;
+    /* remove cell spacing for proper borders */
+    border-collapse: collapse;
+}
+.behavior-table-header td {
+    border-bottom: 1px solid black;    
+    margin-bottom: 4px;
+}
+.behavior-table td {
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+.behavior-table .cell-behavior {
+    width: 200px;
+}
+
+.behavior-table .cell-witness-count,
+.behavior-table .cell-distribution {
+    width: 125px;
+}
 
 .invisible {
     opacity: 0;

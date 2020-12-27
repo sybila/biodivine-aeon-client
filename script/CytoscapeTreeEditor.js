@@ -12,6 +12,7 @@ let CytoscapeEditor = {
 	
 	// Reference to the cytoscape library "god object"
 	_cytoscape: undefined,
+	_totalCardinality: 0.0,
 	
 	init: function() {
 		this._cytoscape = cytoscape(this.initOptions());			
@@ -24,6 +25,7 @@ let CytoscapeEditor = {
 			} else if (data.type == "leaf") {
 				this._showLeafPanel(data)
 			} else if (data.type == "decision") {
+				this._showDecisionPanel(data);
 				let currentPosition = e.target.position();
 				// Show close button
 				let closeButton = {					
@@ -121,6 +123,8 @@ let CytoscapeEditor = {
 			nodeInfo.classList.add("gone");
 			let leafInfo = document.getElementById("leaf-info");
 			leafInfo.classList.add("gone");
+			let decisionInfo = document.getElementById("decision-info");
+			decisionInfo.classList.add("gone");
 		})
 	},
 
@@ -145,20 +149,55 @@ let CytoscapeEditor = {
 		return node.data().id;
 	},
 
+	_showDecisionPanel(data) {
+		document.getElementById("decision-info").classList.remove("gone");
+		document.getElementById("decision-attribute").innerHTML = data.treeData.attribute_name;
+		let behaviorTable = document.getElementById("decision-behavior-table");
+		let rowTemplate = document.getElementById("decision-behavior-table-row-template");
+		// Remove all old rows
+		var oldRow = undefined;
+		do {
+			oldRow = behaviorTable.getElementsByClassName("behavior-table-row")[0];
+			if (oldRow !== undefined) {
+				oldRow.parentNode.removeChild(oldRow);
+			}
+		} while (oldRow !== undefined);				
+		// Add new rows
+		for (cls of data.treeData.classes) {
+			let row = rowTemplate.cloneNode(true);
+			row.id = "";
+			let behavior = row.getElementsByClassName("cell-behavior")[0];
+			let witnessCount = row.getElementsByClassName("cell-witness-count")[0];
+			let distribution = row.getElementsByClassName("cell-distribution")[0];
+			behavior.innerHTML = this._normalizeClass(cls.class);
+			if (cls.cardinality > 1000.0) {
+				witnessCount.innerHTML = cls.cardinality.toExponential();
+			} else {
+				witnessCount.innerHTML = cls.cardinality.toString();
+			} 	
+			let percent = Math_percent(cls.cardinality, data.treeData.cardinality);
+			let dimPercent = Math_dimPercent(cls.cardinality, data.treeData.cardinality);
+			distribution.innerHTML = percent + "% / " + dimPercent + "ᴅᴘ";
+			row.classList.remove("gone");
+			row.classList.add("behavior-table-row");			
+			behaviorTable.appendChild(row);
+		}
+	},
+
 	_showLeafPanel(data) {
 		document.getElementById("leaf-info").classList.remove("gone");
 		document.getElementById("leaf-phenotype").innerHTML = data.label;
-		document.getElementById("leaf-witness-count").innerHTML = data.treeData.cardinality;
+		let percent = Math_percent(data.treeData.cardinality, this._totalCardinality);
+		let dimPercent = Math_dimPercent(data.treeData.cardinality, this._totalCardinality);
+		document.getElementById("leaf-witness-count").innerHTML = data.treeData.cardinality + " (" + percent + "% / " + dimPercent + "ᴅᴘ)";
 		let conditions = "";
 		let pathId = data.id;
 		let source = this._cytoscape.edges("[target = \""+pathId+"\"]");	
 		while (source.length != 0) {
-			console.log(source);
 			let data = source.data();
 			let is_positive = data.positive === "true";
 			let color = is_positive ? "green" : "red";
 			let pathId = data.source;
-			console.log(pathId);
 			let attribute = this._cytoscape.getElementById(pathId).data().treeData.attribute_name;
 			conditions += "<span class='" + color + "'> ‣ " + attribute + "</span><br>";
 			source = this._cytoscape.edges("[target = \""+pathId+"\"]");
@@ -330,6 +369,9 @@ let CytoscapeEditor = {
 	_applyTreeData(data, treeData) {
 		if (data.id != treeData.id) {
 			error("Updating wrong node.");
+		}
+		if (treeData.id == "0") {
+			this._totalCardinality = treeData.cardinality;
 		}
 		data.treeData = treeData;
 		data.type = treeData.type;

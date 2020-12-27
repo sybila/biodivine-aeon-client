@@ -1,6 +1,7 @@
 let Results = {	
 
 	clear() {
+		document.getElementById("open-tree-explorer").classList.add("gone");
 		document.getElementById("results").innerHTML = "";
 	},
 

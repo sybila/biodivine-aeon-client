@@ -1,3 +1,12 @@
+
+function Math_dimPercent(cardinality, total) {
+	return Math.round(((Math.log2(cardinality)+1) / (Math.log2(total)+1)) * 100);
+}
+
+function Math_percent(cardinality, total) {
+	return Math.round((cardinality / total) * 100);
+}
+
 function init() {
 	// Set engine address according to query parameter
 	const urlParams = new URLSearchParams(window.location.search);
