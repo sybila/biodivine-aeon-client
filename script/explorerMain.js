@@ -24,7 +24,10 @@ var options = {
         shape: 'box',
         labelHighlightBold: false,
         borderWidth: 1,
-    }
+    },
+    layout: {
+        improvedLayout: false,
+    },
 };
 
 function init() {
