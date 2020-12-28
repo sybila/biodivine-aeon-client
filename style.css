@@ -393,6 +393,7 @@ div.invisible-input[contenteditable]:empty:not(:focus):before {
     padding-left: 12px;
     transition: background-color 0.3s;
     border: none;
+    cursor: pointer;
 }
 
 .image-button:hover {
@@ -655,11 +656,13 @@ div.center {
 
 /* Behaviour table styles used by the tree explorer. */
 .behavior-table {
-    width: 450px;
+    width: 468px;
     margin: 0 auto;
     margin-top: 16px;
     margin-bottom: 16px;
     text-align: center;
+    table-layout: fixed;
+    word-break: break-all;
     /* remove cell spacing for proper borders */
     border-collapse: collapse;
 }
@@ -687,6 +690,103 @@ div.center {
     right: 16px;
     bottom: 16px;
     font-weight: bold;    
+}
+
+.attribute-panel {
+    display: block;
+    padding: 8px;
+    background-color: #fafafa;
+    margin-top: 12px;
+    margin-bottom: 24px;
+    margin-left: 15px;
+    margin-right: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px #d0d0d0;
+    border: 2.0px #fafafa solid;
+    position: relative;
+    transition: 0.5s;
+}
+
+.attribute-panel .attribute-name {
+    cursor: pointer;
+    width: 300px;
+    text-align: right;
+    word-break: break-all;
+}
+
+.attribute-sub-panel {
+    width: 220px;    
+    display: inline-block;
+    vertical-align: top;    
+}
+
+.attribute-sub-panel .title {
+    display: inline-block;
+    width: 220px;
+    text-align: center;
+    margin-top: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #ccc;    
+}
+
+.attribute-sub-panel table {
+    width: 220px;
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+.attribute-sub-panel td {
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.attribute-sub-panel td.distribution {
+    width: 39px;
+}
+
+.attribute-sub-panel table.collapsed tr.extra {
+    display: none;
+}
+
+/* Fix for weird vertical alignment of the symbol font. */
+.attribute-sub-panel .phenotype {
+    position: relative;
+    bottom: -5px;
+}
+
+.attribute-sub-panel.negative .phenotype {
+    text-align: right;    
+}
+.attribute-sub-panel.positive .distribution {
+    text-align: right;
+}
+
+.attribute-panel:hover .expand-button {
+    display: block;
+}
+
+.expand-button {
+    display: none;
+    position: absolute;
+    left: 200px;
+    bottom: -13px;
+    text-align: center;
+    background-color: #EFEFEF;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-radius: 6px;
+    box-shadow: 0px 2px 5px #d0d0d0;
+    transition: background-color 0.3s;    
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.expand-button:hover {
+    background-color: #ccc;
 }
 
 

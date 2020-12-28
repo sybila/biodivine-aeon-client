@@ -50,82 +50,23 @@ let CytoscapeEditor = {
 					node.removeClass('hover');			
 				});
 			} else if (data.type == "unprocessed") {
-				let tab = document.getElementById("node-info");
-				let loading = document.getElementById("loading-indicator");
-				loading.classList.remove("invisible");
-				tab.classList.remove("gone");
-				var html = "<h4>Mixed Node ["+data.id+"]</h4>";
-				html += "<table>";
-				html += "<tr><td>Behaviour</td><td>Witness Count</td><td>Portion</td></tr>";
-				let classes = data.treeData.classes;				
-				classes.sort(function(a, b) { return b.cardinality - a.cardinality; });
-				let total = 0.0;
-				for (cls of classes) {
-					total += cls.cardinality;
-				}
-				console.log("Total: "+total);
-				for (cls of classes) {
-					html += "<tr>";
-					html += "<td style='font-family: \"symbols\"'>" + this._normalizeClass(cls.class) + "</td>";
-					html += "<td>" + cls.cardinality + "</td>";
-					let percent = Math.round((cls.cardinality / total) * 100.0);
-					if (percent < 1) {
-						percent = "<1";
-					}
-					html += "<td>" + percent + "%</td>";
-					html += "</tr>";
-				}
-				html += "</table>";				
-				html += "<h4>Possible decision attributes:</h4>";
-				tab.innerHTML = html;
-				ComputeEngine.getDecisionAttributes(data.id, (e, r) => {
-					var cut_off = 100;
-					let html = tab.innerHTML;					
-					for (attr of r) {
-						if (cut_off < 0) break;
-						html += "<div>"
-                		html += "<span>" + attr.name + "</span>";
-                		html += "<div style='float: right; text-align: right;'>"
-                    		html += "<span>IG: "+ Math.round(attr.gain * 100) / 100 +"</span><br>";
-                    		html += "<span>Count: " + (attr.left.length + attr.right.length) + "</span><br>";
-                    		html += "<button onclick='selectAttribute("+data.id+", "+attr.id+")'>Select</button>";
-                		html += "</div>";                                                                
-                		html += "<table style='text-align: center; margin: 0 auto;'>"
-                		attr.left.sort(function(a, b) { return b.cardinality - a.cardinality; });
-                		attr.right.sort(function(a, b) { return b.cardinality - a.cardinality; });
-                    	html += "<tr>";
-                        html += "<td colspan='3'>Negative ("+attr.left.length+")</td>";
-                        html += "<td colspan='3'>Positive ("+attr.right.length+")</td>";
-                    	html += "</tr>";
-                    	html += "<tr>";
-                        html += "<td>"+this._normalizeClass(attr.left[0].class)+"</td>";
-                        html += "<td>"+attr.left[0].cardinality+"</td>";
-                        percent = Math.round((attr.left[0].cardinality / total) * 100.0);
-                        html += "<td>"+percent+"%</td>"
-
-                        html += "<td>"+this._normalizeClass(attr.right[0].class)+"</td>";
-                        html += "<td>"+attr.right[0].cardinality+"</td>";
-                        percent = Math.round((attr.right[0].cardinality / total) * 100.0);
-                        html += "<td>"+percent+"%</td>"
-                    	html += "</tr>";
-                		html += "</table>";
-            			html += "</div>";
-					}
-					tab.innerHTML = html;					
-					loading.classList.add("invisible");
-				});
+				this._showMixedPanel(data);				
 			}
 		});
 		this._cytoscape.on('unselect', (e) => {
 			// Clear remove button
 			CytoscapeEditor._cytoscape.$(".remove-button").remove()
 			// Close panels
-			let nodeInfo = document.getElementById("node-info");
-			nodeInfo.classList.add("gone");
 			let leafInfo = document.getElementById("leaf-info");
 			leafInfo.classList.add("gone");
 			let decisionInfo = document.getElementById("decision-info");
 			decisionInfo.classList.add("gone");
+			let mixedInfo = document.getElementById("mixed-info");
+			mixedInfo.classList.add("gone");
+			// Clear decision attribute list:
+			document.getElementById("button-add-variable").classList.remove("gone");
+			document.getElementById("mixed-attributes").classList.add("gone");
+			document.getElementById("mixed-attributes-list").innerHTML = "";
 		})
 	},
 
@@ -153,18 +94,122 @@ let CytoscapeEditor = {
 	_showDecisionPanel(data) {
 		document.getElementById("decision-info").classList.remove("gone");
 		document.getElementById("decision-attribute").innerHTML = data.treeData.attribute_name;
-		let behaviorTable = document.getElementById("decision-behavior-table");
-		let rowTemplate = document.getElementById("decision-behavior-table-row-template");
+		document.getElementById("decision-phenotype-label").innerHTML = 
+			"Phenotypes (" + data.treeData.classes.length + "):";
+		let behaviorTable = document.getElementById("decision-behavior-table");		
+		this._renderBehaviorTable(data.treeData.classes, data.treeData.cardinality, behaviorTable);		
+	},
+
+	_showMixedPanel(data) {
+		document.getElementById("mixed-info").classList.remove("gone");
+		document.getElementById("mixed-type-label").innerHTML = data.treeData.classes.length + " Phenotypes";
+		let table = document.getElementById("mixed-behavior-table");
+		this._renderBehaviorTable(data.treeData.classes, data.treeData.cardinality, table);
+		let loading = document.getElementById("loading-indicator");
+		let addButton = document.getElementById("button-add-variable");
+		addButton.onclick = function() {
+			loading.classList.remove("invisible");			
+			ComputeEngine.getDecisionAttributes(data.id, (e, r) => {
+				loading.classList.add("invisible");
+				addButton.classList.add("gone");
+				document.getElementById("mixed-attributes").classList.remove("gone");
+				document.getElementById("mixed-attributes-title").innerHTML = "Attributes (" + r.length + "):";
+				let template = document.getElementById("mixed-attributes-list-item-template");				
+				let list = document.getElementById("mixed-attributes-list");
+				var cut_off = 100;
+				let total = data.treeData.cardinality;
+				for (attr of r) {
+					if (cut_off < 0) break;
+					// Prepare data:
+					attr.left.sort(function(a, b) { return b.cardinality - a.cardinality; });
+            		attr.right.sort(function(a, b) { return b.cardinality - a.cardinality; });
+					let attrNode = template.cloneNode(true);
+					attrNode.id = "";
+					attrNode.classList.remove("gone");
+					let nameText = attrNode.getElementsByClassName("attribute-name")[0];				
+					nameText.innerHTML = "<small class='grey'>SELECT:</small>" + attr.name;
+					nameText.onclick = new Function("selectAttribute(" + data.id +", " + attr.id +")");										
+					let igText = attrNode.getElementsByClassName("information-gain")[0];
+					igText.innerHTML = attr.gain.toFixed(2) + " ɪɢ / " + (attr.left.length + attr.right.length) + " ᴛᴄ";
+					if (attr.gain <= 0.0) {
+						igText.classList.add("red");
+					} else if (attr.gain >= 0.99) {
+						igText.classList.add("green");
+					} else {
+						igText.classList.add("primary");
+					}
+					list.appendChild(attrNode);
+					let leftNode = attrNode.getElementsByClassName("negative")[0];
+					let rightNode = attrNode.getElementsByClassName("positive")[0];
+					let leftTotal = attr.left.reduce((a, b) => a + b.cardinality, 0.0);
+					let rightTotal = attr.right.reduce((a, b) => a + b.cardinality, 0.0);
+					leftNode.getElementsByClassName("title")[0].innerHTML = "Negative (" + attr.left.length + "|<small>" + Math_percent(leftTotal, total) + "%</small>)";
+					rightNode.getElementsByClassName("title")[0].innerHTML = "Positive (" + attr.right.length + "|<small>" + Math_percent(rightTotal, total) + "%</small>)";
+					let leftTable = leftNode.getElementsByClassName("table")[0];
+					leftTable.innerHTML = attr.left.reduce((html, cls) => {
+						let style = "";
+						if (html.length > 0) {
+							style = "class='extra'";
+						}
+						let row = `
+							<tr ${style}>
+                            	<td class="distribution">${Math_percent(cls.cardinality, leftTotal)}%</td>
+                            	<td class="symbols phenotype">${CytoscapeEditor._normalizeClass(cls.class)}</td>
+                        	</tr>
+                        `;
+                        return html + row;
+					}, "");
+					let rightTable = rightNode.getElementsByClassName("table")[0];
+					rightTable.innerHTML = attr.right.reduce((html, cls) => {
+						let style = "";
+						if (html.length > 0) {
+							style = "class='extra'";
+						}
+						let row = `
+							<tr ${style}>
+                            	<td class="symbols phenotype">${CytoscapeEditor._normalizeClass(cls.class)}</td>
+                            	<td class="distribution">${Math_percent(cls.cardinality, leftTotal)}%</td>
+                        	</tr>
+                        `;
+                        return html + row;
+					}, "");								
+					let expandButton = attrNode.getElementsByClassName("expand-button")[0];
+					if (attr.left.length == 1 && attr.right.length == 1) {
+						expandButton.parentNode.removeChild(expandButton);
+					} else {
+						let expandButtonEvent = function() {
+							if (expandButton.innerHTML == "more...") {
+								// Expand
+								expandButton.innerHTML = "...less";
+								leftTable.classList.remove("collapsed");
+								rightTable.classList.remove("collapsed");
+							} else if (expandButton.innerHTML == "...less") {
+								// Collapse
+								expandButton.innerHTML = "more...";
+								leftTable.classList.add("collapsed");
+								rightTable.classList.add("collapsed");
+							}
+						}
+						expandButton.onclick = expandButtonEvent;
+					}					
+				}
+				loading.classList.add("invisible");
+			});
+		};
+	},
+
+	_renderBehaviorTable(classes, totalCardinality, table) {
+		let rowTemplate = document.getElementById("behavior-table-row-template");
 		// Remove all old rows
 		var oldRow = undefined;
 		do {
-			oldRow = behaviorTable.getElementsByClassName("behavior-table-row")[0];
+			oldRow = table.getElementsByClassName("behavior-table-row")[0];
 			if (oldRow !== undefined) {
 				oldRow.parentNode.removeChild(oldRow);
 			}
 		} while (oldRow !== undefined);				
 		// Add new rows
-		for (cls of data.treeData.classes) {
+		for (cls of classes) {
 			let row = rowTemplate.cloneNode(true);
 			row.id = "";
 			let behavior = row.getElementsByClassName("cell-behavior")[0];
@@ -176,14 +221,15 @@ let CytoscapeEditor = {
 			} else {
 				witnessCount.innerHTML = cls.cardinality.toString();
 			} 	
-			let percent = Math_percent(cls.cardinality, data.treeData.cardinality);
-			let dimPercent = Math_dimPercent(cls.cardinality, data.treeData.cardinality);
+			let percent = Math_percent(cls.cardinality, totalCardinality);
+			let dimPercent = Math_dimPercent(cls.cardinality, totalCardinality);
 			distribution.innerHTML = percent + "% / " + dimPercent + "ᴅᴘ";
 			row.classList.remove("gone");
-			row.classList.add("behavior-table-row");			
-			behaviorTable.appendChild(row);
+			row.classList.add("behavior-table-row");
+			table.appendChild(row);
 		}
 	},
+
 
 	_showLeafPanel(data) {
 		document.getElementById("leaf-info").classList.remove("gone");
@@ -205,7 +251,6 @@ let CytoscapeEditor = {
 		}
 		document.getElementById("leaf-necessary-conditions").innerHTML = conditions;
 	},
-
 
 	initOptions: function() {
 		return {
@@ -403,6 +448,17 @@ let CytoscapeEditor = {
 		if (treeData.id == "0") {
 			this._totalCardinality = treeData.cardinality;
 		}
+		if (treeData.classes !== undefined) {
+			treeData.classes.sort((a, b) => {
+				if (a.cardinality == b.cardinality) {
+					return a.class.localeCompare(b.class);
+				} else if (a.cardinality < b.cardinality) {
+					return 1;
+				} else {
+					return -1;
+				}
+			})
+		}		
 		data.treeData = treeData;
 		data.type = treeData.type;
 		if (treeData.type == "leaf") {

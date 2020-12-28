@@ -32,10 +32,10 @@
                 <span id="decision-attribute" style="font-size: 30px;">Lorem_Ipsum</span>
             </div>
 
-            <span style="font-weight: bold; margin-top: 16px; display: inline-block; margin-bottom: 8px;">Phenotypes:</span>
+            <span id="decision-phenotype-label" style="font-weight: bold; margin-top: 16px; display: inline-block; margin-bottom: 8px;">Phenotypes (X):</span>
 
             <table id="decision-behavior-table" class="behavior-table">                
-                <tr id="decision-behavior-table-row-template" class="gone">
+                <tr id="behavior-table-row-template" class="gone">
                     <td class="cell-behavior symbols">S O</td>
                     <td class="cell-witness-count">1234</td>
                     <td class="cell-distribution">24% / 14ᴅᴘ</td>
@@ -50,6 +50,61 @@
             </table>
 
             <span style="font-size: 14px; display: block; width: 100%; text-align: right;">ᴅᴘ = dimension-adjusted percentage</span>
+        </div>
+
+        <div id="mixed-info" class="main-panel fira-mono gone">
+            <div class="center" style="margin: 16px;">
+                <span style="position: relative; top: -20px; font-size: 14px;">Mixed</span><br>
+                <span id="mixed-type-label" style="font-size: 30px;">X types</span>
+            </div>
+
+            <table id="mixed-behavior-table" class="behavior-table">                
+                <tr class="behavior-table-header">
+                    <td class="cell-behavior">Behavior</td>
+                    <td class="cell-witness-count">Witness Count</td>
+                    <td class="cell-distribution">Distribution</td>
+                </tr>
+                <tr class="empty-space"><td></td></tr>                
+            </table>
+
+            <div id="mixed-attributes-list-item-template" class="attribute-panel gone">                
+                <div style="float: left;" class="information-gain">0.43 ɪɢ / 4 ᴛᴄ</div>
+                <div style="float: right;" class="attribute-name">ATTr_Name</div>
+                <div style="clear: both;"></div>
+                <div class="attribute-sub-panel negative">
+                    <span class="title">Negative</span>
+                    <table class="table collapsed">
+                        <tr>
+                            <td class="distribution">99%</td>
+                            <td class="symbols phenotype">SSSSSSSSSSSSSSSSSD</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="attribute-sub-panel positive">
+                    <span class="title">Positive</span>
+                    <table class="table collapsed">
+                        <tr>                        
+                            <td class="symbols phenotype">SSSSSSSSSSSSSSSSSD</td>
+                            <td class="distribution">99%</td>                            
+                        </tr>
+                    </table>
+                </div>                
+                <div style="clear: both;"></div>
+                <div class="expand-button">more...</div>
+            </div>
+
+            <button id="button-add-variable" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Make decision <img src="img/add_box-24px.svg"></button>                
+            <div id="mixed-attributes" class="gone">
+                <span id="mixed-attributes-title" style="font-weight: bold; margin-top: 16px; display: inline-block; margin-bottom: 8px;">Attributes:</span>
+
+                <div id="mixed-attributes-list">
+
+                </div>                                
+
+                <span style="font-size: 14px; display: block; width: 100%; text-align: right;">ᴅᴘ = dimension-adjusted percentage</span>
+                <span style="font-size: 14px; display: block; width: 100%; text-align: right;">ɪɢ = information gain</span>
+                <span style="font-size: 14px; display: block; width: 100%; text-align: right;">ᴛᴄ = total class count</span>
+            </div>            
         </div>
 
         <div id="leaf-info" class="main-panel fira-mono gone">
@@ -70,103 +125,7 @@
 
             <span style="font-size: 14px; display: block; width: 100%; text-align: right;">ᴅᴘ = dimension-adjusted percentage</span>
         </div>
-
-        <div id="node-info" class="main-panel gone">
-            <h4>Mixed Node [123]</h4>
-            <table>
-                <tr>
-                    <td>Behaviour</td>
-                    <td>Witness Count</td>
-                    <td>Portion</td>
-                </tr>
-                <tr>
-                    <td>S, S</td>
-                    <td>123456</td>
-                    <td>95%</td>
-                </tr>
-                <tr>
-                    <td>S, O</td>
-                    <td>12345</td>
-                    <td>5%</td>
-                </tr>   
-                <tr>
-                    <td>D</td>
-                    <td>1234</td>
-                    <td>1%</td>
-                </tr>             
-            </table>
-
-            <h4>Possible decision attributes:</h4>
-            <div>
-                <span>[12] A -> B is activation</span>
-                <div style="float: right; text-align: right;">
-                    <span>IG: 0.1234</span><br>
-                    <span>Count: 5</span><br>
-                    <button>Expand</button>
-                </div>                                                                
-                <table style="text-align: center; margin: 0 auto;">
-                    <tr>
-                        <td colspan="3">Negative</td>
-                        <td colspan="3">Positive</td>
-                    </tr>
-                    <tr>
-                        <td>S, S</td>
-                        <td>1234</td>
-                        <td>60%</td>
-                        <td>O</td>
-                        <td>1234</td>
-                        <td>80%</td>
-                    </tr>
-                </table>                
-            </div>
-
-            <div>
-                <span>[12] A -> B is activation</span>
-                <div style="float: right; text-align: right;">
-                    <span>IG: 0.1234</span><br>
-                    <span>Count: 5</span><br>
-                    <button>Expand</button>
-                </div>                                                                
-                <table style="text-align: center; margin: 0 auto;">
-                    <tr>
-                        <td colspan="3">Negative</td>
-                        <td colspan="3">Positive</td>
-                    </tr>
-                    <tr>
-                        <td>S, S</td>
-                        <td>1234</td>
-                        <td>60%</td>
-                        <td>O</td>
-                        <td>1234</td>
-                        <td>80%</td>
-                    </tr>
-                </table>                
-            </div>
-
-            <div>
-                <span>[12] A -> B is activation</span>
-                <div style="float: right; text-align: right;">
-                    <span>IG: 0.1234</span><br>
-                    <span>Count: 5</span><br>
-                    <button>Expand</button>
-                </div>                                                                
-                <table style="text-align: center; margin: 0 auto;">
-                    <tr>
-                        <td colspan="3">Negative</td>
-                        <td colspan="3">Positive</td>
-                    </tr>
-                    <tr>
-                        <td>S, S</td>
-                        <td>1234</td>
-                        <td>60%</td>
-                        <td>O</td>
-                        <td>1234</td>
-                        <td>80%</td>
-                    </tr>
-                </table>                
-            </div>
-        </div>
-
+        
         <div id="loading-indicator" class="invisible"><img src="img/progress.gif"/><br><br>Waiting for server...</div>
 
         <div id="transparency-switch" class="grey">
