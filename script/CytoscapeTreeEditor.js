@@ -168,7 +168,7 @@ let CytoscapeEditor = {
 						let row = `
 							<tr ${style}>
                             	<td class="symbols phenotype">${CytoscapeEditor._normalizeClass(cls.class)}</td>
-                            	<td class="distribution">${Math_percent(cls.cardinality, leftTotal)}%</td>
+                            	<td class="distribution">${Math_percent(cls.cardinality, rightTotal)}%</td>
                         	</tr>
                         `;
                         return html + row;

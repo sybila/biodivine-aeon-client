@@ -692,14 +692,23 @@ div.center {
     font-weight: bold;    
 }
 
+/* 
+    As a general note to future generations: 
+    In some browsers, you won't see a scroll-bar when the computer only has a touchpad.
+    That means there will be a scroll-bar once you connect a mouse, which will mess
+    up your margins and/or paddings. 
+
+    Lesson learned: Do not use fixed left/right margins for centering in a fixed-width
+    container. Instead use margin:0 auto; and let the scrollbar eat into the auto margin.
+*/
+
 .attribute-panel {
     display: block;
     padding: 8px;
     background-color: #fafafa;
+    margin: 0 auto;
     margin-top: 12px;
     margin-bottom: 24px;
-    margin-left: 15px;
-    margin-right: 15px;
     border-radius: 8px;
     box-shadow: 0px 2px 5px #d0d0d0;
     border: 2.0px #fafafa solid;
