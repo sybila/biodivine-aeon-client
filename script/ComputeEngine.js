@@ -17,7 +17,7 @@ let ComputeEngine = {
 	openConnection(callback = undefined) {
 		this._address = document.getElementById("engine-address").value;
 		this.ping(true, 2000, function(error, ping) {
-			if (ping["version"] != EXPECTED_ENGINE_VERSION) {
+			if (ping !== undefined && ping["version"] != EXPECTED_ENGINE_VERSION) {
 				alert(
 					"Your AEON client version is " + EXPECTED_ENGINE_VERSION + 
 					", but your compute engine version is " + ping["version"] + ". \n\n" +
