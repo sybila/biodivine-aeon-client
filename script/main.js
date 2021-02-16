@@ -1,4 +1,5 @@
 let EXPECTED_ENGINE_VERSION = "0.3.0"
+document.title = document.title + " (" + EXPECTED_ENGINE_VERSION + ")";
 
 hasLocalStorage = false;
 
