@@ -45,6 +45,10 @@ function init() {
             alert(e);
         } else {
             RESULT = r;
+
+            if(RESULT["has_large_attractors"]) {
+                alert("Some attractors were too large to draw. These will be shown only as two states with the constant and non-constant variables differentiated.");
+            }
             
             for (var i = 0; i < RESULT.attractors.length; i++) {
                 RESULT.attractors[i].vis = edgesToVisFormat(RESULT.attractors[i].graph);
@@ -117,7 +121,7 @@ function edgesToVisFormat(array) {
         }
     }
 
-    return { edges, nodes: Array.from(nodes).map(x => ({id:x, label:x.replaceAll(/[⊥⊤]/gi, "-")})) };
+    return { edges, nodes: Array.from(nodes).map(x => ({id:x, label:x.replace(/[⊥⊤]/gi, "-")})) };
 }
 
 function showState(string) {
