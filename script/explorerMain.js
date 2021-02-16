@@ -1,3 +1,4 @@
+document.title = document.title + " (" + EXPECTED_ENGINE_VERSION + ")";
 
 var RESULT = undefined;
 var network = undefined;
