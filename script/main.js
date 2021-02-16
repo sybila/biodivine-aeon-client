@@ -1,4 +1,4 @@
-let EXPECTED_ENGINE_VERSION = "0.3.0-beta.1"
+let EXPECTED_ENGINE_VERSION = "0.3.0"
 
 hasLocalStorage = false;
 
