@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+
+<!-- 
+        This file is a "landing page" for AEON which 
+        links to different older versions.
+
+        It should be placed outside of the main client directory
+        and renamed to index.html - don't forget to include the fonts!
+-->
+
+<html>
+    <head>
+        <title>Biodivine/Aeon</title>
+        <meta charset="utf-8">
+        <style type="text/css">
+
+            @font-face {
+                font-family: 'BaileyReg';
+                src: url("font/B3.ttf");
+            }
+
+            @font-face {
+                font-family: 'BaileyBold';
+                src: url("font/B2.ttf");
+            }
+
+            @font-face {
+                font-family: 'FiraMono';
+                src: url('font/FiraMono-Regular.ttf');
+            }
+
+            @font-face {
+                font-family: 'FiraMonoBold';
+                src: url('font/FiraMono-Bold.ttf');
+            }
+
+
+            #logo {
+                width: fit-content;
+                width: -moz-fit-content;
+                margin: 0 auto;
+                margin-top: 64px;                
+                margin-bottom: 32px;
+                right: 24px;
+                font-family: 'BaileyReg', monospace;
+                font-weight: normal;
+                color: #3a568c;
+                font-size: 4.2em;
+            }
+
+            #title{
+                font-family: 'BaileyBold', monospace;
+                font-weight: bold;
+                color: #d05d5d;
+            }
+
+            .version-number {
+                color: #3a568c;
+                font-family: 'FiraMonoBold', monospace;
+                font-weight: bold;
+                font-size: 30px;
+                text-decoration: none;
+            }            
+
+            .version-number:hover {
+                color: #d05d5d;
+            }
+
+            .links {
+                margin: 0 auto;
+                width: 800px;
+                font-size: 18px;
+            }
+
+            .link {
+                font-family: 'Helvetica', 'Arial', sans-serif;
+            }
+
+            .link a {
+                color: #3a568c;
+            }
+
+            .link a:visited {
+                color: #3a568c;   
+            }
+
+            .subversion {
+                color: #aaa;
+                font-size: 26px;
+            }
+
+            code {
+                font-family: 'FiraMono', monospace;
+            }
+
+            p {
+                text-align: justify;
+            }
+
+        </style>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-HTCNPH6WMB"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-HTCNPH6WMB');
+        </script>
+        
+    </head>
+
+    <body>
+
+        <h1 id='logo'>Aeon/<span id='title'>BIODIVINE</span></h1>
+
+        <div class="links">
+            <small><p class="link" style="text-align: center;">If you have any issues or questions about AEON, <br>get in touch at <a href="mailto:sybila@fi.muni.cz">sybila@fi.muni.cz</a>. It is probably not your fault ;)<br>You can also get in touch on github for the <a href="https://github.com/sybila/biodivine-aeon-client">web-gui</a> and the <a href="https://github.com/sybila/biodivine-aeon-server">compute-engine</a>.</p></small>
+
+            <p class="link"><a class="version-number" href="v0.4.0/index.html">v0.4.0</a> <span class="subversion">[alpha]</span> Preview of the new bifurcation function explorer. Using a completely new editor, you can interactively investigate the structure of attractors depending on various properties of the parameter space. These can be basic boolean parameters/constants, regulation monotonicity, or more advanced context-aware attributes (e.g. <small><code>X essential in Y when Z</code></small>).</p>
+            <p class="link"><a class="version-number" href="v0.3.0/index.html">v0.3.0</a> Includes a new, completely symbolic attractor detection algorithm. Without parameters, AEON now scales beyond 1000 Boolean variables. With parameters, the performance depends on the actual behaviour, but significant improvements compared to <code>0.2.0</code> are expected. Additionally, static analysis can now explain <i>why</i> an update function cannot be instantiated. Consequently, debugging large models should be much easier.<br>Other smaller improvements include: visualisation of constant variables in large attractors (where full graph cannot be shown); additional improvements to SBML compatibility; and better cancellation and progress support for long computations.</p>
+            <p class="link"><a class="version-number" href="v0.2.0/index.html">v0.2.0</a> <span class="subversion">[deprecated]</span> In this version, AEON learned to visualize attractor state space (up to 1000 states) for witness networks. We also significantly improved SBML import/export compatibility with other tools.</p>
+            <p class="link"><a class="version-number" href="v0.1.0/index.html">v0.1.0</a> <span class="subversion">[deprecated]</span> Original AEON as published at CAV 2020. Includes interactive editor for parametrized Boolean networks with SBML-qual support. Uses semi-symbolic parallel attractor detection algorithm that can typically handle models with up to 20 variables and 100 Boolean parameters using common hardware.</p>
+        </div>
+
+    </body>
+</html>
