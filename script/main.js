@@ -1,4 +1,5 @@
-let EXPECTED_ENGINE_VERSION = "0.3.0-beta.1"
+let EXPECTED_ENGINE_VERSION = "0.5.0-SNAPSHOT"
+document.title = document.title + " (" + EXPECTED_ENGINE_VERSION + ")";
 
 hasLocalStorage = false;
 
