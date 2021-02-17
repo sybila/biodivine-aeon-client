@@ -102,3 +102,33 @@ function openTreeAttractor() {
 	const url = window.location.pathname.replace("tree_explorer.html", "explorer.html");
     window.open(url + '?engine=' + encodeURI(ComputeEngine.getAddress()) + "&tree_witness="+ encodeURI(node));
 }
+
+// Used to initialize a stability analysis button in the detail panels.
+function initStabilityButton(id, button, container) {
+    let loading = document.getElementById("loading-indicator");
+    button.onclick = function() {
+        loading.classList.remove("invisible");
+        ComputeEngine.getStabilityData(id, (e, r) => {
+            loading.classList.add("invisible");
+            if (e !== undefined) {
+                console.log(e);
+                alert("Cannot load stability data.");                   
+            } else {
+                button.classList.add("gone");                
+                let alwaysTrue = "<div><b>Always true:</b> <span class='green'>"+r["always_true"].join("; ") + "</span><div>";
+                if(r["always_true"].length == 0) { alwaysTrue = ""; }
+                let alwaysFalse = "<div><b>Always false:</b> <span class='red'>"+r["always_false"].join("; ") + "</span><div>";
+                if(r["always_false"].length == 0) { alwaysFalse = ""; }
+                let constant = "<div><b>Constant:</b> "+r["constant"].join("; ") + "<div>";
+                if(r["constant"].length == 0) { constant = ""; }
+                let sinkCount = "<div><b>Unique sinks:</b> "+r["sink_count"] + "<div>";
+                if(r["sink_count"] == "0") { sinkCount = ""; }
+                let content = alwaysTrue + alwaysFalse + constant + sinkCount;
+                if(content.length == 0) {
+                	content = "No stable variables found."
+                }
+                container.innerHTML = content;
+            }
+        })
+    }
+}
