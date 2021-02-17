@@ -2,7 +2,7 @@
 
 <html>
     <head>
-        <title>Biodivine/Aeon</title>
+        <title>[Aeon] Bifurcation tree</title>
         <meta charset="utf-8">
         <link rel="stylesheet" href="style.css" type="text/css">        
 
@@ -17,6 +17,15 @@
         <script src="script/CytoscapeTreeEditor.js"></script>                
         <script src="script/treeExplorerMain.js"></script>
         
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-HTCNPH6WMB"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-HTCNPH6WMB');
+        </script>
     </head>
 
     <body onload="init()" id="tree-explorer">
@@ -50,6 +59,11 @@
             </table>
 
             <span style="font-size: 14px; display: block; width: 100%; text-align: right;">ᴅᴘ = dimension-adjusted percentage</span>
+
+            <div style="text-align: right; margin-bottom: 16px; margin-right: 8px; margin-top: 16px;">
+                <button id="decision-stability-analysis-button" class="image-button">Stability analysis <img src="img/stability_analysis-24px.svg"></button>
+            </div>      
+            <div id="decision-stability-analysis" class="stability-panel"></div>
         </div>
 
         <div id="mixed-info" class="main-panel fira-mono gone">
@@ -93,7 +107,9 @@
                 <div class="expand-button">more...</div>
             </div>
 
-            <button id="button-add-variable" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Make decision <img src="img/add_box-24px.svg"></button>                
+            <button id="button-add-variable" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Make decision <img src="img/add_box-24px.svg"></button>             
+            <button id="mixed-stability-analysis-button" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Stability analysis <img src="img/stability_analysis-24px.svg"></button> 
+            <div id="mixed-stability-analysis" class="stability-panel"></div>                  
             <div id="mixed-attributes" class="gone">
                 <span id="mixed-attributes-title" style="font-weight: bold; margin-top: 16px; display: inline-block; margin-bottom: 8px;">Attributes:</span>
 
@@ -123,7 +139,12 @@
 
             <div id="leaf-necessary-conditions">Lorem Ipsum</div>
 
-            <span style="font-size: 14px; display: block; width: 100%; text-align: right;">ᴅᴘ = dimension-adjusted percentage</span>
+            <span style="font-size: 14px; display: block; width: 100%; text-align: right; margin-top: 8px;">ᴅᴘ = dimension-adjusted percentage</span>
+
+            <div style="text-align: right; margin-bottom: 16px; margin-right: 8px; margin-top: 16px;">
+                <button id='leaf-stability-analysis-button' class="image-button">Stability analysis <img src="img/stability_analysis-24px.svg"></button>
+            </div>       
+            <div id="leaf-stability-analysis" class="stability-panel"></div>     
         </div>    
 
         <div id="transparency-switch" class="grey">

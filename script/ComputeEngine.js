@@ -21,7 +21,7 @@ let ComputeEngine = {
 			this._address = document.getElementById("engine-address").value;
 		}
 		this.ping(true, 2000, function(error, ping) {
-			if (ping["version"] != EXPECTED_ENGINE_VERSION) {
+			if (ping !== undefined && ping["version"] != EXPECTED_ENGINE_VERSION) {
 				alert(
 					"Your AEON client version is " + EXPECTED_ENGINE_VERSION + 
 					", but your compute engine version is " + ping["version"] + ". \n\n" +
@@ -234,6 +234,14 @@ let ComputeEngine = {
 				callback(e, r);
 			}
 		}, "POST");
+	},
+
+	getStabilityData(nodeId, callback) {
+		return this._backendRequest("/get_stability_data/"+nodeId, (e, r) => {
+			if (callback !== undefined) {
+				callback(e, r);
+			}
+		}, "GET");
 	},
 
 	// Send a ping request. If interval is set, the ping will be repeated

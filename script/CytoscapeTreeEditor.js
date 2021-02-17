@@ -67,6 +67,13 @@ let CytoscapeEditor = {
 			document.getElementById("button-add-variable").classList.remove("gone");
 			document.getElementById("mixed-attributes").classList.add("gone");
 			document.getElementById("mixed-attributes-list").innerHTML = "";
+			// Reset stability analysis buttons:
+			document.getElementById("mixed-stability-analysis-button").classList.remove("gone");
+			document.getElementById("leaf-stability-analysis-button").classList.remove("gone");
+			document.getElementById("decision-stability-analysis-button").classList.remove("gone");
+			document.getElementById("mixed-stability-analysis").innerHTML = "";
+			document.getElementById("leaf-stability-analysis").innerHTML = "";
+			document.getElementById("decision-stability-analysis").innerHTML = "";
 		})
 	},
 
@@ -97,7 +104,11 @@ let CytoscapeEditor = {
 		document.getElementById("decision-phenotype-label").innerHTML = 
 			"Phenotypes (" + data.treeData.classes.length + "):";
 		let behaviorTable = document.getElementById("decision-behavior-table");		
-		this._renderBehaviorTable(data.treeData.classes, data.treeData.cardinality, behaviorTable);		
+		this._renderBehaviorTable(data.treeData.classes, data.treeData.cardinality, behaviorTable);
+
+		let stabilityButton = document.getElementById("decision-stability-analysis-button");
+		let stabilityContainer = document.getElementById("decision-stability-analysis");
+		initStabilityButton(data.treeData.id, stabilityButton, stabilityContainer);		
 	},
 
 	_showMixedPanel(data) {
@@ -196,6 +207,9 @@ let CytoscapeEditor = {
 				loading.classList.add("invisible");
 			});
 		};
+		let stabilityButton = document.getElementById("mixed-stability-analysis-button");
+		let stabilityContainer = document.getElementById("mixed-stability-analysis");
+		initStabilityButton(data.treeData.id, stabilityButton, stabilityContainer);		
 	},
 
 	_renderBehaviorTable(classes, totalCardinality, table) {
@@ -250,6 +264,9 @@ let CytoscapeEditor = {
 			source = this._cytoscape.edges("[target = \""+pathId+"\"]");
 		}
 		document.getElementById("leaf-necessary-conditions").innerHTML = conditions;
+		let stabilityButton = document.getElementById("leaf-stability-analysis-button");
+		let stabilityContainer = document.getElementById("leaf-stability-analysis");
+		initStabilityButton(data.treeData.id, stabilityButton, stabilityContainer);		
 	},
 
 	initOptions: function() {

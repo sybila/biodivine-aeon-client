@@ -798,6 +798,11 @@ div.center {
     background-color: #ccc;
 }
 
+.stability-panel {
+    clear: both;
+    word-break: break-all;
+}
+
 
 .invisible {
     opacity: 0;
