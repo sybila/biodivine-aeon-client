@@ -64,10 +64,18 @@ function init() {
     // get the attractors    
     if (reqBeh !== undefined && reqBeh !== null) {
         var request = ComputeEngine._backendRequest('/get_attractors/' + reqBeh, callback, 'GET', null);
-    } else {
-        const requestedTreeWitness = urlParams.get('tree_witness'); // Should be a node id.
+    } else {        
+        const requestedTreeWitness = urlParams.get('tree_witness'); // Should be a node id.        
         if (requestedTreeWitness !== undefined && requestedTreeWitness !== null) {
-            var request = ComputeEngine._backendRequest('/get_tree_attractors/' + requestedTreeWitness, callback, 'GET', null);
+            const requestedVariable = urlParams.get('variable');
+            const requestedValue = urlParams.get('value');        
+            if(requestedVariable === undefined || requestedVariable === null) {
+                // Just get node attractors
+                var request = ComputeEngine._backendRequest('/get_tree_attractors/' + requestedTreeWitness, callback, 'GET', null);
+            } else {
+                // This is attractor stability query
+                var request = ComputeEngine._backendRequest('/get_stability_attractors/' + requestedTreeWitness + '/' + encodeURI(requestedVariable) + '/' + requestedValue, callback, 'GET', null);
+            }            
         }
     }
 

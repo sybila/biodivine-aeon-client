@@ -68,7 +68,14 @@ function init() {
 	const requestedTreeWitness = urlParams.get('tree_witness');	// Should be a node id.
 	if (requestedTreeWitness !== undefined && requestedTreeWitness !== null) {
 		UI.isLoading(true);
-		ComputeEngine.getTreeWitness(requestedTreeWitness, witnessCallback, true);
+		const requestedVariable = urlParams.get('variable');
+        const requestedValue = urlParams.get('value');     
+        if(requestedVariable === undefined || requestedVariable === null) {
+        	ComputeEngine.getTreeWitness(requestedTreeWitness, witnessCallback, true);
+        } else {
+        	// This is attractor stability query
+            ComputeEngine._backendRequest('/get_stability_witness/' + requestedTreeWitness + '/' + encodeURI(requestedVariable) + '/' + requestedValue, witnessCallback, 'GET', null);
+        }		
 	}
 }
 
