@@ -20,22 +20,18 @@ function init() {
 	CytoscapeEditor.init();			
 	ComputeEngine.openConnection();	// Try to automatically connect when first opened.
 
-	const requestedWitness = urlParams.get('witness');
-	if (requestedWitness !== undefined && requestedWitness !== null && requestedWitness.length > 0) {
-		UI.isLoading(true);
-		ComputeEngine.getWitness(requestedWitness, (e, r) => {
-			UI.isLoading(false);
-			if (e !== undefined) {
-				alert(e);
-			} else {
-				let error = LiveModel.importAeon(r.model);				
-				if (error !== undefined) {
-	        		alert(error);
-	        	}
-	        	UI.ensureContentTabOpen(ContentTabs.modelEditor);
-			}
-		}, true);
-	}
+    let body = document.getElementsByTagName("BODY")[0];
+    let initial = body.getAttribute("data-initial-model");
+    if (initial != "undefined") {
+        console.log("Found initial model.");
+        let error = LiveModel.importAeon(initial);
+        if (error !== undefined) {
+            alert(error);
+        }
+        UI.ensureContentTabOpen(ContentTabs.modelEditor);
+    } else {
+        console.log("Initial model undefined.");
+    }
 }
 
 let Strings = {

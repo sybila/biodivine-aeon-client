@@ -386,8 +386,9 @@ let UI = {
 			alert("Results no longer available.");
 			return;
 		}
-		const url = window.location.pathname;
-        window.open(url + '?engine=' + encodeURI(ComputeEngine.getAddress()) + "&witness="+ encodeURI(witness));
+		NativeBridge.makeRequest({ "path": "open_witness", "witness": witness });
+		//const url = window.location.pathname;
+        //window.open(url + '?engine=' + encodeURI(ComputeEngine.getAddress()) + "&witness="+ encodeURI(witness));
 	},
 
 	// Add a listener to each button to display hint texts when hovered.

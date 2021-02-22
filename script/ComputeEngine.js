@@ -7,7 +7,7 @@ let ComputeEngine = {
 
 	waitingForResult: false,
 	_address: "http://localhost:8000",
-	_connected: false,
+	_connected: true,
 	_pingRepeatToken: undefined,
 	// a timestamp of last successfully started computation
 	// if status returns a different timestamp, we know results are out of date
