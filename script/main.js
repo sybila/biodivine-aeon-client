@@ -26,7 +26,7 @@ function init() {
         console.log("Found initial model.");
         let error = LiveModel.importAeon(initial);
         if (error !== undefined) {
-            alert(error);
+            alert(error, "error");
         }
         UI.ensureContentTabOpen(ContentTabs.modelEditor);
     } else {

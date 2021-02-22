@@ -107,11 +107,11 @@ let ComputeEngine = {
 
 	startComputation(aeonString) {		
 		if (aeonString === undefined) {
-			alert("Empty model.");
+			alert("Empty model.", "error");
 			return undefined;
 		}
 		if (!this.isConnected()) {
-			alert("Compute engine not connected.");
+			alert("Compute engine not connected.", "error");
 			return undefined;
 		} else {
 			Results.clear();
@@ -120,7 +120,7 @@ let ComputeEngine = {
 			//return this._backendRequest("/start_computation", (e, r) => {
 				if (e !== undefined) {
 					console.log(e);
-					alert("Computation error: "+e);					
+					alert("Computation error: "+e, "error");
 				} else {
 					console.log("Started computation ",r.timestamp);
 					this._lastComputation = r.timestamp;
@@ -132,14 +132,14 @@ let ComputeEngine = {
 
 	cancelComputation() {
 		if (!this.isConnected()) {
-			alert("Compute engine not connected.");
+			alert("Compute engine not connected.", "warning");
 			return undefined;
 		} else {
 		    NativeBridge.makeRequest({ "path": "cancel_computation" }, (e, r) => {
 			//return this._backendRequest("/cancel_computation", (e, r) => {
 				if (e !== undefined) {
 					console.log(e);
-					alert("Error: "+e);					
+					alert("Error: "+e, "error");
 				}
 				this.ping();
 			}/*, "POST", ""*/);
@@ -193,7 +193,7 @@ let ComputeEngine = {
 			if (this._connected) {
 				status = "connected";
 			}
-			console.log("...ping..."+status+"...");
+			//console.log("...ping..."+status+"...");
 			UI.updateComputeEngineStatus(status, response);
 			// Schedule a ping for later if requested.
 			if (keepAlive && error === undefined) {

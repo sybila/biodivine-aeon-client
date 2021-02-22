@@ -15,7 +15,7 @@ let Results = {
 			UI.isLoading(false);
 			ComputeEngine.waitingForResult = false;
 			if (e !== undefined) {
-				alert(e);
+				alert(e, "error");
 			} else {
 		        let result = json.data.sort((a, b) => b.sat_count - a.sat_count);
 		        if (!result) {

@@ -53,33 +53,38 @@ let LiveModel = {
 		let variable = this._variables[id];
 		if (variable === undefined) return;	// nothing to remove
 		// prompt user to confirm action
-		if (force || confirm(Strings.removeNodeCheck(variable['name']))) {
-			// First, explicitly remove all regulations that have something to do with us.
-			let update_regulations_after_delete = [];
-			for (var i = 0; i < this._regulations.length; i++) {
-				let reg = this._regulations[i];
-				if (reg.regulator == id || reg.target == id) {
-					this._removeRegulation(reg);
-					update_regulations_after_delete.push(reg.target);
-				}
-			}
-			delete this._variables[id];
-			delete this._updateFunctions[id];
-			CytoscapeEditor.removeNode(id);
-			ModelEditor.removeVariable(id);
-			ModelEditor.updateStats();
-			if (this.isEmpty()) UI.setQuickHelpVisible(true);
-			this.saveToLocalStorage();
-			for (let id of update_regulations_after_delete) { 
-				// We also have to recompute the update function - the variable just became a parameter...
-					if (this._updateFunctions[id] !== undefined) {
-						// Set the function - this will mark the variable as parameter in metadata
-						this.setUpdateFunction(id, this._updateFunctions[id].functionString);
-					}
-					// And validate again.
-					this._validateUpdateFunction(id);
-			}
-		}
+        let action = () => {
+            // First, explicitly remove all regulations that have something to do with us.
+            let update_regulations_after_delete = [];
+            for (var i = 0; i < this._regulations.length; i++) {
+                let reg = this._regulations[i];
+                if (reg.regulator == id || reg.target == id) {
+                    this._removeRegulation(reg);
+                    update_regulations_after_delete.push(reg.target);
+                }
+            }
+            delete this._variables[id];
+            delete this._updateFunctions[id];
+            CytoscapeEditor.removeNode(id);
+            ModelEditor.removeVariable(id);
+            ModelEditor.updateStats();
+            if (this.isEmpty()) UI.setQuickHelpVisible(true);
+            this.saveToLocalStorage();
+            for (let id of update_regulations_after_delete) {
+                // We also have to recompute the update function - the variable just became a parameter...
+                    if (this._updateFunctions[id] !== undefined) {
+                        // Set the function - this will mark the variable as parameter in metadata
+                        this.setUpdateFunction(id, this._updateFunctions[id].functionString);
+                    }
+                    // And validate again.
+                    this._validateUpdateFunction(id);
+            }
+        };
+        if (force) { action(); } else {
+            confirm(Strings.removeNodeCheck(variable['name']), (yes) => {
+                if (yes) { action(); }
+            });
+        }
 	},
 
 	// Change the name of the variable to the given value, if the name is valid.
@@ -306,14 +311,29 @@ let LiveModel = {
 		return result;
 	},
 
+	importAeon(modelString) {
+	    if(this.isEmpty()) {
+	        return this.importAeonUnchecked(modelString);
+	    } else {
+	        confirm(Strings.modelWillBeErased, (yes) => {
+	            if(yes) {
+	                let error = this.importAeonUnchecked(modelString);
+	                if (error !== undefined) {
+	                    alert(error, "error");
+	                }
+                }
+	        });
+	    }
+	},
+
 	// Import model from Aeon file. If the import is successful, return undefined,
 	// otherwise return an error string.
-	importAeon(modelString) {
-		if (!this.isEmpty() && !confirm(Strings.modelWillBeErased)) {
+	importAeonUnchecked(modelString) {
+		/*if (!this.isEmpty() && !confirm(Strings.modelWillBeErased)) {
 			// If there is some model loaded, let the user know it will be
 			// overwritten. If he decides not to do it, just return...
 			return undefined;
-		}
+		}*/
 		let lines = modelString.split("\n");
 		// name1 -> name2
 		let regulationRegex = /^\s*([a-zA-Z0-9_{}]+)\s*-([>|?])(\??)\s*([a-zA-Z0-9_{}]+)\s*$/;
@@ -421,7 +441,7 @@ let LiveModel = {
 			ModelEditor.setUpdateFunction(variable, updateFunctions[key]);			
 			let error = this.setUpdateFunction(variable, updateFunctions[key]);
 			if (error !== undefined) {
-				alert(error);
+				alert(error, "error");
 			}
 		}
 
@@ -461,7 +481,7 @@ let LiveModel = {
 				this.importAeon(modelString);
 			}			
 		} catch (e) {
-			alert("No recent model available. Make sure 'Block third-party cookies and site data' is disabled in your browser.");
+			alert("No recent model available. Make sure 'Block third-party cookies and site data' is disabled in your browser.", "warning");
 			console.log(e);
 		}
 	},
@@ -613,11 +633,15 @@ let LiveModel = {
 				if (regulation === undefined) {
 					let my_name = this.getVariableName(id);
 					let message = "Variable '"+variable.name+"' does not regulate '"+my_name+"'.";
-					if (confirm(message + " Do you want to create the regulation now?")) {
-						this.addRegulation(variable.id, id, true, EdgeMonotonicity.unspecified);
-					} else {
-						return message;
-					}
+					confirm(message + " Do you want to create the regulation now?", (yes) => {
+					    if (yes) {
+                            this.addRegulation(variable.id, id, true, EdgeMonotonicity.unspecified);
+                            this._checkUpdateFunction(id, functionString);  // Re-run
+					    } else {
+                            alert(message, "error");
+					    }
+					});
+					return { parameters: new Set() };
 				}
 			}			
 		}

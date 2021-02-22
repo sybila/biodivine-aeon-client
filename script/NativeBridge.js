@@ -3,6 +3,16 @@ console.log = console.info = console.error = function(str) {
     external.invoke(JSON.stringify({ "path": "log", "message": str, "requestId": 0 }));
 }
 
+alert = function(str, type = "info") {
+    external.invoke(JSON.stringify({ "path": "alert", "message": str, "type": type, "requestId": 0 }));
+}
+
+confirm = function(str, callback) {
+    NativeBridge.makeRequest({ "path": "confirm", "message": str }, (e,r) => {
+        callback(r["yes"]);
+    });
+}
+
 /*
     The purpose of NativeBridge is to serve in place of a network connection to handle backend requests.
 
@@ -37,7 +47,7 @@ let NativeBridge = {
             external.invoke(JSON.stringify(data));
         } catch (err) {
             console.log(err);
-            alert("Native bridge error: "+err);
+            alert("Native bridge error: "+err, "error");
         }
     },
 
@@ -55,10 +65,10 @@ let NativeBridge = {
                     }
                 }
             } else {
-                alert('Invalid native response: '+JSON.stringify(data));
+                alert('Invalid native response: '+JSON.stringify(data), "error");
             }
         } catch (err) {
-            alert(err);
+            alert("Error in native response: "+err, "error");
         }
     },
 

@@ -276,7 +276,7 @@ let UI = {
 	downloadAeon() {
 		let modelFile = LiveModel.exportAeon();
 		if (modelFile === undefined) {
-			alert(Strings.modelEmpty);
+			alert(Strings.modelEmpty, "warning");
 			return;
 		}
 		let filename = ModelEditor.getModelName();
@@ -289,7 +289,7 @@ let UI = {
 	downloadSBML() {
 		let modelFile = LiveModel.exportAeon();
 		if (modelFile === undefined) {
-			alert(Strings.modelEmpty);
+			alert(Strings.modelEmpty, "warning");
 			return;
 		}
 		let filename = ModelEditor.getModelName();
@@ -300,7 +300,7 @@ let UI = {
 		ComputeEngine.aeonToSbml(modelFile, (error, result) => {
 			this.isLoading(false);
 			if (error !== undefined) {
-				alert(error);
+				alert(error, "error");
 			}
 			if (result !== undefined) {
 				let sbml = result.model;
@@ -313,7 +313,7 @@ let UI = {
 	downloadSBMLInstantiated() {
 		let modelFile = LiveModel.exportAeon();
 		if (modelFile === undefined) {
-			alert(Strings.modelEmpty);
+			alert(Strings.modelEmpty, "warning");
 			return;
 		}
 		let filename = ModelEditor.getModelName();
@@ -324,7 +324,7 @@ let UI = {
 		ComputeEngine.aeonToSbmlInstantiated(modelFile, (error, result) => {
 			this.isLoading(false);
 			if (error !== undefined) {
-				alert(error);
+				alert(error, "error");
 			}
 			if (result !== undefined) {
 				let sbml = result.model;
@@ -352,7 +352,7 @@ let UI = {
 	        fr.onload = (e) => {
 	        	let error = LiveModel.importAeon(e.target.result);
 	        	if (error !== undefined) {
-	        		alert(error);
+	        		alert(error, "error");
 	        	}
 	        };
 	        fr.readAsText(file);
@@ -373,7 +373,7 @@ let UI = {
 		        		error = LiveModel.importAeon(aeonModel);
 		        	}
 		        	if (error !== undefined) {
-		        		alert(error);
+		        		alert(error, "error");
 		        	}
 	        	});        	
 	        };
@@ -383,7 +383,7 @@ let UI = {
 
 	openWitness(witness) {
 		if (!ComputeEngine.hasActiveComputation()) {
-			alert("Results no longer available.");
+			alert("Results no longer available.", "error");
 			return;
 		}
 		NativeBridge.makeRequest({ "path": "open_witness", "witness": witness });
