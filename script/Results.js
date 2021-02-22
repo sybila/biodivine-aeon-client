@@ -34,7 +34,7 @@ let Results = {
 		            }
 		            table += `
 		            	<tr>
-		            		<td class="table-behavior">${behaviorString}</td>
+		            		<td><span class='symbols'>${behaviorString}</span></td>
 		            		<td class="table-sat-count">${sat_count}</td>
 		            		<td><span class="inline-button" onclick="UI.openWitness('${behavior}');">Witness</span></td>
 		            	</tr>

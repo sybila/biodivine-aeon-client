@@ -67,7 +67,8 @@ let ComputeEngine = {
 	// Send a validation request for a model fragment.
 	validateUpdateFunction(modelFragment, callback) {
 		if (this.isConnected()) {
-			return this._backendRequest("/check_update_function", callback, "POST", modelFragment);
+		    NativeBridge.makeRequest({ "path": "check_update_function", "modelFragment": modelFragment }, callback);
+			//return this._backendRequest("/check_update_function", callback, "POST", modelFragment);
 		} else {
 			callback("Compute engine not connected.");
 			return undefined;
@@ -79,7 +80,8 @@ let ComputeEngine = {
 			callback("Compute engine not connected.");
 			return undefined;
 		} else {
-			return this._backendRequest("/sbml_to_aeon", callback, "POST", sbmlString);
+		    NativeBridge.makeRequest({ "path": "sbml_to_aeon", "sbmlString": sbmlString }, callback);
+			//return this._backendRequest("/sbml_to_aeon", callback, "POST", sbmlString);
 		}
 	},
 
@@ -88,7 +90,8 @@ let ComputeEngine = {
 			callback("Compute engine not connected.");
 			return undefined;
 		} else {
-			return this._backendRequest("/aeon_to_sbml", callback, "POST", aeonString);
+		    NativeBridge.makeRequest({ "path": "aeon_to_sbml", "aeonString": aeonString }, callback);
+			//return this._backendRequest("/aeon_to_sbml", callback, "POST", aeonString);
 		}
 	},
 
@@ -97,7 +100,8 @@ let ComputeEngine = {
 			callback("Compute engine not connected.");
 			return undefined;
 		} else {
-			return this._backendRequest("/aeon_to_sbml_instantiated", callback, "POST", aeonString);
+		    NativeBridge.makeRequest({ "path": "aeon_to_sbml_instantiated", "aeonString": aeonString }, callback);
+			//return this._backendRequest("/aeon_to_sbml_instantiated", callback, "POST", aeonString);
 		}
 	},
 
@@ -112,7 +116,8 @@ let ComputeEngine = {
 		} else {
 			Results.clear();
 			this.waitingForResult = true;
-			return this._backendRequest("/start_computation", (e, r) => {
+			NativeBridge.makeRequest({ "path": "start_computation", "aeonString": aeonString }, (e, r) => {
+			//return this._backendRequest("/start_computation", (e, r) => {
 				if (e !== undefined) {
 					console.log(e);
 					alert("Computation error: "+e);					
@@ -121,7 +126,7 @@ let ComputeEngine = {
 					this._lastComputation = r.timestamp;
 				}				
 				this.ping();
-			}, "POST", aeonString);
+			}/*, "POST", aeonString*/);
 		}
 	},
 
@@ -130,13 +135,14 @@ let ComputeEngine = {
 			alert("Compute engine not connected.");
 			return undefined;
 		} else {
-			return this._backendRequest("/cancel_computation", (e, r) => {
+		    NativeBridge.makeRequest({ "path": "cancel_computation" }, (e, r) => {
+			//return this._backendRequest("/cancel_computation", (e, r) => {
 				if (e !== undefined) {
 					console.log(e);
 					alert("Error: "+e);					
 				}
 				this.ping();
-			}, "POST", "");
+			}/*, "POST", ""*/);
 		}
 	},
 
@@ -145,12 +151,13 @@ let ComputeEngine = {
 			callback("Compute engine not connected.");
 			return undefined;
 		} else {
-			return this._backendRequest("/get_results", (e, r) => {
+		    NativeBridge.makeRequest({ "path": "get_results" }, (e, r) => {
+			//return this._backendRequest("/get_results", (e, r) => {
 				console.log(e, r);
 				if (callback !== undefined) {
 					callback(e, r);
 				}
-			}, "GET");
+			}/*, "GET"*/);
 		}
 	},
 
@@ -161,12 +168,13 @@ let ComputeEngine = {
 			callback("Compute engine not connected.");
 			return undefined;
 		} else {
-			return this._backendRequest("/get_witness/"+witness, (e, r) => {
+		NativeBridge.makeRequest({ "path": "get_witness" }, (e, r) => {
+			//return this._backendRequest("/get_witness/"+witness, (e, r) => {
 				console.log(e,r);
 				if (callback !== undefined) {
 					callback(e, r);
 				}
-			}, "GET");
+			}/*, "GET"*/);
 		}
 	},
 
@@ -178,7 +186,8 @@ let ComputeEngine = {
 			clearTimeout(this._pingRepeatToken);
 			this._pingRepeatToken = undefined;
 		}		
-		this._backendRequest("/ping", (error, response) => {
+		//this._backendRequest("/ping", (error, response) => {
+		NativeBridge.makeRequest({ "path": "ping" }, (error, response) => {
 			this._connected = error === undefined;
 			let status = "disconnected";
 			if (this._connected) {

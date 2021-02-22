@@ -82,7 +82,7 @@ let UI = {
 			// to the container as well.
 			addressInput.parentElement.setAttribute("disabled", "1");
 			statusLabel.textContent = " ● Connected";			
-			connectButton.innerHTML = "Disconnect <img src='img/cloud_off-24px.svg'>";
+			connectButton.innerHTML = "Disconnect <img src=\"img/cloud_off-24px.svg\">";
 			if (data !== undefined) {
 				// data about computation available
 				let status = "(none)";
@@ -142,10 +142,14 @@ let UI = {
 				// Show download button if there is a job, but unless it is done, show "partial" in the button
 				if (data["timestamp"] !== null) {
 					cmpDownload.classList.remove("gone");
+					let downloadIcon = document.getElementById("download-icon").cloneNode();
+					downloadIcon.classList.remove("gone");
 					if (status == "done") {
-						cmpDownload.innerHTML = "Show result <img src=\"img/cloud_download-24px.svg\">";
+						cmpDownload.innerHTML = "Show result ";//<img src=\"img/cloud_download-24px.svg\">";
+						cmpDownload.appendChild(downloadIcon);
 					} else {
-						cmpDownload.innerHTML = "Show partial result <img src=\"img/cloud_download-24px.svg\">";
+						cmpDownload.innerHTML = "Show partial result ";//<img src=\"img/cloud_download-24px.svg\">";
+						cmpDownload.appendChild(downloadIcon);
 					}
 				} else {
 					cmpDownload.classList.add("gone");
@@ -174,7 +178,7 @@ let UI = {
 			statusLabel.textContent = " ● Disconnected";
 			statusLabel.classList.add("red");
 			dot.classList.add("red");
-			connectButton.innerHTML = "Connect <img src='img/cloud-24px.svg'>";
+			connectButton.innerHTML = "Connect <img src=<\"img/cloud-24px.svg\">";
 			cmp.classList.add("gone");
 		}
 	},
@@ -330,13 +334,14 @@ let UI = {
 	},
 
 	_downloadFile(name, content) {
-		var el = document.createElement('a');
+	    NativeBridge.makeRequest({ "path": "save_file", "name": name, "content": content });
+		/*var el = document.createElement('a');
         el.setAttribute('href', 'data:text/plain;charset=utf-8,'+encodeURIComponent(content));
         el.setAttribute('download', name);
         el.style.display = 'none';
         document.body.appendChild(el);
         el.click();
-        document.body.removeChild(el);
+        document.body.removeChild(el);*/
 	},
 
 	// Import Aeon file from the given file input element (if possible)

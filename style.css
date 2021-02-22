@@ -57,6 +57,17 @@ body {
     font-size: 2.2em;
 }
 
+#edition {
+    position: fixed;
+    margin: 0;
+    top: 60px;
+    right: 24px;
+    font-family: 'BaileyBold', monospace;
+    font-weight: bold;
+    color: #aaa;
+    font-size: 1.0em;
+}
+
 #title{
     font-family: 'BaileyBold', monospace;
     font-weight: bold;
@@ -625,6 +636,12 @@ div.center {
 
 .grey {
     color: #797979;
+}
+
+.symbols {
+    font-family: 'symbols', monospace;
+    letter-spacing: 5px;
+    font-style: normal;
 }
 
 /*

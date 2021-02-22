@@ -12,6 +12,7 @@
         <script src="script/dependencies/hotkeys.min.js"></script>
 
         <script src="script/Results.js"></script>
+        <script src="script/NativeBridge.js"></script>
         <script src="script/ComputeEngine.js"></script>
         <script src="script/Examples.js"></script>
         <script src="script/LiveModel.js"></script>
@@ -28,6 +29,8 @@
         </div>
 
         <h1 id='logo'>Aeon/<span id='title'>BIODIVINE</span></h1>
+
+        <h3 id="edition">Edition 2019</h3>
 
         <!-- A menu element that is shown for selected graph nodes in the editor. -->
         <div id="node-menu" class="float-menu invisible">
@@ -132,12 +135,12 @@
             <div id="tab-engine" class="main-panel gone">
                 <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.closeContent()">
                 <h2 style="margin: 0 auto; font-size: 20px; text-align: center;">Compute Engine</h2>                
-                <div class="invisible-input full-line" style="margin-top: 4px; margin-bottom: 4px; font-size: 16px;">
+                <div class="invisible-input full-line gone" style="margin-top: 4px; margin-bottom: 4px; font-size: 16px;">
                     <input id="engine-address" class="center" type="text" name="engine-address" value="http://localhost:8000" placeholder="(engine address)">
                 </div>
                 <div style="height: 40px;">
                     <h3 id="compute-engine-status" style="float: left; font-family: 'FiraMono'; text-transform: uppercase;"> ● Disconnected</h3>
-                    <button id="button-connect" class="image-button" onclick="ComputeEngine.toggleConnection((e,r) => { if (e !== undefined) alert(e); });" style="float: right;">Connect <img src="img/cloud-24px.svg"></button>
+                    <button id="button-connect" class="image-button gone" onclick="ComputeEngine.toggleConnection((e,r) => { if (e !== undefined) alert(e); });" style="float: right;">Connect <img src="img/cloud-24px.svg"></button>
                 </div>
                 <div style="clear: both;"></div>
 
@@ -155,8 +158,10 @@
                     </div>                    
                 </div>
 
+                <!-- Force the image to be included in the bundle -->
+                <img class="gone" id="download-icon" src="img/cloud_download-24px.svg">
                 <div style="clear: both;"></div>
-                <div style="text-align: center; margin-top: 48px;">
+                <div class="gone" style="text-align: center; margin-top: 48px;">
                     <h3 style="margin: 0 auto; font-size: 14px; text-align: center; margin-bottom: 4px;">No engine running? Download binary:</h3>                                        
                     <a href="https://github.com/sybila/biodivine-aeon-server/releases/download/v0.1.2/compute-engine-windows.zip"><button id="download-windows" class="image-button" style="display: inline-block; margin: 4px;">Windows <img src="img/windows-24px.svg"></button></a>
                     <a href="https://github.com/sybila/biodivine-aeon-server/releases/download/v0.1.2/compute-engine-macos.zip"><button id="download-windows" class="image-button" style="display: inline-block; margin: 4px;">MacOS <img src="img/macos-24px.svg"></button></a>
