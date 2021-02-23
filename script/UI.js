@@ -415,7 +415,8 @@ let UI = {
 			if (state != observability.getAttribute("state")) {
 				observability.setAttribute("state", state);
 				observability.alt = observability.getAttribute("alt-"+state);
-				observability.src = observability.getAttribute("src-"+state);
+				let iconSource = observability.getAttribute("src-"+state);
+				observability.src = document.getElementById(iconSource).src;
 				// if the hint is visible, it must be showing alt of this button (because the value just changed)
 				hint.textContent = observability.alt;
 			}			
@@ -431,7 +432,8 @@ let UI = {
 		monotonicity.updateState = function(data) {		
 			if (monotonicity.getAttribute("state") != data.monotonicity) {
 				monotonicity.alt = monotonicity.getAttribute("alt-"+data.monotonicity);
-				monotonicity.src = monotonicity.getAttribute("src-"+data.monotonicity);
+				let iconSource = monotonicity.getAttribute("src-"+data.monotonicity);
+				monotonicity.src = document.getElementById(iconSource).src;
 				monotonicity.setAttribute("state", data.monotonicity);
 				// if the hint is visible, it must be showing alt of this button (because the value just changed)
 				hint.textContent = monotonicity.alt;
