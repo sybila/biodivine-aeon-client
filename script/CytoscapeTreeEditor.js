@@ -18,6 +18,7 @@ let CytoscapeEditor = {
 	init: function() {
 		this._cytoscape = cytoscape(this.initOptions());			
 		this._cytoscape.on('select', (e) => {
+			document.getElementById("quick-help").classList.add("gone");
 			console.log(e.target.data());
 			let data = e.target.data();
 			if (data.action == 'remove') {
@@ -92,10 +93,46 @@ let CytoscapeEditor = {
 		}		
 	},
 
+	getParentNode(targetId) {
+		let parentEdge = CytoscapeEditor._cytoscape.edges("edge[target='"+targetId+"']");
+		if (parentEdge.length == 0) {
+			return undefined;
+		}
+		return parentEdge.data().source;
+	},
+
+	getChildNode(sourceId, positive) {
+		let childEdge = CytoscapeEditor._cytoscape.edges("edge[source='"+sourceId+"'][positive='"+positive+"']");
+		if (childEdge.length == 0) {
+			return undefined;
+		}
+		return childEdge.data().target;
+	},
+
+	getSiblingNode(targetId) {		
+		let parentEdge = CytoscapeEditor._cytoscape.edges("edge[target='"+targetId+"']");
+		if (parentEdge.length == 0) { return undefined; }
+		let sourceId = parentEdge.data().source;
+		let positive = !(parentEdge.data().positive == "true");
+		let childEdge = CytoscapeEditor._cytoscape.edges("edge[source='"+sourceId+"'][positive='"+positive+"']");
+		if (childEdge.length == 0) { return undefined; }
+		return childEdge.data().target;	
+	},
+
 	getSelectedNodeId() {
 		node = CytoscapeEditor._cytoscape.nodes(":selected");
 		if (node.length == 0) return undefined;
 		return node.data().id;
+	},
+
+	selectNode(nodeId) {
+		let current = CytoscapeEditor._cytoscape.nodes(":selected");
+		current.unselect();
+		CytoscapeEditor._cytoscape.getElementById(nodeId).select();
+	},
+
+	getNodeType(nodeId) {
+		return CytoscapeEditor._cytoscape.getElementById(nodeId).data().type;
 	},
 
 	_showDecisionPanel(data) {
@@ -237,7 +274,7 @@ let CytoscapeEditor = {
 			} 	
 			let percent = Math_percent(cls.cardinality, totalCardinality);
 			let dimPercent = Math_dimPercent(cls.cardinality, totalCardinality);
-			distribution.innerHTML = percent + "% / " + dimPercent + "ᴅᴘ";
+			distribution.innerHTML = percent + "% / " + dimPercent + "٪";
 			row.classList.remove("gone");
 			row.classList.add("behavior-table-row");
 			table.appendChild(row);
@@ -250,7 +287,7 @@ let CytoscapeEditor = {
 		document.getElementById("leaf-phenotype").innerHTML = data.label;
 		let percent = Math_percent(data.treeData.cardinality, this._totalCardinality);
 		let dimPercent = Math_dimPercent(data.treeData.cardinality, this._totalCardinality);
-		document.getElementById("leaf-witness-count").innerHTML = data.treeData.cardinality + " (" + percent + "% / " + dimPercent + "ᴅᴘ)";
+		document.getElementById("leaf-witness-count").innerHTML = data.treeData.cardinality + " (" + percent + "% / " + dimPercent + "٪)";
 		let conditions = "";
 		let pathId = data.id;
 		let source = this._cytoscape.edges("[target = \""+pathId+"\"]");	
