@@ -78,6 +78,11 @@ let CytoscapeEditor = {
 		})
 	},
 
+	removeAll() {
+		CytoscapeEditor._cytoscape.nodes(":selected").unselect();	// Triggers reset of other UI.
+		CytoscapeEditor._cytoscape.elements().remove();
+	},
+
 	// Triggers all necessary events to update UI after graph update
 	refreshSelection(targetId) {
 		let selected = CytoscapeEditor._cytoscape.$(":selected");	// node or edge that are selected
@@ -304,6 +309,15 @@ let CytoscapeEditor = {
 		let stabilityButton = document.getElementById("leaf-stability-analysis-button");
 		let stabilityContainer = document.getElementById("leaf-stability-analysis");
 		initStabilityButton(data.treeData.id, stabilityButton, stabilityContainer);		
+
+		// Show additional phenotypes if this is a leaf that was created due to precision.
+		let table = document.getElementById("leaf-behavior-table");		
+		if (data.treeData["all_classes"] !== undefined) {
+			table.classList.remove("gone");
+			this._renderBehaviorTable(data.treeData["all_classes"], data.treeData.cardinality, table);
+		} else {
+			table.classList.add("gone");
+		}
 	},
 
 	initOptions: function() {

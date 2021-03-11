@@ -32,23 +32,58 @@ function init() {
 
 	document.fonts.load('1rem "symbols"').then(() => {
 	document.fonts.load('1rem "FiraMono"').then(() => {
-		ComputeEngine.getBifurcationTree((e, r) => {		
-			if (r !== undefined && r.length > 0) {
-				for (node of r) {
-					CytoscapeEditor.ensureNode(node);
-				}
-				for (node of r) {
-					if (node.type == "decision") {
-						CytoscapeEditor.ensureEdge(node.id, node.left, false);
-						CytoscapeEditor.ensureEdge(node.id, node.right, true);
-					}
-				}
+		loadBifurcationTree();
+	})});
 
-				CytoscapeEditor.applyTreeLayout();				
+	var slider = document.getElementById("precision-slider");
+	var output = document.getElementById("precision-value");
+	output.innerHTML = slider.value/100.0 + "%";
+
+	slider.oninput = function() {
+  		output.innerHTML = this.value/100.0 + "%";
+	}
+
+	slider.onmouseup = function() {
+		setPrecision(slider.value);
+	}
+
+	ComputeEngine.getTreePrecision((e, r) => {		
+		slider.value = r;
+		output.innerHTML = r/100.0 + "%";
+	})
+}
+
+function loadBifurcationTree(fit = true) {
+	let loading = document.getElementById("loading-indicator");
+	loading.classList.remove("invisible");
+	ComputeEngine.getBifurcationTree((e, r) => {		
+		if (r !== undefined && r.length > 0) {
+			CytoscapeEditor.removeAll();	// remove old tree if present
+			for (node of r) {
+				CytoscapeEditor.ensureNode(node);
+			}
+			for (node of r) {
+				if (node.type == "decision") {
+					CytoscapeEditor.ensureEdge(node.id, node.left, false);
+					CytoscapeEditor.ensureEdge(node.id, node.right, true);
+				}
+			}
+
+			CytoscapeEditor.applyTreeLayout();
+			if (fit) {
 				CytoscapeEditor.fit();				
 			}			
-		}, true);
-	})});
+		}			
+		loading.classList.add("invisible");
+	}, true);
+}
+
+function setPrecision(precision) {
+	let loading = document.getElementById("loading-indicator");
+	loading.classList.remove("invisible");
+	ComputeEngine.applyTreePrecision(precision, (e, r) => {
+		loadBifurcationTree(false);
+	});
 }
 
 function removeNode(nodeId) {

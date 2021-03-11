@@ -220,6 +220,22 @@ let ComputeEngine = {
 		});
 	},
 
+	applyTreePrecision(precision, callback) {
+		return this._backendRequest("/apply_tree_precision/"+precision, (e,r) => {
+			if (callback !== undefined) {
+				callback(e, r);
+			}
+		}, "POST");
+	},
+
+	getTreePrecision(callback) {
+		return this._backendRequest("/get_tree_precision/", (e, r) => {
+			if (callback !== undefined) {
+				callback(e, r);
+			}
+		}, "GET");
+	},
+
 	selectDecisionAttribute(node, attr, callback) {
 		return this._backendRequest("/apply_attribute/"+node+"/"+attr, (e, r) => {
 			if (callback !== undefined) {
