@@ -1,4 +1,23 @@
 
+let SORT_INFORMATION_GAIN = "sort-information-gain";
+let SORT_TOTAL_CLASSES = "sort-total-classes";
+let SORT_POSITIVE = "sort-positive";
+let SORT_POSITIVE_MAJORITY = "sort-positive-majority";
+let SORT_NEGATIVE = "sort-negative";
+let SORT_NEGATIVE_MAJORITY = "sort-negative-majority";
+let SORT_ALPHABETICAL = "sort-alphabetical";
+
+let SORTS = [
+	SORT_INFORMATION_GAIN, 
+	SORT_TOTAL_CLASSES, 
+	SORT_POSITIVE,
+	SORT_POSITIVE_MAJORITY, 
+	SORT_NEGATIVE,
+	SORT_NEGATIVE_MAJORITY, 
+	SORT_ALPHABETICAL
+];
+
+
 function Math_dimPercent(cardinality, total) {
 	return Math.round(((Math.log2(cardinality)+1) / (Math.log2(total)+1)) * 100);
 }
@@ -68,6 +87,190 @@ function init() {
 		autoExpandBifurcationTree(CytoscapeEditor.getSelectedNodeId(), depth.value);
 	}
 
+	// Setup mutually exclusive sort checkboxes.
+	for (sort of SORTS) {
+		let checkbox = document.getElementById(sort);
+		checkbox.onclick = function() {
+			for (sort of SORTS) {
+				document.getElementById(sort).checked = false;
+			}
+			this.checked = true;
+			setSort(this.id);
+		}
+	}
+}
+
+function compareInformationGain(a, b) {
+	return b.gain - a.gain;
+}
+
+function compareTotalClasses(a, b) {
+	let r = (a.right.length + a.left.length) - (b.right.length + b.left.length);
+	if (r == 0) {
+		return compareInformationGain(a, b);
+	} else {
+		return r;
+	}
+}
+
+function comparePositiveMajority(a, b) {
+	let r = b.right[0]["fraction"] - a.right[0]["fraction"];
+	if (r == 0) {
+		return compareInformationGain(a, b);
+	} else {
+		return r;
+	}
+}
+
+function compareNegativeMajority(a, b) {
+	let r = b.left[0]["fraction"] - a.left[0]["fraction"];
+	if (r == 0) {
+		return compareInformationGain(a, b);
+	} else {
+		return r;
+	}
+}
+
+function compareAttrName(a, b) {
+	return a.name.localeCompare(b.name);
+}
+
+function comparePositive(a, b) {
+	let r = b.rightTotal - a.rightTotal;
+	if (r == 0) {
+		return compareInformationGain(a, b);
+	} else {
+		return r;
+	}
+}
+
+function compareNegative(a, b) {
+	let r = b.leftTotal - a.leftTotal;
+	if (r == 0) {
+		return compareInformationGain(a, b);
+	} else {
+		return r;
+	}
+}
+
+function getCurrentSort() {
+	for (sort of SORTS) {
+		if (document.getElementById(sort).checked) {
+			return sort;
+		}
+	}
+	return SORT_INFORMATION_GAIN;
+}
+
+function setSort(sort) {
+	for (sortId of SORTS) {
+		document.getElementById(sortId).checked = false;
+	}
+	document.getElementById(sort).checked = true;
+
+	let selected = CytoscapeEditor.getSelectedNodeTreeData();
+	renderAttributeTable(selected.id, selected.attributes, selected.cardinality);
+}
+
+function sortAttributes(attributes) {
+	let sort = getCurrentSort();
+	if (sort == SORT_TOTAL_CLASSES) {
+		attributes.sort(compareTotalClasses);
+	} else if (sort == SORT_POSITIVE_MAJORITY) {
+		attributes.sort(comparePositiveMajority);		
+	} else if (sort == SORT_NEGATIVE_MAJORITY) {
+		attributes.sort(compareNegativeMajority);
+	} else if (sort == SORT_ALPHABETICAL) {
+		attributes.sort(compareAttrName);
+	} else if (sort == SORT_POSITIVE) {
+		attributes.sort(comparePositive);
+	} else if (sort == SORT_NEGATIVE) { 
+		attributes.sort(compareNegative);
+	} else {
+		attributes.sort(compareInformationGain);
+	}
+}
+
+function renderAttributeTable(id, attributes, totalCardinality) {
+	document.getElementById("mixed-attributes").classList.remove("gone");
+	document.getElementById("mixed-attributes-title").innerHTML = "Attributes (" + attributes.length + "):";
+	let template = document.getElementById("mixed-attributes-list-item-template");				
+	let list = document.getElementById("mixed-attributes-list");
+	list.innerHTML = "";
+	var cut_off = 100;
+	sortAttributes(attributes);
+	for (attr of attributes) {
+		if (cut_off < 0) break;		
+		let attrNode = template.cloneNode(true);
+		attrNode.id = "";
+		attrNode.classList.remove("gone");
+		let nameText = attrNode.getElementsByClassName("attribute-name")[0];				
+		nameText.innerHTML = "<small class='grey'>SELECT:</small>" + attr.name;
+		nameText.onclick = new Function("selectAttribute(" + id +", " + attr.id +")");										
+		let igText = attrNode.getElementsByClassName("information-gain")[0];
+		igText.innerHTML = attr.gain.toFixed(2) + " ɪɢ / " + (attr.left.length + attr.right.length) + " ᴛᴄ";
+		if (attr.gain <= 0.0) {
+			igText.classList.add("red");
+		} else if (attr.gain >= 0.99) {
+			igText.classList.add("green");
+		} else {
+			igText.classList.add("primary");
+		}
+		list.appendChild(attrNode);
+		let leftNode = attrNode.getElementsByClassName("negative")[0];
+		let rightNode = attrNode.getElementsByClassName("positive")[0];
+		let leftTotal = attr.left.reduce((a, b) => a + b.cardinality, 0.0);
+		let rightTotal = attr.right.reduce((a, b) => a + b.cardinality, 0.0);
+		leftNode.getElementsByClassName("title")[0].innerHTML = "Negative (" + attr.left.length + "|<small>" + Math_percent(leftTotal, totalCardinality) + "%</small>)";
+		rightNode.getElementsByClassName("title")[0].innerHTML = "Positive (" + attr.right.length + "|<small>" + Math_percent(rightTotal, totalCardinality) + "%</small>)";
+		let leftTable = leftNode.getElementsByClassName("table")[0];
+		leftTable.innerHTML = attr.left.reduce((html, cls) => {
+			let style = "";
+			if (html.length > 0) {
+				style = "class='extra'";
+			}
+			let row = `
+				<tr ${style}>
+                	<td class="distribution">${Math_percent(cls.cardinality, leftTotal)}%</td>
+                	<td class="symbols phenotype">${CytoscapeEditor._normalizeClass(cls.class)}</td>
+            	</tr>
+            `;
+            return html + row;
+		}, "");
+		let rightTable = rightNode.getElementsByClassName("table")[0];
+		rightTable.innerHTML = attr.right.reduce((html, cls) => {
+			let style = "";
+			if (html.length > 0) {
+				style = "class='extra'";
+			}
+			let row = `
+				<tr ${style}>
+                	<td class="symbols phenotype">${CytoscapeEditor._normalizeClass(cls.class)}</td>
+                	<td class="distribution">${Math_percent(cls.cardinality, rightTotal)}%</td>
+            	</tr>
+            `;
+            return html + row;
+		}, "");								
+		let expandButton = attrNode.getElementsByClassName("expand-button")[0];
+		if (attr.left.length == 1 && attr.right.length == 1) {
+			expandButton.parentNode.removeChild(expandButton);
+		} else {
+			let expandButtonEvent = function() {
+				if (expandButton.innerHTML == "more...") {
+					// Expand
+					expandButton.innerHTML = "...less";
+					leftTable.classList.remove("collapsed");
+					rightTable.classList.remove("collapsed");
+				} else if (expandButton.innerHTML == "...less") {
+					// Collapse
+					expandButton.innerHTML = "more...";
+					leftTable.classList.add("collapsed");
+					rightTable.classList.add("collapsed");
+				}
+			}
+			expandButton.onclick = expandButtonEvent;
+		}					
+	}
 }
 
 function autoExpandBifurcationTree(node, depth, fit = true) {

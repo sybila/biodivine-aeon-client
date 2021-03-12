@@ -130,6 +130,12 @@ let CytoscapeEditor = {
 		return node.data().id;
 	},
 
+	getSelectedNodeTreeData() {
+		node = CytoscapeEditor._cytoscape.nodes(":selected");
+		if (node.length == 0) return undefined;
+		return node.data().treeData;
+	},
+
 	selectNode(nodeId) {
 		let current = CytoscapeEditor._cytoscape.nodes(":selected");
 		current.unselect();
@@ -160,94 +166,33 @@ let CytoscapeEditor = {
 		this._renderBehaviorTable(data.treeData.classes, data.treeData.cardinality, table);
 		let loading = document.getElementById("loading-indicator");
 		let addButton = document.getElementById("button-add-variable");
-		addButton.onclick = function() {
-			loading.classList.remove("invisible");			
-			ComputeEngine.getDecisionAttributes(data.id, (e, r) => {
-				loading.classList.add("invisible");
-				addButton.classList.add("gone");
-				document.getElementById("mixed-attributes").classList.remove("gone");
-				document.getElementById("mixed-attributes-title").innerHTML = "Attributes (" + r.length + "):";
-				let template = document.getElementById("mixed-attributes-list-item-template");				
-				let list = document.getElementById("mixed-attributes-list");
-				var cut_off = 100;
-				let total = data.treeData.cardinality;
-				for (attr of r) {
-					if (cut_off < 0) break;
-					// Prepare data:
-					attr.left.sort(function(a, b) { return b.cardinality - a.cardinality; });
-            		attr.right.sort(function(a, b) { return b.cardinality - a.cardinality; });
-					let attrNode = template.cloneNode(true);
-					attrNode.id = "";
-					attrNode.classList.remove("gone");
-					let nameText = attrNode.getElementsByClassName("attribute-name")[0];				
-					nameText.innerHTML = "<small class='grey'>SELECT:</small>" + attr.name;
-					nameText.onclick = new Function("selectAttribute(" + data.id +", " + attr.id +")");										
-					let igText = attrNode.getElementsByClassName("information-gain")[0];
-					igText.innerHTML = attr.gain.toFixed(2) + " ɪɢ / " + (attr.left.length + attr.right.length) + " ᴛᴄ";
-					if (attr.gain <= 0.0) {
-						igText.classList.add("red");
-					} else if (attr.gain >= 0.99) {
-						igText.classList.add("green");
-					} else {
-						igText.classList.add("primary");
-					}
-					list.appendChild(attrNode);
-					let leftNode = attrNode.getElementsByClassName("negative")[0];
-					let rightNode = attrNode.getElementsByClassName("positive")[0];
-					let leftTotal = attr.left.reduce((a, b) => a + b.cardinality, 0.0);
-					let rightTotal = attr.right.reduce((a, b) => a + b.cardinality, 0.0);
-					leftNode.getElementsByClassName("title")[0].innerHTML = "Negative (" + attr.left.length + "|<small>" + Math_percent(leftTotal, total) + "%</small>)";
-					rightNode.getElementsByClassName("title")[0].innerHTML = "Positive (" + attr.right.length + "|<small>" + Math_percent(rightTotal, total) + "%</small>)";
-					let leftTable = leftNode.getElementsByClassName("table")[0];
-					leftTable.innerHTML = attr.left.reduce((html, cls) => {
-						let style = "";
-						if (html.length > 0) {
-							style = "class='extra'";
+		addButton.onclick = function() {			
+			if (data.treeData["attributes"] === undefined) {
+				loading.classList.remove("invisible");			
+				ComputeEngine.getDecisionAttributes(data.id, (e, r) => {
+					loading.classList.add("invisible");
+					addButton.classList.add("gone");				
+					for (attr of r) {
+						// Prepare data:
+						attr.left.sort(function(a, b) { return b.cardinality - a.cardinality; });
+						attr.right.sort(function(a, b) { return b.cardinality - a.cardinality; });
+						let leftTotal = attr.left.reduce((a, b) => a + b.cardinality, 0.0);
+						let rightTotal = attr.right.reduce((a, b) => a + b.cardinality, 0.0);		
+						attr["leftTotal"] = leftTotal;
+						attr["rightTotal"] = rightTotal;
+						for (lElement of attr.left) {
+							lElement["fraction"] = lElement.cardinality / leftTotal;
 						}
-						let row = `
-							<tr ${style}>
-                            	<td class="distribution">${Math_percent(cls.cardinality, leftTotal)}%</td>
-                            	<td class="symbols phenotype">${CytoscapeEditor._normalizeClass(cls.class)}</td>
-                        	</tr>
-                        `;
-                        return html + row;
-					}, "");
-					let rightTable = rightNode.getElementsByClassName("table")[0];
-					rightTable.innerHTML = attr.right.reduce((html, cls) => {
-						let style = "";
-						if (html.length > 0) {
-							style = "class='extra'";
-						}
-						let row = `
-							<tr ${style}>
-                            	<td class="symbols phenotype">${CytoscapeEditor._normalizeClass(cls.class)}</td>
-                            	<td class="distribution">${Math_percent(cls.cardinality, rightTotal)}%</td>
-                        	</tr>
-                        `;
-                        return html + row;
-					}, "");								
-					let expandButton = attrNode.getElementsByClassName("expand-button")[0];
-					if (attr.left.length == 1 && attr.right.length == 1) {
-						expandButton.parentNode.removeChild(expandButton);
-					} else {
-						let expandButtonEvent = function() {
-							if (expandButton.innerHTML == "more...") {
-								// Expand
-								expandButton.innerHTML = "...less";
-								leftTable.classList.remove("collapsed");
-								rightTable.classList.remove("collapsed");
-							} else if (expandButton.innerHTML == "...less") {
-								// Collapse
-								expandButton.innerHTML = "more...";
-								leftTable.classList.add("collapsed");
-								rightTable.classList.add("collapsed");
-							}
-						}
-						expandButton.onclick = expandButtonEvent;
-					}					
-				}
-				loading.classList.add("invisible");
-			});
+						for (rElement of attr.right) {
+							rElement["fraction"] = rElement.cardinality / rightTotal;
+						}						
+					}			
+					data.treeData["attributes"] = r;				
+					renderAttributeTable(data.id, r, data.treeData.cardinality);
+				});
+			} else {
+				renderAttributeTable(data.id, data.treeData["attributes"], data.treeData.cardinality);
+			}			
 		};
 		let stabilityButton = document.getElementById("mixed-stability-analysis-button");
 		let stabilityContainer = document.getElementById("mixed-stability-analysis");
