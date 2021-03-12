@@ -212,6 +212,14 @@ let ComputeEngine = {
 		}
 	},
 
+	autoExpandBifurcationTree(node, depth, callback) {
+		return this._backendRequest("/auto_expand/"+node+"/"+depth, (e, r) => {
+			if (callback !== undefined) {
+				callback(e, r);
+			}
+		}, "POST");
+	},
+
 	getDecisionAttributes(node, callback) {
 		return this._backendRequest("/get_attributes/"+node, (e, r) => {
 			if (callback !== undefined) {

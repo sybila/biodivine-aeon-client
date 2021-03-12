@@ -134,7 +134,13 @@
             </div>
 
             <button id="button-add-variable" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Make decision (D) <img src="img/add_box-24px.svg"></button>             
-            <button id="mixed-stability-analysis-button" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Stability analysis (S) <img src="img/stability_analysis-24px.svg"></button> 
+            <button id="mixed-stability-analysis-button" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Stability analysis (S) <img src="img/stability_analysis-24px.svg"></button>         
+
+            <div id="auto-expand" style="clear: both; text-align: right; padding-right: 16px;">
+                <button id="button-auto-expand" class="image-button" style="margin-bottom: 16px; margin-right: 16px;">Auto expand (1 level) <img src="img/graph-24px.svg"></button>             
+                Depth: <input type="range" min="1" max="10" value="1" class="seekbar" id="auto-expand-slider" style="width: 100px; position: relative; top: 8px;">                
+            </div>        
+
             <div id="mixed-stability-analysis" class="stability-panel"></div>                  
             <div id="mixed-attributes" class="gone">
                 <span id="mixed-attributes-title" style="font-weight: bold; margin-top: 16px; display: inline-block; margin-bottom: 8px;">Attributes:</span>

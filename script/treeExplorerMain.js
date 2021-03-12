@@ -51,6 +51,50 @@ function init() {
 		slider.value = r;
 		output.innerHTML = r/100.0 + "%";
 	})
+
+	var depth = document.getElementById("auto-expand-slider");
+	var autoExpand = document.getElementById("button-auto-expand");
+
+	depth.oninput = function() {
+		let value = depth.value;
+		if (value == 1) {
+			autoExpand.innerHTML = "Auto expand (1 level)  <img src='img/graph-24px.svg'>";
+		} else {
+			autoExpand.innerHTML = "Auto expand ("+value+" levels)  <img src='img/graph-24px.svg'>";
+		}		
+	}
+
+	autoExpand.onclick = function() {
+		autoExpandBifurcationTree(CytoscapeEditor.getSelectedNodeId(), depth.value);
+	}
+
+}
+
+function autoExpandBifurcationTree(node, depth, fit = true) {
+	let loading = document.getElementById("loading-indicator");
+	loading.classList.remove("invisible");
+	ComputeEngine.autoExpandBifurcationTree(node, depth, (e, r) => {		
+		if (r !== undefined && r.length > 0) {
+			for (node of r) {
+				CytoscapeEditor.ensureNode(node);
+			}
+			for (node of r) {
+				if (node.type == "decision") {
+					CytoscapeEditor.ensureEdge(node.id, node.left, false);
+					CytoscapeEditor.ensureEdge(node.id, node.right, true);
+				}
+			}
+
+			CytoscapeEditor.applyTreeLayout();
+			if (fit) {
+				CytoscapeEditor.fit();				
+			}
+		} else {
+			alert(e);
+		}
+		loading.classList.add("invisible");
+		CytoscapeEditor.refreshSelection();
+	}, true);
 }
 
 function loadBifurcationTree(fit = true) {

@@ -864,6 +864,7 @@ div.center {
   opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
   -webkit-transition: .2s; /* 0.2 seconds transition on hover */
   transition: opacity .2s;
+  border-radius: 4px;
 }
 
 /* Mouse-over effects */
@@ -879,6 +880,7 @@ div.center {
   height: 25px; /* Slider handle height */
   background: #3a568c; /* Green background */
   cursor: pointer; /* Cursor on hover */
+  border-radius: 4px;
 }
 
 .seekbar::-moz-range-thumb {
@@ -886,6 +888,7 @@ div.center {
   height: 25px; /* Slider handle height */
   background: #3a568c; /* Green background */
   cursor: pointer; /* Cursor on hover */
+  border-radius: 4px;
 }
 
 /*========== Toggle button styles ===========*/
