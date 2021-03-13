@@ -854,6 +854,31 @@ div.center {
     white-space: nowrap;
 }
 
+.stability-dropdown {
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    border-radius: 12px;
+    background-color: #ECEFF1;  
+    border-color: #ECEFF1;
+    height: 40px;
+    margin-left: 12px;
+    margin-right: 12px;
+    box-shadow: 0px 2px 5px #d0d0d0;    
+}
+
+.stability-dropdown:focus {
+    outline: none;
+}
+
+.witness-panel {
+    font-size: 12px;
+    float: right;
+}
+
 
 #precision {
     position: fixed;

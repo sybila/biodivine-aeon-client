@@ -69,12 +69,13 @@ function init() {
 	if (requestedTreeWitness !== undefined && requestedTreeWitness !== null) {
 		UI.isLoading(true);
 		const requestedVariable = urlParams.get('variable');
-        const requestedValue = urlParams.get('value');     
-        if(requestedVariable === undefined || requestedVariable === null) {
+        const requestedBehaviour = urlParams.get('behaviour');     
+        const requestedVector = urlParams.get('vector');
+        if(requestedVariable === undefined || requestedVariable === null || requestedVector === null) {
         	ComputeEngine.getTreeWitness(requestedTreeWitness, witnessCallback, true);
         } else {
         	// This is attractor stability query
-            ComputeEngine._backendRequest('/get_stability_witness/' + requestedTreeWitness + '/' + encodeURI(requestedVariable) + '/' + requestedValue, witnessCallback, 'GET', null);
+            ComputeEngine._backendRequest('/get_stability_witness/' + requestedTreeWitness + '/' + encodeURI(requestedBehaviour) + '/' + encodeURI(requestedVariable) + '/' + encodeURI("["+requestedVector+"]"), witnessCallback, 'GET', null);
         }		
 	}
 }

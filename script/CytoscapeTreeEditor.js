@@ -155,8 +155,9 @@ let CytoscapeEditor = {
 		this._renderBehaviorTable(data.treeData.classes, data.treeData.cardinality, behaviorTable);
 
 		let stabilityButton = document.getElementById("decision-stability-analysis-button");
+		let stabilityDropdown = document.getElementById("decision-stability-dropdown");
 		let stabilityContainer = document.getElementById("decision-stability-analysis");
-		initStabilityButton(data.treeData.id, stabilityButton, stabilityContainer);		
+		initStabilityButton(data.treeData.id, stabilityButton, stabilityDropdown, stabilityContainer);		
 	},
 
 	_showMixedPanel(data) {
@@ -195,8 +196,9 @@ let CytoscapeEditor = {
 			}			
 		};
 		let stabilityButton = document.getElementById("mixed-stability-analysis-button");
+		let stabilityDropdown = document.getElementById("mixed-stability-dropdown");
 		let stabilityContainer = document.getElementById("mixed-stability-analysis");
-		initStabilityButton(data.treeData.id, stabilityButton, stabilityContainer);		
+		initStabilityButton(data.treeData.id, stabilityButton, stabilityDropdown, stabilityContainer);		
 	},
 
 	_renderBehaviorTable(classes, totalCardinality, table) {
@@ -252,8 +254,9 @@ let CytoscapeEditor = {
 		}
 		document.getElementById("leaf-necessary-conditions").innerHTML = conditions;
 		let stabilityButton = document.getElementById("leaf-stability-analysis-button");
+		let stabilityDropdown = document.getElementById("leaf-stability-dropdown");
 		let stabilityContainer = document.getElementById("leaf-stability-analysis");
-		initStabilityButton(data.treeData.id, stabilityButton, stabilityContainer);		
+		initStabilityButton(data.treeData.id, stabilityButton, stabilityDropdown, stabilityContainer);		
 
 		// Show additional phenotypes if this is a leaf that was created due to precision.
 		let table = document.getElementById("leaf-behavior-table");		

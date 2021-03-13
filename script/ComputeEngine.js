@@ -260,8 +260,8 @@ let ComputeEngine = {
 		}, "POST");
 	},
 
-	getStabilityData(nodeId, callback) {
-		return this._backendRequest("/get_stability_data/"+nodeId, (e, r) => {
+	getStabilityData(nodeId, behaviour, callback) {
+		return this._backendRequest("/get_stability_data/"+nodeId+"/"+behaviour, (e, r) => {
 			if (callback !== undefined) {
 				callback(e, r);
 			}

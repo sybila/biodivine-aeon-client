@@ -375,13 +375,13 @@ function openTreeWitness() {
     window.open(url + '?engine=' + encodeURI(ComputeEngine.getAddress()) + "&tree_witness="+ encodeURI(node));
 }
 
-function openStabilityWitness(variable, behaviour) {
+function openStabilityWitness(variable, behaviour, vector) {
 	let node = CytoscapeEditor.getSelectedNodeId();
 	if (node === undefined) {
 		return;
 	}
 	const url = window.location.pathname.replace("tree_explorer.html", "index.html");
-    window.open(url + '?engine=' + encodeURI(ComputeEngine.getAddress()) + "&tree_witness="+ encodeURI(node) + "&variable=" + encodeURI(variable) + "&value=" + encodeURI(behaviour));
+    window.open(url + '?engine=' + encodeURI(ComputeEngine.getAddress()) + "&tree_witness="+ encodeURI(node) + "&variable=" + encodeURI(variable) + "&behaviour=" + encodeURI(behaviour) + "&vector=" + encodeURI(vector));
 }
 
 /* Open attractors for the currently selected tree node. */
@@ -394,76 +394,70 @@ function openTreeAttractor() {
     window.open(url + '?engine=' + encodeURI(ComputeEngine.getAddress()) + "&tree_witness="+ encodeURI(node));
 }
 
-function openStabilityAttractor(variable, behaviour) {
+function openStabilityAttractor(variable, behaviour, vector) {
 	let node = CytoscapeEditor.getSelectedNodeId();
 	if (node === undefined) {
 		return;
 	}
 	const url = window.location.pathname.replace("tree_explorer.html", "explorer.html");
-    window.open(url + '?engine=' + encodeURI(ComputeEngine.getAddress()) + "&tree_witness="+ encodeURI(node) + "&variable=" + encodeURI(variable) + "&value=" + encodeURI(behaviour));
+    window.open(url + '?engine=' + encodeURI(ComputeEngine.getAddress()) + "&tree_witness="+ encodeURI(node) + "&variable=" + encodeURI(variable) + "&behaviour=" + encodeURI(behaviour) + "&vector=" + encodeURI(vector));
+}
+
+function vector_to_string(vector) {
+	let result = "[";
+	let first = true;
+	for (item of vector) {
+		if (first) {
+			first = false;		
+		} else {
+			result += ","
+		}
+		if (item == "true") {
+			result += "<span class='green'><b>true</b></span>";
+		} else if (item == "false") {
+			result += "<span class='red'><b>false</b></span>";
+		} else {
+			result += "<b>" + item + "</b>";
+		}		
+	}
+	result += "]";
+	return result;
 }
 
 // Used to initialize a stability analysis button in the detail panels.
-function initStabilityButton(id, button, container) {
+function initStabilityButton(id, button, dropdown, container) {
     let loading = document.getElementById("loading-indicator");
     button.onclick = function() {
         loading.classList.remove("invisible");
-        ComputeEngine.getStabilityData(id, (e, r) => {
+        let behaviour = dropdown.value;
+        ComputeEngine.getStabilityData(id, behaviour, (e, r) => {
             loading.classList.add("invisible");
             if (e !== undefined) {
                 console.log(e);
-                alert("Cannot load stability data.");                   
+                alert("Cannot load stability data: "+e);                   
             } else {
-                button.classList.add("gone");             
-                let alwaysTrue = "<div><b>Always true:</b> <span class='green'>"+r["always_true"].join("; ") + "</span><div>";
-                if(r["always_true"].length == 0) { alwaysTrue = ""; }
-                let alwaysFalse = "<div><b>Always false:</b> <span class='red'>"+r["always_false"].join("; ") + "</span><div>";
-                if(r["always_false"].length == 0) { alwaysFalse = ""; }
-                let constant = "<div><b>Constant for parametrisation:</b> "+r["constant"].join("; ") + "<div>";
-                if(r["constant"].length == 0) { constant = ""; }
-                let content = alwaysTrue + alwaysFalse + constant;
-                if(content.length == 0) {
-                	content = "No stable variables found."
-                } else {
-                	content = "<h4>All attractors:</h4>" + content;
-                }
-
-                if('var_stability' in r) {
-                	let var_analysis = "";
-                	for(v of r['var_stability']) {
-                		if('constant' in v) {
-                			if(v['constant']) {
-                				var_analysis += "<div><b>" + v['name'] + "</b>:</br> <span class='green'> - always true</span></div>"
-                			} else {
-                				var_analysis += "<div><b>" + v['name'] + "</b>:</br> <span class='red'> - always false</span></div>"
-                			}
-                		} else {
-                			let distribution = "";
-                			if(v['only_true'] > 0.0) {
-                				distribution += " - With <span class='green'>true</span>: "+v['only_true'] + getWitnessPanelForVariable(v['name'], 'true')+"</br>";
-                			}
-                			if(v['only_false'] > 0.0) {
-                				distribution += " - With <span class='red'>false</span>: "+v['only_false'] + getWitnessPanelForVariable(v['name'], 'false')+"</br>";
-                			}
-                			if(v['mixed'] > 0.0) {
-                				distribution += " - With <b>both</b>: "+v['mixed'] + getWitnessPanelForVariable(v['name'], 'mixed')+"</br>";
-                			}
-                			var_analysis += "<div><b>" + v['name'] + "</b>:</br>" + distribution + "</div>";
-
-                		}
-                	}
-                	if(var_analysis.length > 0) {
-                		content += "<h4>Sink attractors:</h4>" + var_analysis;
-                	}
-                }
+            	console.log(r);
+            	let content = "<h4>Stability analysis:</h4>";
+            	for (item of r) {
+            		let variableName = item.variable;
+            		if (item.data.length == 1) {            			
+            			content += "<div><b>" + variableName + "</b>: always "+vector_to_string(item.data[0].vector)+"</div>";            			
+            		} else {            			
+            			content += "<div><b>" + variableName + "</b>:</br>";
+            			for (data of item.data) {
+            				content += " - " + vector_to_string(data.vector) + ": " + data.colors + getWitnessPanelForVariable(variableName, behaviour, data.vector) + "</br>";
+            			}
+            			content += "</div>"
+            		}            		
+            	}               
                 container.innerHTML = content;
             }
         })
     }
 }
 
-function getWitnessPanelForVariable(variable, behaviour) {
-	return "<span style='float: right;'><span class='inline-button' onclick='openStabilityWitness(\""+variable+"\",\""+behaviour+"\");'>Witness</span> | <span class='inline-button' onclick='openStabilityAttractor(\""+variable+"\",\""+behaviour+"\");'>Attractor</span></span>";
+function getWitnessPanelForVariable(variable, behaviour, vector) {
+	return "<span class='witness-panel'><span class='inline-button' onclick='openStabilityWitness(\""+variable+"\",\""+behaviour+"\",\""+vector+"\");'>Witness</span> | <span class='inline-button' onclick='openStabilityAttractor(\""+variable+"\",\""+behaviour+"\",\""+vector+"\");'>Attractor</span></span>";
 }
 
 // Keyboard shortcuts for basic navigation:

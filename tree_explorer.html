@@ -83,13 +83,18 @@
                 <tr class="empty-space"><td></td></tr>
                 
             </table>
-
-            <span style="font-size: 14px; display: block; width: 100%; text-align: right;">٪ = log-percentage</span>
-
+    
             <div style="text-align: right; margin-bottom: 16px; margin-right: 8px; margin-top: 16px;">
-                <button id="decision-stability-analysis-button" class="image-button">Stability analysis (S) <img src="img/stability_analysis-24px.svg"></button>
-            </div>      
+                <button id="decision-stability-analysis-button" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Stability analysis (S) <img src="img/stability_analysis-24px.svg"></button>
+                <select id="decision-stability-dropdown" class="stability-dropdown" style="float: right;">
+                    <option value="total">Total</option>
+                    <option value="S">Stability</option>
+                    <option value="O">Oscillation</option>
+                    <option value="D">Disorder</option>
+                </select>                
+            </div>            
             <div id="decision-stability-analysis" class="stability-panel"></div>
+
         </div>
 
         <div id="mixed-info" class="main-panel fira-mono gone">
@@ -132,14 +137,24 @@
                 <div style="clear: both;"></div>
                 <div class="expand-button">more...</div>
             </div>
-
-            <button id="button-add-variable" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Make decision (D) <img src="img/add_box-24px.svg"></button>             
-            <button id="mixed-stability-analysis-button" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Stability analysis (S) <img src="img/stability_analysis-24px.svg"></button>         
+        
+            <div>
+                <button id="mixed-stability-analysis-button" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Stability analysis (S) <img src="img/stability_analysis-24px.svg"></button>
+                <select id="mixed-stability-dropdown" class="stability-dropdown" style="float: right;">
+                    <option value="total">Total</option>
+                    <option value="S">Stability</option>
+                    <option value="O">Oscillation</option>
+                    <option value="D">Disorder</option>
+                </select>                
+            </div>            
 
             <div id="auto-expand" style="clear: both; text-align: right; padding-right: 16px;">
                 <button id="button-auto-expand" class="image-button" style="margin-bottom: 16px; margin-right: 16px;">Auto expand (1 level) <img src="img/graph-24px.svg"></button>             
                 Depth: <input type="range" min="1" max="10" value="1" class="seekbar" id="auto-expand-slider" style="width: 100px; position: relative; top: 8px;">                
             </div>        
+            <div style="clear: both;">
+                <button id="button-add-variable" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Make decision (D) <img src="img/add_box-24px.svg"></button>
+            </div>
 
             <div id="mixed-stability-analysis" class="stability-panel"></div>                  
             <div id="mixed-attributes" class="gone">
@@ -191,12 +206,16 @@
             <span style="font-weight: bold; margin-top: 16px; display: inline-block; margin-bottom: 8px;">Necessary conditions:</span>
 
             <div id="leaf-necessary-conditions">Lorem Ipsum</div>
-
-            <span style="font-size: 14px; display: block; width: 100%; text-align: right; margin-top: 8px;">٪ = log-percentage</span>
-
+        
             <div style="text-align: right; margin-bottom: 16px; margin-right: 8px; margin-top: 16px;">
-                <button id='leaf-stability-analysis-button' class="image-button">Stability analysis (S) <img src="img/stability_analysis-24px.svg"></button>
-            </div>       
+                <button id="leaf-stability-analysis-button" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Stability analysis (S) <img src="img/stability_analysis-24px.svg"></button>
+                <select id="leaf-stability-dropdown" class="stability-dropdown" style="float: right;">
+                    <option value="total">Total</option>
+                    <option value="S">Stability</option>
+                    <option value="O">Oscillation</option>
+                    <option value="D">Disorder</option>
+                </select>                
+            </div>   
             <div id="leaf-stability-analysis" class="stability-panel"></div>     
         </div>    
 

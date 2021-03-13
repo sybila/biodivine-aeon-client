@@ -68,13 +68,14 @@ function init() {
         const requestedTreeWitness = urlParams.get('tree_witness'); // Should be a node id.        
         if (requestedTreeWitness !== undefined && requestedTreeWitness !== null) {
             const requestedVariable = urlParams.get('variable');
-            const requestedValue = urlParams.get('value');        
-            if(requestedVariable === undefined || requestedVariable === null) {
+            const requestedBehaviour = urlParams.get('behaviour');        
+            const requestedVector = urlParams.get('vector');
+            if(requestedVariable === undefined || requestedVariable === null || requestedVector === null) {
                 // Just get node attractors
                 var request = ComputeEngine._backendRequest('/get_tree_attractors/' + requestedTreeWitness, callback, 'GET', null);
             } else {
                 // This is attractor stability query
-                var request = ComputeEngine._backendRequest('/get_stability_attractors/' + requestedTreeWitness + '/' + encodeURI(requestedVariable) + '/' + requestedValue, callback, 'GET', null);
+                var request = ComputeEngine._backendRequest('/get_stability_attractors/' + requestedTreeWitness + '/' + encodeURI(requestedBehaviour) + '/' + encodeURI(requestedVariable) + '/' + encodeURI("["+requestedVector+"]"), callback, 'GET', null);
             }            
         }
     }
