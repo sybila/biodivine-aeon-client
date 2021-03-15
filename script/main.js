@@ -1,6 +1,3 @@
-let EXPECTED_ENGINE_VERSION = "0.5.0-SNAPSHOT"
-document.title = document.title + " (" + EXPECTED_ENGINE_VERSION + ")";
-
 hasLocalStorage = false;
 
 function init() {
@@ -43,26 +40,43 @@ function init() {
 	if (engineAddress !== undefined && engineAddress !== null && engineAddress.length > 0) {
 		document.getElementById("engine-address").value = engineAddress;
 	}	
+	
 	UI.init();
 	ModelEditor.init();
 	CytoscapeEditor.init();			
 	ComputeEngine.openConnection();	// Try to automatically connect when first opened.
 
+	let witnessCallback = function(e, r) {
+		UI.isLoading(false);
+		if (e !== undefined) {
+			alert(e);
+		} else {
+			let error = LiveModel.importAeon(r.model);				
+			if (error !== undefined) {
+        		alert(error);
+        	}
+        	UI.ensureContentTabOpen(ContentTabs.modelEditor);
+		}
+	}
+
 	const requestedWitness = urlParams.get('witness');
 	if (requestedWitness !== undefined && requestedWitness !== null && requestedWitness.length > 0) {
 		UI.isLoading(true);
-		ComputeEngine.getWitness(requestedWitness, (e, r) => {
-			UI.isLoading(false);
-			if (e !== undefined) {
-				alert(e);
-			} else {
-				let error = LiveModel.importAeon(r.model);				
-				if (error !== undefined) {
-	        		alert(error);
-	        	}
-	        	UI.ensureContentTabOpen(ContentTabs.modelEditor);
-			}
-		}, true);
+		ComputeEngine.getWitness(requestedWitness, witnessCallback, true);
+	}
+
+	const requestedTreeWitness = urlParams.get('tree_witness');	// Should be a node id.
+	if (requestedTreeWitness !== undefined && requestedTreeWitness !== null) {
+		UI.isLoading(true);
+		const requestedVariable = urlParams.get('variable');
+        const requestedBehaviour = urlParams.get('behaviour');     
+        const requestedVector = urlParams.get('vector');
+        if(requestedVariable === undefined || requestedVariable === null || requestedVector === null) {
+        	ComputeEngine.getTreeWitness(requestedTreeWitness, witnessCallback, true);
+        } else {
+        	// This is attractor stability query
+            ComputeEngine._backendRequest('/get_stability_witness/' + requestedTreeWitness + '/' + encodeURI(requestedBehaviour) + '/' + encodeURI(requestedVariable) + '/' + encodeURI("["+requestedVector+"]"), witnessCallback, 'GET', null);
+        }		
 	}
 }
 

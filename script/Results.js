@@ -1,6 +1,7 @@
 let Results = {	
 
 	clear() {
+		document.getElementById("open-tree-explorer").classList.add("gone");
 		document.getElementById("results").innerHTML = "";
 	},
 
@@ -59,6 +60,7 @@ let Results = {
 		        	table = "<div class='center'>Elapsed: " + (json.elapsed/1000) + "s</div>" + table;
 		        }
 		        document.getElementById("results").innerHTML = table;
+		        document.getElementById("open-tree-explorer").classList.remove("gone");
 		        UI.ensureContentTabOpen(ContentTabs.results);
 			}
 		});

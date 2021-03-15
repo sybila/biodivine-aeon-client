@@ -210,6 +210,11 @@ body {
     max-height: 95vh;
 }
 
+#tree-explorer .main-panel {
+    margin: 0 auto; 
+    float: left;
+}
+
 .panel-close-button {
     width: 24px;
     height: 24px;
@@ -388,6 +393,7 @@ div.invisible-input[contenteditable]:empty:not(:focus):before {
     padding-left: 12px;
     transition: background-color 0.3s;
     border: none;
+    cursor: pointer;
 }
 
 .image-button:hover {
@@ -648,6 +654,155 @@ div.center {
     display: inline-block;
 }
 
+/* Behaviour table styles used by the tree explorer. */
+.behavior-table {
+    width: 468px;
+    margin: 0 auto;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    text-align: center;
+    table-layout: fixed;
+    word-break: break-all;
+    /* remove cell spacing for proper borders */
+    border-collapse: collapse;
+}
+.behavior-table-header td {
+    border-bottom: 1px solid black;    
+    margin-bottom: 4px;
+}
+.behavior-table td {
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+.behavior-table .cell-behavior {
+    width: 200px;
+}
+
+.behavior-table .cell-witness-count,
+.behavior-table .cell-distribution {
+    width: 125px;
+}
+
+#transparency-switch {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    font-weight: bold;    
+}
+
+/* 
+    As a general note to future generations: 
+    In some browsers, you won't see a scroll-bar when the computer only has a touchpad.
+    That means there will be a scroll-bar once you connect a mouse, which will mess
+    up your margins and/or paddings. 
+
+    Lesson learned: Do not use fixed left/right margins for centering in a fixed-width
+    container. Instead use margin:0 auto; and let the scrollbar eat into the auto margin.
+*/
+
+.attribute-panel {
+    display: block;
+    padding: 8px;
+    background-color: #fafafa;
+    margin: 0 auto;
+    margin-top: 12px;
+    margin-bottom: 24px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px #d0d0d0;
+    border: 2.0px #fafafa solid;
+    position: relative;
+    transition: 0.5s;
+}
+
+.attribute-panel .attribute-name {
+    cursor: pointer;
+    width: 300px;
+    text-align: right;
+    word-break: break-all;
+}
+
+.attribute-sub-panel {
+    width: 220px;    
+    display: inline-block;
+    vertical-align: top;    
+}
+
+.attribute-sub-panel .title {
+    display: inline-block;
+    width: 220px;
+    text-align: center;
+    margin-top: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #ccc;    
+}
+
+.attribute-sub-panel table {
+    width: 220px;
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+.attribute-sub-panel td {
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.attribute-sub-panel td.distribution {
+    width: 39px;
+}
+
+.attribute-sub-panel table.collapsed tr.extra {
+    display: none;
+}
+
+/* Fix for weird vertical alignment of the symbol font. */
+.attribute-sub-panel .phenotype {
+    position: relative;
+    bottom: -5px;
+}
+
+.attribute-sub-panel.negative .phenotype {
+    text-align: right;    
+}
+.attribute-sub-panel.positive .distribution {
+    text-align: right;
+}
+
+.attribute-panel:hover .expand-button {
+    display: block;
+}
+
+.expand-button {
+    display: none;
+    position: absolute;
+    left: 200px;
+    bottom: -13px;
+    text-align: center;
+    background-color: #EFEFEF;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-radius: 6px;
+    box-shadow: 0px 2px 5px #d0d0d0;
+    transition: background-color 0.3s;    
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.expand-button:hover {
+    background-color: #ccc;
+}
+
+.stability-panel {
+    clear: both;
+    word-break: break-all;
+}
+
 
 .invisible {
     opacity: 0;
@@ -655,6 +810,14 @@ div.center {
 
 .gone {
     display: none;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.primary {
+    color: #3a568c;
 }
 
 .red {
@@ -672,6 +835,163 @@ div.center {
 .grey {
     color: #797979;
 }
+
+.symbols {
+    font-family: symbols;
+}
+
+.fira-mono {
+    font-family: FiraMono, monospace;
+}
+
+.sort-checkbox input {
+    position: relative;
+    top: 1px;
+    margin-right: 8px;
+}
+
+.sort-checkbox {
+    white-space: nowrap;
+}
+
+.stability-dropdown {
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    border-radius: 12px;
+    background-color: #ECEFF1;  
+    border-color: #ECEFF1;
+    height: 40px;
+    margin-left: 12px;
+    margin-right: 12px;
+    box-shadow: 0px 2px 5px #d0d0d0;    
+}
+
+.stability-dropdown:focus {
+    outline: none;
+}
+
+.witness-panel {
+    font-size: 12px;
+    float: right;
+}
+
+
+#precision {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    text-align: center;
+    width: 200px;
+}
+
+/* The slider itself */
+.seekbar {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 25px; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+  border-radius: 4px;
+}
+
+/* Mouse-over effects */
+.seekbar:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.seekbar::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #3a568c; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+  border-radius: 4px;
+}
+
+.seekbar::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #3a568c; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+  border-radius: 4px;
+}
+
+/*========== Toggle button styles ===========*/
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #797979;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #3a568c;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #3a568c;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(17px);
+  -ms-transform: translateX(17px);
+  transform: translateX(17px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/*========= END Toggle button styles ========== */
 
 /*
 Color scheme:

@@ -14,8 +14,12 @@ let ComputeEngine = {
 
 	// Open connection, taking up to date address from user input.
 	// Callback is called upon first ping.
-	openConnection(callback = undefined) {
-		this._address = document.getElementById("engine-address").value;
+	openConnection(callback = undefined, address = undefined) {
+		if (address !== undefined && address !== null) {
+			this._address = address;
+		} else if (document.getElementById("engine-address") != null) {
+			this._address = document.getElementById("engine-address").value;
+		}
 		this.ping(true, 2000, function(error, ping) {
 			if (ping !== undefined && ping["version"] != EXPECTED_ENGINE_VERSION) {
 				alert(
@@ -63,7 +67,9 @@ let ComputeEngine = {
 			clearTimeout(this._pingRepeatToken);
 			this._pingRepeatToken = undefined;
 			this._connected = false;
-			UI.updateComputeEngineStatus("disconnected");
+			if (typeof UI !== 'undefined') {
+				UI.updateComputeEngineStatus("disconnected");
+			}			
 			return true;
 		} else {
 			return false;
@@ -173,12 +179,93 @@ let ComputeEngine = {
 			return undefined;
 		} else {
 			return this._backendRequest("/get_witness/"+witness, (e, r) => {
-				console.log(e,r);
 				if (callback !== undefined) {
 					callback(e, r);
 				}
 			}, "GET");
 		}
+	},
+
+	getTreeWitness(nodeId, callback, force = false) {
+		if (!force && !this.isConnected()) {
+			callback("Compute engine not connected.");
+			return undefined;
+		} else {
+			return this._backendRequest("/get_tree_witness/"+nodeId, (e, r) => {
+				if (callback !== undefined) {
+					callback(e, r);
+				}
+			}, "GET");	
+		}
+	},
+
+	getBifurcationTree(callback, force = false) {
+		if (!force && !this.isConnected()) {
+			callback("Compute engine not connected.");
+			return undefined;
+		} else {
+			return this._backendRequest("/get_bifurcation_tree/", (e, r) => {
+				if (callback !== undefined) {
+					callback(e, r);
+				}
+			}, "GET");
+		}
+	},
+
+	autoExpandBifurcationTree(node, depth, callback) {
+		return this._backendRequest("/auto_expand/"+node+"/"+depth, (e, r) => {
+			if (callback !== undefined) {
+				callback(e, r);
+			}
+		}, "POST");
+	},
+
+	getDecisionAttributes(node, callback) {
+		return this._backendRequest("/get_attributes/"+node, (e, r) => {
+			if (callback !== undefined) {
+				callback(e, r);
+			}
+		});
+	},
+
+	applyTreePrecision(precision, callback) {
+		return this._backendRequest("/apply_tree_precision/"+precision, (e,r) => {
+			if (callback !== undefined) {
+				callback(e, r);
+			}
+		}, "POST");
+	},
+
+	getTreePrecision(callback) {
+		return this._backendRequest("/get_tree_precision/", (e, r) => {
+			if (callback !== undefined) {
+				callback(e, r);
+			}
+		}, "GET");
+	},
+
+	selectDecisionAttribute(node, attr, callback) {
+		return this._backendRequest("/apply_attribute/"+node+"/"+attr, (e, r) => {
+			if (callback !== undefined) {
+				callback(e, r);
+			}
+		}, "POST");
+	},
+
+	deleteDecision(nodeId, callback) {
+		return this._backendRequest("/revert_decision/"+nodeId, (e, r) => {
+			if (callback !== undefined) {
+				callback(e, r);
+			}
+		}, "POST");
+	},
+
+	getStabilityData(nodeId, behaviour, callback) {
+		return this._backendRequest("/get_stability_data/"+nodeId+"/"+behaviour, (e, r) => {
+			if (callback !== undefined) {
+				callback(e, r);
+			}
+		}, "GET");
 	},
 
 	// Send a ping request. If interval is set, the ping will be repeated
@@ -195,8 +282,10 @@ let ComputeEngine = {
 			if (this._connected) {
 				status = "connected";
 			}
-			console.log("...ping..."+status+"...");
-			UI.updateComputeEngineStatus(status, response);
+			//console.log("...ping..."+status+"...");
+			if (typeof UI !== 'undefined') {
+				UI.updateComputeEngineStatus(status, response);
+			}			
 			// Schedule a ping for later if requested.
 			if (keepAlive && error === undefined) {
 				this._pingRepeatToken = setTimeout(() => { this.ping(true, interval); }, interval);

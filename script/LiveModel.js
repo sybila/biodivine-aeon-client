@@ -381,7 +381,7 @@ let LiveModel = {
 		// #description:content
 		let modelDescriptionRegex = /^\s*#description:(.+)$/;
 		// #position:var_name:num1,num2
-		let positionRegex = /^\s*#position:([a-zA-Z0-9_{}]+):([+-]?\d+(\.\d+)?),([+-]?\d+(\.\d+)?)\s*$/;
+		let positionRegex = /^\s*#position:([a-zA-Z0-9_{}]+):(.+?),(.+?)\s*$/;
 		// $var_name:function_data
 		let updateFunctionRegex = /^\s*\$\s*([a-zA-Z0-9_{}]+)\s*:\s*(.+)\s*$/;
 		// #...
@@ -419,8 +419,11 @@ let LiveModel = {
 			}
 			match = line.match(positionRegex);
 			if (match !== null) {
-				// The last group index is four because 3 is the decimal part of group 2.
-				positions[match[1]] = [parseFloat(match[2]), parseFloat(match[4])];
+				let x = parseFloat(match[2]);
+				let y = parseFloat(match[3]);
+				if (x === x && y === y) {	// test for NaN
+					positions[match[1]] = [parseFloat(match[2]), parseFloat(match[3])];
+				}				
 				continue;
 			}
 			match = line.match(updateFunctionRegex);

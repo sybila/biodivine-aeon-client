@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>[Aeon] Bifurcation tree</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="style.css" type="text/css">        
+
+        <!-- Favicon -->
+        <link rel="apple-touch-icon" sizes="57x57" href="favicon/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="favicon/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="favicon/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="favicon/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="favicon/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="favicon/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="favicon/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="favicon/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="favicon/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+        <link rel="manifest" href="manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="favicon/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
+
+        <script src="script/dependencies/dagre.js"></script>        
+        <script src="script/dependencies/cytoscape.min.js"></script>        
+        <script src="script/dependencies/cytoscape-dagre.js"></script>
+        <script src="script/dependencies/lodash.js"></script>
+        <script src="script/dependencies/hotkeys.min.js"></script>        
+
+        <script src="script/const.js"></script>
+        <script src="script/ComputeEngine.js"></script>                
+        <script src="script/CytoscapeTreeEditor.js"></script>                
+        <script src="script/treeExplorerMain.js"></script>
+        
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-HTCNPH6WMB"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-HTCNPH6WMB');
+        </script>
+    </head>
+
+    <body onload="init()" id="tree-explorer">
+
+        <div id="cytoscape-editor">
+        </div>
+
+        <div id="quick-help" style="top: 80%;">
+            <h3 style="display: block; margin: 0 auto; float: right;">HELP</h3>
+            <b>Tree editor navigation:</b>
+            <ul>
+                <li>(↑) Select parent node.</li>
+                <li>(↓) Select positive child.</li>
+                <li>(Shift + ↓) Select negative child.</li>
+                <li>(←/→) Switch positive/negative branch.</li>                
+            </ul>
+            <b>Tree actions:</b>
+            <ul>
+                <li>(⌫) Remove selected node.</li>
+                <li>(S) Run stability analysis for the selected node.</li>
+                <li>(D) Compute decision attributes for the selected node.</li> 
+                <li>(H) Toggle this help message.</li>
+            </ul>
+            <b>Units:</b>
+            <ul>
+                <li>Witness count: Number of fully instantiated networks.</li>
+                <li>(%): Percentage of networks in the node, i.e. count/total*100.</li>
+                <li>(٪): Log-percentage of networks, i.e. log(count)/log(total)*100.</li>
+            </ul>     
+
+            <div style="width: 100%; text-align: center; font-size: 12px;">(this message disappears when you select some element)</div>
+        </div>
+
+        <h1 id='logo'>Aeon/<span id='title'>BIODIVINE</span></h1>
+    
+        <div id="decision-info" class="main-panel fira-mono gone">
+            <div class="center" style="margin: 16px;">
+                <span style="position: relative; top: -20px; font-size: 14px;">Decision</span><br>
+                <span id="decision-attribute" style="font-size: 30px;">Lorem_Ipsum</span>
+            </div>
+
+            <span id="decision-phenotype-label" style="font-weight: bold; margin-top: 16px; display: inline-block; margin-bottom: 8px;">Phenotypes (X):</span>
+
+            <table id="decision-behavior-table" class="behavior-table">                
+                <tr id="behavior-table-row-template" class="gone">
+                    <td class="cell-behavior symbols">S O</td>
+                    <td class="cell-witness-count">1234</td>
+                    <td class="cell-distribution">24% / 14٪</td>
+                </tr>
+                <tr class="behavior-table-header">
+                    <td class="cell-behavior">Behavior</td>
+                    <td class="cell-witness-count">Witness Count</td>
+                    <td class="cell-distribution">Distribution</td>
+                </tr>
+                <tr class="empty-space"><td></td></tr>
+                
+            </table>
+    
+            <div style="text-align: right; margin-bottom: 16px; margin-right: 8px; margin-top: 16px;">
+                <button id="decision-stability-analysis-button" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Stability analysis (S) <img src="img/stability_analysis-24px.svg"></button>
+                <select id="decision-stability-dropdown" class="stability-dropdown" style="float: right;">
+                    <option value="total">Total</option>
+                    <option value="S">Stability</option>
+                    <option value="O">Oscillation</option>
+                    <option value="D">Disorder</option>
+                </select>                
+            </div>            
+            <div id="decision-stability-analysis" class="stability-panel"></div>
+
+        </div>
+
+        <div id="mixed-info" class="main-panel fira-mono gone">
+            <div class="center" style="margin: 16px;">
+                <span style="position: relative; top: -20px; font-size: 14px;">Mixed</span><br>
+                <span id="mixed-type-label" style="font-size: 30px;">X types</span>
+            </div>
+
+            <table id="mixed-behavior-table" class="behavior-table">                
+                <tr class="behavior-table-header">
+                    <td class="cell-behavior">Behavior</td>
+                    <td class="cell-witness-count">Witness Count</td>
+                    <td class="cell-distribution">Distribution</td>
+                </tr>
+                <tr class="empty-space"><td></td></tr>                
+            </table>
+
+            <div id="mixed-attributes-list-item-template" class="attribute-panel gone">                
+                <div style="float: left;" class="information-gain">0.43 ɪɢ / 4 ᴛᴄ</div>
+                <div style="float: right;" class="attribute-name">ATTr_Name</div>
+                <div style="clear: both;"></div>
+                <div class="attribute-sub-panel negative">
+                    <span class="title">Negative</span>
+                    <table class="table collapsed">
+                        <tr>
+                            <td class="distribution">99%</td>
+                            <td class="symbols phenotype">SSSSSSSSSSSSSSSSSD</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="attribute-sub-panel positive">
+                    <span class="title">Positive</span>
+                    <table class="table collapsed">
+                        <tr>                        
+                            <td class="symbols phenotype">SSSSSSSSSSSSSSSSSD</td>
+                            <td class="distribution">99%</td>                            
+                        </tr>
+                    </table>
+                </div>                
+                <div style="clear: both;"></div>
+                <div class="expand-button">more...</div>
+            </div>
+        
+            <div>
+                <button id="mixed-stability-analysis-button" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Stability analysis (S) <img src="img/stability_analysis-24px.svg"></button>
+                <select id="mixed-stability-dropdown" class="stability-dropdown" style="float: right;">
+                    <option value="total">Total</option>
+                    <option value="S">Stability</option>
+                    <option value="O">Oscillation</option>
+                    <option value="D">Disorder</option>
+                </select>                
+            </div>            
+
+            <div id="auto-expand" style="clear: both; text-align: right; padding-right: 16px;">
+                <button id="button-auto-expand" class="image-button" style="margin-bottom: 16px; margin-right: 16px;">Auto expand (1 level) <img src="img/graph-24px.svg"></button>             
+                Depth: <input type="range" min="1" max="10" value="1" class="seekbar" id="auto-expand-slider" style="width: 100px; position: relative; top: 8px;">                
+            </div>        
+            <div style="clear: both;">
+                <button id="button-add-variable" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Make decision (D) <img src="img/add_box-24px.svg"></button>
+            </div>
+
+            <div id="mixed-stability-analysis" class="stability-panel"></div>                  
+            <div id="mixed-attributes" class="gone">
+                <span id="mixed-attributes-title" style="font-weight: bold; margin-top: 16px; display: inline-block; margin-bottom: 8px;">Attributes:</span>
+
+                <div>
+                    <b>Sort by:</b>
+                    <label class="sort-checkbox"><input type="checkbox" name="sort-information-gain" id="sort-information-gain" checked>Information gain</label> | 
+                    <label class="sort-checkbox"><input type="checkbox" name="sort-total-classes" id="sort-total-classes">Total classes</label> | 
+                    <label class="sort-checkbox"><input type="checkbox" name="sort-positive" id="sort-positive">Positive</label> | 
+                    <label class="sort-checkbox"><input type="checkbox" name="sort-positive-majority" id="sort-positive-majority">Positive majority</label> | 
+                    <label class="sort-checkbox"><input type="checkbox" name="sort-negative" id="sort-negative">Negative</label> | 
+                    <label class="sort-checkbox"><input type="checkbox" name="sort-negative-majority" id="sort-negative-majority">Negative majority</label> | 
+                    <label class="sort-checkbox"><input type="checkbox" name="sort-alphabetical" id="sort-alphabetical">Alphabetical</label>
+                </div>
+
+                <div id="mixed-attributes-list">
+
+                </div>                                
+
+                <span style="font-size: 14px; display: block; width: 100%; text-align: right;">٪ = log-percentage</span>
+                <span style="font-size: 14px; display: block; width: 100%; text-align: right;">ɪɢ = information gain</span>
+                <span style="font-size: 14px; display: block; width: 100%; text-align: right;">ᴛᴄ = total class count</span>
+            </div>            
+        </div>
+
+        <div id="leaf-info" class="main-panel fira-mono gone">
+            <div class="center" style="margin: 16px;">
+                <span style="position: relative; top: -20px; font-size: 14px;">Phenotype</span><br>
+                <span class="symbols" id="leaf-phenotype" style="font-size: 50px;">DDS</span>                            
+            </div>            
+            <div>
+                <span style="float: left;">Witness count: <span id="leaf-witness-count">12345</span></span>
+                <span class="inline-button" onclick="openTreeWitness();" style="float: right;">Witness</span>
+                <div style="clear: both;"></div>
+                <span class="inline-button" onclick="openTreeAttractor();" style="float: right;">Attractor</span>
+            </div>
+
+            <table id="leaf-behavior-table" class="behavior-table gone" style="margin-top: 16px;">
+                <tr><td colspan="3">All phenotypes:</td></tr>
+                <tr class="behavior-table-header">
+                    <td class="cell-behavior">Behavior</td>
+                    <td class="cell-witness-count">Witness Count</td>
+                    <td class="cell-distribution">Distribution</td>
+                </tr>
+                <tr class="empty-space"><td></td></tr>                
+            </table>
+
+            <span style="font-weight: bold; margin-top: 16px; display: inline-block; margin-bottom: 8px;">Necessary conditions:</span>
+
+            <div id="leaf-necessary-conditions">Lorem Ipsum</div>
+        
+            <div style="text-align: right; margin-bottom: 16px; margin-right: 8px; margin-top: 16px;">
+                <button id="leaf-stability-analysis-button" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Stability analysis (S) <img src="img/stability_analysis-24px.svg"></button>
+                <select id="leaf-stability-dropdown" class="stability-dropdown" style="float: right;">
+                    <option value="total">Total</option>
+                    <option value="S">Stability</option>
+                    <option value="O">Oscillation</option>
+                    <option value="D">Disorder</option>
+                </select>                
+            </div>   
+            <div id="leaf-stability-analysis" class="stability-panel"></div>     
+        </div>    
+
+        <div id="transparency-switch" class="grey gone">
+            <span id="mass-distribution-label" style="display: table-cell; height: 22px; vertical-align: middle; padding-right: 8px;">Show mass distribution</span>
+            <label class="switch" style="display: table-cell;">
+              <input id="mass-distribution" type="checkbox">
+              <span class="slider round"></span>
+            </label>
+        </div> 
+
+        <div id="precision">
+            <input type="range" min="5001" max="10000" value="10000" class="seekbar" id="precision-slider">
+            Precision: <span id="precision-value">100%</span>
+        </div>        
+
+        <div id="loading-indicator" class="invisible"><img src="img/progress.gif"/><br><br>Waiting for server...</div>       
+
+    </body>
+</html>

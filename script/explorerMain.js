@@ -24,7 +24,10 @@ var options = {
         shape: 'box',
         labelHighlightBold: false,
         borderWidth: 1,
-    }
+    },
+    layout: {
+        improvedLayout: false,
+    },
 };
 
 function init() {
@@ -39,8 +42,7 @@ function init() {
 		document.getElementById("engine-address").value = engineAddress;
         ComputeEngine._address = engineAddress;
 	}	
-    // get the attractors
-    var request = ComputeEngine._backendRequest('/get_attractors/' + reqBeh, (e, r) => {
+    let callback = function(e, r) {
         if (e !== undefined) {
             alert(e);
         } else {
@@ -58,7 +60,25 @@ function init() {
             network.on('click', nodeClick); 
             document.getElementById('explorer-update-functions').innerHTML = generateWitness()
         }
-    }, 'get', null);
+    }
+    // get the attractors    
+    if (reqBeh !== undefined && reqBeh !== null) {
+        var request = ComputeEngine._backendRequest('/get_attractors/' + reqBeh, callback, 'GET', null);
+    } else {        
+        const requestedTreeWitness = urlParams.get('tree_witness'); // Should be a node id.        
+        if (requestedTreeWitness !== undefined && requestedTreeWitness !== null) {
+            const requestedVariable = urlParams.get('variable');
+            const requestedBehaviour = urlParams.get('behaviour');        
+            const requestedVector = urlParams.get('vector');
+            if(requestedVariable === undefined || requestedVariable === null || requestedVector === null) {
+                // Just get node attractors
+                var request = ComputeEngine._backendRequest('/get_tree_attractors/' + requestedTreeWitness, callback, 'GET', null);
+            } else {
+                // This is attractor stability query
+                var request = ComputeEngine._backendRequest('/get_stability_attractors/' + requestedTreeWitness + '/' + encodeURI(requestedBehaviour) + '/' + encodeURI(requestedVariable) + '/' + encodeURI("["+requestedVector+"]"), callback, 'GET', null);
+            }            
+        }
+    }
 
 }
 

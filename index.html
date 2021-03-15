@@ -4,6 +4,26 @@
     <head>
         <title>Biodivine/Aeon</title>
         <meta charset="utf-8">
+
+        <!-- Favicon -->
+        <link rel="apple-touch-icon" sizes="57x57" href="favicon/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="favicon/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="favicon/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="favicon/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="favicon/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="favicon/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="favicon/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="favicon/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="favicon/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+        <link rel="manifest" href="manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="favicon/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
+
         <link rel="stylesheet" href="style.css" type="text/css">        
 
         <script src="script/dependencies/cytoscape.min.js"></script>
@@ -11,6 +31,7 @@
         <script src="script/dependencies/cytoscape-edgehandles.js"></script>
         <script src="script/dependencies/hotkeys.min.js"></script>
 
+        <script src="script/const.js"></script>
         <script src="script/Results.js"></script>
         <script src="script/ComputeEngine.js"></script>
         <script src="script/Examples.js"></script>
@@ -38,6 +59,9 @@
         </div>
 
         <h1 id='logo'>Aeon/<span id='title'>BIODIVINE</span></h1>
+
+        <!-- Do not change it here, this is a placeholder. Change it in const.js -->
+        <span id="version">v0.0.0</span>
 
         <!-- A menu element that is shown for selected graph nodes in the editor. -->
         <div id="node-menu" class="float-menu invisible">
@@ -216,6 +240,7 @@
                 <div id="results">
                     <div style="text-align: center; width: 350px; margin: 0 auto;">No results loaded. Run analysis to show bifurcation function overview for the currently loaded model.</div>
                 </div>
+                <div id="open-tree-explorer" class="gone" style="text-align: center; margin: 8px;"><a class="inline-button" onclick="UI.openTreeExplorer()"> >> Explore Bifurcation Function &lt;&lt; </a></div>
                 <div id='result-legend'><span class='table-behavior'>D</span> disorder | <span class='table-behavior'>O</span> oscillation | <span class='table-behavior'>S</span> stability</div>
             </div>
 
@@ -300,8 +325,6 @@
 
             <div id="loading-indicator" class="invisible"><img src="img/progress.gif"/><br><br>Waiting for server...</div>
         </div>
-
-        <span id="version">v0.2.0</span>
 
     </body>
 </html>
