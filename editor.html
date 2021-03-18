@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Biodivine/Aeon</title>
+		<title>Aeon | Model Editor</title>
 
 		<link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
 		<link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
@@ -17,8 +17,25 @@
           gtag('config', 'G-HTCNPH6WMB');
         </script>
 
+        <!-- Lato and Heebo fonts -->
         <link rel="stylesheet" href="font/aeon-fonts.css" type="text/css">
+
+        <!-- Basic styles used in different aeon windows -->
         <link rel="stylesheet" href="style/aeon.css" type="text/css">
+
+        <!-- Editor specific styles (positioning, etc.) -->
+        <link rel="stylesheet" href="style/editor.css" type="text/css">
+
+        <!-- Aeon frontend "core library" -->
+        <script src="script/core/Config.js" type="text/javascript"></script>
+		<script src="script/core/Events.js" type="text/javascript"></script>
+
+		<!-- Editor related GUI helper objects -->
+		<script src="script/editor/Dock.js" type="text/javascript"></script>
+		<script src="script/editor/Panels.js" type="text/javascript"></script>
+
+		<!-- Editor main script -->
+        <script src="script/editor/Editor.js" type="text/javascript"></script>
 
 	</head>
 
@@ -28,20 +45,67 @@
 
 		<h1 class="aeon-logo">Aeon<em>/</em><span>BIODIVINE</span></h1>
 
-		<div class="aeon-dock">
-			<button><img alt="Start Analysis" src="img/play_circle_filled-48px.svg"><label>Start Analysis</label></button>
-			<button><img alt="Compute Engine" src="img/engine-48px.svg"><label>Compute Engine</label></button>
-			<button><img alt="Import/Export" src="img/file_copy-48px.svg"><label>Import/Export</label></button>
-			<button><img alt="Model Editor" src="img/model-48px.svg"><label>Model Editor</label></button>
-			<button><img alt="Apply Layout" src="img/view_quilt-48px.svg"><label>Apply Layout</label></button>
-			<button><img alt="Results" src="img/call_split-48px.svg"><label>Results</label></button>
-			<button><img alt="About and Help" src="img/help-48px.svg"><label>About and Help</label></button>
+		<div id="editor-dock" class="aeon-dock">
+			<!-- 
+				Dock ensures via CSS that each button has a floating label when hovered.
+				When a button is clickable, it emits an event based on its `data-event` attribute.
+				Selectable buttons emit `panel.open` events with the associated `data-panel` payload.
+				When this event is detected, the button becomes selected. Dock also listens to `panel.close` 
+				and unselects buttons based on closed panels.
+			-->
+			<button data-clickable data-event="start-computation">
+				<img alt="Start Analysis" src="img/play_circle_filled-48px.svg" draggable="false"><label>Start Analysis</label>
+			</button>
+			<button data-selectable data-panel="compute-engine">
+				<img alt="Compute Engine" src="img/engine-48px.svg" draggable="false"><label>Compute Engine</label>
+			</button>
+			<button data-selectable data-panel="import-export">
+				<img alt="Import/Export" src="img/file_copy-48px.svg" draggable="false"><label>Import/Export</label>
+			</button>
+			<button data-selectable data-panel="model-editor">
+				<img alt="Model Editor" src="img/model-48px.svg" draggable="false"><label>Model Editor</label>
+			</button>
+			<button data-clickable data-event="apply-layout">
+				<img alt="Apply Layout" src="img/view_quilt-48px.svg" draggable="false"><label>Apply Layout</label>
+			</button>
+			<button data-selectable data-panel="attractors">
+				<img alt="Attractors" src="img/call_split-48px.svg" draggable="false"><label>Attractors</label>
+			</button>
+			<button data-selectable data-panel="help">
+				<img alt="About and Help" src="img/help-48px.svg" draggable="false"><label>About and Help</label>
+			</button>
+		</div>
+
+		<div id="editor-panels" class="aeon-panels">
+			<!-- 
+				Panels are multi-purpose windows that appear on the left side of the screen and there is always 
+				only one panel visible. Panels listen to `panel.open` and `panel.close` events with correspoding
+				`data-panel` values.
+			-->
+			
+			<div data-panel="compute-engine" class="selected">
+				<h1>Compute Engine</h1><div onclick="console.log(this)">Close</div>
+			</div>
+
+			<div data-panel="import-export"><h1>Import Export</h1></div>
+
+			<div data-panel="model-editor"><h1>Model Editor</h1></div>
+
+			<div data-panel="attractors"><h1>Attractors</h1></div>
+
+			<div data-panel="help"><h1>Help</h1></div>
+
 		</div>
 	</div>
 
 	<div class="gone">
 		<div style="top: 24pt;" class="design-horizontal-gridline"></div>
 		<div style="right: 24pt;" class="design-vertical-gridline"></div>		
+
+		<div style="left: 8pt;" class="design-vertical-gridline"></div>		
+		<div style="left: 56pt;" class="design-vertical-gridline"></div>				
+		<div style="left: 64pt;" class="design-vertical-gridline"></div>				
+		<div style="top: 8pt;" class="design-horizontal-gridline"></div>
 	</div>
 	</body>
 </html>
