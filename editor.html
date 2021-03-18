@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Biodivine/Aeon</title>
+
+		<link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+		<link rel="manifest" href="favicon/site.webmanifest">
+
+		<!-- Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-HTCNPH6WMB"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-HTCNPH6WMB');
+        </script>
+
+        <link rel="stylesheet" href="font/aeon-fonts.css" type="text/css">
+        <link rel="stylesheet" href="style/aeon.css" type="text/css">
+
+	</head>
+
+	<body onload="main()">
+	<div id="editor">
+		<div id="cytoscape"></div>
+
+		<h1 class="aeon-logo">Aeon<em>/</em><span>BIODIVINE</span></h1>
+
+		<div class="aeon-dock">
+			<button><img alt="Start Analysis" src="img/play_circle_filled-48px.svg"><label>Start Analysis</label></button>
+			<button><img alt="Compute Engine" src="img/engine-48px.svg"><label>Compute Engine</label></button>
+			<button><img alt="Import/Export" src="img/file_copy-48px.svg"><label>Import/Export</label></button>
+			<button><img alt="Model Editor" src="img/model-48px.svg"><label>Model Editor</label></button>
+			<button><img alt="Apply Layout" src="img/view_quilt-48px.svg"><label>Apply Layout</label></button>
+			<button><img alt="Results" src="img/call_split-48px.svg"><label>Results</label></button>
+			<button><img alt="About and Help" src="img/help-48px.svg"><label>About and Help</label></button>
+		</div>
+	</div>
+
+	<div class="gone">
+		<div style="top: 24pt;" class="design-horizontal-gridline"></div>
+		<div style="right: 24pt;" class="design-vertical-gridline"></div>		
+	</div>
+	</body>
+</html>
