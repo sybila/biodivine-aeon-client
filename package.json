@@ -5,10 +5,11 @@
   "author": "Samuel Pastva <sam.pastva@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "parcel serve ./src/editor.html",
-    "build": "parcel build ./src/editor.html"
-  },  
+    "start": "parcel serve ./src/html/editor.html",
+    "build": "parcel build ./src/html/editor.html"
+  },
   "devDependencies": {
+    "@parcel/transformer-less": "^2.0.0-beta.2",
     "parcel": "^2.0.0-beta.2"
   },
   "dependencies": {

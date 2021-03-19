@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Aeon | Model Editor</title>     
+
+		<link href="/src/css/editor.less" rel="stylesheet">
+
+		<script type="module" src="/src/js/editor/main.ts"></script>
+				
+	</head>
+
+	<body>
+		<div id="editor">
+			<div id="editor-cytoscape"></div>
+
+			<h1 class="aeon-logo">Aeon<em>/</em><span>BIODIVINE</span></h1>
+
+			<div id="editor-dock" class="aeon-dock">
+				<!-- 
+					Dock ensures via CSS that each button has a floating label when hovered.
+					When a button is clickable, it emits an event based on its `data-event` attribute.
+					Selectable buttons emit `panel.open` events with the associated `data-panel` payload.
+					When this event is detected, the button becomes selected. Dock also listens to `panel.close` 
+					and unselects buttons based on closed panels.
+				-->
+				<button data-clickable data-event="start-computation">
+					<img alt="Start Analysis" src="/asset/img/play_circle_filled-48px.svg" draggable="false"><label>Start Analysis</label>
+				</button>
+				<button data-selectable data-panel="compute-engine">
+					<img alt="Compute Engine" src="/asset/img/engine-48px.svg" draggable="false"><label>Compute Engine</label>
+				</button>
+				<button data-selectable data-panel="import-export">
+					<img alt="Import/Export" src="/asset/img/file_copy-48px.svg" draggable="false"><label>Import/Export</label>
+				</button>			
+				<button data-selectable data-panel="model-editor">
+					<img alt="Model Editor" src="/asset/img/model-48px.svg" draggable="false"><label>Model Editor</label>
+				</button>
+				<button data-clickable data-event="apply-layout">
+					<img alt="Apply Layout" src="/asset/img/view_quilt-48px.svg" draggable="false"><label>Apply Layout</label>
+				</button>
+				<button data-selectable data-panel="attractors">
+					<img alt="Attractors" src="/asset/img/call_split-48px.svg" draggable="false"><label>Attractors</label>
+				</button>
+				<button data-selectable data-panel="help">
+					<img alt="About and Help" src="/asset/img/help-48px.svg" draggable="false"><label>About and Help</label>
+				</button>
+			</div>
+
+			<div id="editor-panels" class="aeon-panels">
+				<!-- 
+					Panels are multi-purpose windows that appear on the left side of the screen and there is always 
+					only one panel visible. Panels listen to `panel.open` and `panel.close` events with correspoding
+					`data-panel` values.
+				-->
+				
+				<div data-panel="compute-engine">
+					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
+	
+					<h1>Compute Engine</h1><div onclick="console.log(this)">Close</div>
+				</div>
+	
+				<div data-panel="import-export">
+					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
+	
+					<h1>Import Export</h1>
+				</div>
+	
+				<div data-panel="model-editor">
+					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
+	
+					<h1>Model Editor</h1>
+				</div>
+	
+				<div data-panel="attractors">
+					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
+	
+					<h1>Attractors</h1>
+				</div>
+	
+				<div data-panel="help">
+					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
+	
+					<h1>Help</h1>
+				</div>
+	
+			</div>
+		</div>		
+	</body>
+</html>

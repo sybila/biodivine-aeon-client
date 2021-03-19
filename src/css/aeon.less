@@ -1,0 +1,200 @@
+@import url("/asset/font/aeon-fonts.less");
+
+@colorPrimary: #3A568C;
+@colorPrimaryLight: #6a82bc;
+@colorPrimaryDark: #002e5e;
+
+@colorSecondary: #d05d5d;
+@colorSecondaryLight: #ff8d8a;
+@colorSecondaryDark: #9a2d33;
+
+@colorActionBackground: #ECEFF1;
+
+body {
+    font-family: 'Lato', sans-serif;
+    margin: 0px;
+}
+
+.heebo {
+    font-family: 'Heebo', sans-serif;
+}
+
+.gone {
+    display: none;
+}
+
+/* Aeon logo */
+
+.aeon-logo {
+    position: fixed;
+    top: 12pt;
+    right: 18pt;
+    margin: 0;
+
+    text-align: right;
+    font-family: 'Heebo', sans-serif;
+    color: @colorPrimary;  
+    font-weight: 500;
+    font-size: 24pt;      
+    letter-spacing: 0.01ch;
+    user-select: none;
+
+    transform: scale(0.95, 1.0);
+
+    span {
+        color: @colorSecondary;
+        font-weight: 900;
+        letter-spacing: 0.1ch;
+    }
+
+    em {
+        font-size: 2.4rem;
+        font-style: normal;
+        position: relative;
+        top: 0.2rem;
+    }
+}
+
+/* Dock with floating buttons. */
+
+.aeon-dock {        
+    width: 48pt;     
+ 
+    /*
+        Button renders the default background and shadow.
+        If will stretch when the label becomes visible,
+        but the animation is performed by the label.
+    */
+    button {
+        position: relative;
+        display: block;
+        margin-bottom: 8pt;
+        height: 48pt; 
+
+        background-color: @colorActionBackground;
+        border: 0px;
+        border-radius: 24px;
+        box-shadow: 0px 2px 5px #d0d0d0;        
+        cursor: pointer;
+        user-select: none;
+    }
+
+    button:focus {
+        outline: none;
+    }
+
+    /*
+        Image is the actual "button" part of the component.
+    */
+    button img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 32pt;
+        height: 32pt;
+        padding: 8pt;
+
+        background-color: @colorActionBackground;        
+        border-radius: 24px;
+
+        transition: background-color 0.3s;
+    }
+
+    /* When panel for that button is open, background is darker. */
+    button.selected img {
+        background-color: darken(@colorActionBackground, 20%);
+    }
+
+    button img:hover {
+        background-color: darken(@colorActionBackground, 10%);
+    }
+
+    /*
+        Label is initially hidden, but is revealed when
+        image is hovered. For some reason, 39 is the width
+        that makes button stretch properly.
+    */
+    button label {
+        display: inline-block;
+        width: 39pt;
+
+        font-size: 0;      
+        white-space: nowrap;        
+
+        transition: width 0.3s;
+    }
+
+    button:not(.selected) img:hover + label {        
+        font-size: 1.1rem;        
+        width: 120pt;
+        padding-left: 48pt; 
+        font-weight: 700;       
+    }
+}
+
+/* Switchable resizeable panel windows. */
+
+.aeon-panels {
+    
+    &> div {
+        display: none;
+        width: 480pt;
+        max-width: ~"min(75%, 960pt)";
+        min-width: 360pt;
+        resize: horizontal;
+    
+        background-color: #f5f5f5;
+        box-shadow: 0px 2px 5px #d0d0d0;
+        padding: 8pt;
+        border-radius: 8pt;
+        overflow-y: auto;    
+    }
+    
+    &> div.selected {
+        display: block;    
+    }
+    
+    
+    /* Position panel close button. */
+    .panel-close {
+        position: absolute;
+        top: 4pt;
+        left: 4pt;
+    }
+    
+}
+
+/* Small image button without description */
+
+.img-button-24 {
+    width: 16pt;
+    height: 16pt;
+
+    padding: 4pt;
+    border-radius: 8pt;
+    cursor: pointer;        
+
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: darken(@colorActionBackground, 10%);
+    }
+}
+
+/* Design grid */
+
+.design-horizontal-gridline {
+    width: 100%;
+    height: 1px;
+    background-color: @colorPrimary;
+    position: fixed;
+    left: 0;
+}
+
+.design-vertical-gridline {
+    height: 100%;
+    width: 1px;
+    background-color: @colorPrimary;
+    position: fixed;
+    top: 0;
+}

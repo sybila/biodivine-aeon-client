@@ -1,0 +1,38 @@
+@import url("./aeon.less");
+
+body {
+	/* Avoids unnecessary scrollbars. */
+	overflow: hidden;
+}
+
+#editor-dock {
+	position: fixed;
+
+    top: 50%;
+	/* 7 buttons and 6 margins */
+    margin-top: calc((7 * 48pt + 6 * 8pt) / -2);
+    margin-left: 8pt;
+}
+
+#editor-panels {
+	position: absolute;
+
+	margin-left: 64pt;
+	margin-top: 8pt;	
+}
+
+#editor-panels > div {
+	/* 16 for margin, 16 for padding */
+	max-height: calc(100vh - 32pt);
+}
+
+#editor-cytoscape {
+	position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;    
+    top: 0;
+    z-index: -1;
+
+    background: #f9f9f9;    
+}
