@@ -199,3 +199,31 @@
     font-weight: 900;
     font-style: normal;
 }
+
+@font-face {
+    font-family: 'Anonymous Pro';
+    src: url('anonymous_pro/AnonymousPro-400.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Anonymous Pro';
+    src: url('anonymous_pro/AnonymousPro-400-italic.ttf');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Anonymous Pro';
+    src: url('anonymous_pro/AnonymousPro-700.ttf');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Anonymous Pro';
+    src: url('anonymous_pro/AnonymousPro-700-italic.ttf');
+    font-weight: 700;
+    font-style: italic;
+}
