@@ -15,7 +15,7 @@
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', 'G-HTCNPH6WMB');
-        </script>
+        </script>     
 
         <!-- Lato and Heebo fonts -->
         <link rel="stylesheet" href="font/aeon-fonts.css" type="text/css">
@@ -26,13 +26,17 @@
         <!-- Editor specific styles (positioning, etc.) -->
         <link rel="stylesheet" href="style/editor.css" type="text/css">
 
+        <!-- External dependencies (Cytoscape, Hotkeys, etc.) -->
+        <script src="script/dependencies/cytoscape_3.17.3.js" type="text/javascript"></script>
+
         <!-- Aeon frontend "core library" -->
         <script src="script/core/Config.js" type="text/javascript"></script>
-		<script src="script/core/Events.js" type="text/javascript"></script>
+		<script src="script/core/Events.js" type="text/javascript"></script>		
 
 		<!-- Editor related GUI helper objects -->
 		<script src="script/editor/Dock.js" type="text/javascript"></script>
 		<script src="script/editor/Panels.js" type="text/javascript"></script>
+		<script src="script/editor/Cytoscape.js" type="text/javascript"></script>
 
 		<!-- Editor main script -->
         <script src="script/editor/Editor.js" type="text/javascript"></script>
@@ -41,7 +45,7 @@
 
 	<body onload="main()">
 	<div id="editor">
-		<div id="cytoscape"></div>
+		<div id="editor-cytoscape"></div>
 
 		<h1 class="aeon-logo">Aeon<em>/</em><span>BIODIVINE</span></h1>
 
@@ -83,7 +87,7 @@
 				`data-panel` values.
 			-->
 			
-			<div data-panel="compute-engine" class="selected">
+			<div data-panel="compute-engine">
 				<img alt="Close panel" src="img/close-24px.svg" class="img-button-24 panel-close" onclick="Events.emit('panel.close', ':selected')">
 
 				<h1>Compute Engine</h1><div onclick="console.log(this)">Close</div>
@@ -109,7 +113,7 @@
 
 			<div data-panel="help">
 				<img alt="Close panel" src="img/close-24px.svg" class="img-button-24 panel-close" onclick="Events.emit('panel.close', ':selected')">
-				
+
 				<h1>Help</h1>
 			</div>
 
