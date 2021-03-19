@@ -1,0 +1,17 @@
+{
+  "name": "aeon",
+  "version": "0.4.0",
+  "description": "Aeon is a tool for analysis of parametrised Boolean networks.",
+  "author": "Samuel Pastva <sam.pastva@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel serve ./src/editor.html",
+    "build": "parcel build ./src/editor.html"
+  },  
+  "devDependencies": {
+    "parcel": "^2.0.0-beta.2"
+  },
+  "dependencies": {
+    "cytoscape": "^3.18.1"
+  }
+}
