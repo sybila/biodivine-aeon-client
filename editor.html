@@ -84,16 +84,34 @@
 			-->
 			
 			<div data-panel="compute-engine" class="selected">
+				<img alt="Close panel" src="img/close-24px.svg" class="img-button-24 panel-close" onclick="Events.emit('panel.close', ':selected')">
+
 				<h1>Compute Engine</h1><div onclick="console.log(this)">Close</div>
 			</div>
 
-			<div data-panel="import-export"><h1>Import Export</h1></div>
+			<div data-panel="import-export">
+				<img alt="Close panel" src="img/close-24px.svg" class="img-button-24 panel-close" onclick="Events.emit('panel.close', ':selected')">
 
-			<div data-panel="model-editor"><h1>Model Editor</h1></div>
+				<h1>Import Export</h1>
+			</div>
 
-			<div data-panel="attractors"><h1>Attractors</h1></div>
+			<div data-panel="model-editor">
+				<img alt="Close panel" src="img/close-24px.svg" class="img-button-24 panel-close" onclick="Events.emit('panel.close', ':selected')">
 
-			<div data-panel="help"><h1>Help</h1></div>
+				<h1>Model Editor</h1>
+			</div>
+
+			<div data-panel="attractors">
+				<img alt="Close panel" src="img/close-24px.svg" class="img-button-24 panel-close" onclick="Events.emit('panel.close', ':selected')">
+
+				<h1>Attractors</h1>
+			</div>
+
+			<div data-panel="help">
+				<img alt="Close panel" src="img/close-24px.svg" class="img-button-24 panel-close" onclick="Events.emit('panel.close', ':selected')">
+				
+				<h1>Help</h1>
+			</div>
 
 		</div>
 	</div>

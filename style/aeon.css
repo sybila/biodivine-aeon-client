@@ -132,24 +132,47 @@ body {
 
 /* Switchable resizeable panel windows. */
 
-.aeon-panels > div {
-    display: none;
-    width: 480pt;
-    max-width: min(75%, 960pt);
-    min-width: 360pt;
-    resize: horizontal;
+    .aeon-panels > div {
+        display: none;
+        width: 480pt;
+        max-width: min(75%, 960pt);
+        min-width: 360pt;
+        resize: horizontal;
 
-    background-color: #f5f5f5;
-    box-shadow: 0px 2px 5px #d0d0d0;
-    padding: 8pt;
-    border-radius: 8pt;
-    overflow-y: auto;    
-}
+        background-color: #f5f5f5;
+        box-shadow: 0px 2px 5px #d0d0d0;
+        padding: 8pt;
+        border-radius: 8pt;
+        overflow-y: auto;    
+    }
 
-.aeon-panels > div.selected {
-    display: block;    
-}
+    .aeon-panels > div.selected {
+        display: block;    
+    }
 
+
+    /* Position panel close button. */
+    .aeon-panels .panel-close {
+        position: absolute;
+        top: 4pt;
+        left: 4pt;
+    }
+
+/* Small image button without description */
+
+    .img-button-24 {
+        width: 16pt;
+        height: 16pt;
+
+        padding: 4pt;
+        border-radius: 8pt;
+
+        transition: background-color 0.3s;
+    }
+
+    .img-button-24:hover {
+        background: #CFD8DC;
+    }
 
 /* Design grid */
 

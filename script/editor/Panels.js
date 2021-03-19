@@ -30,10 +30,18 @@ let Panels = {
 		});
 
 		Events.addListener("panel.close", (panel_name) => {
-			let panel = this._panelElements[panel_name];
-			if (panel !== undefined) {
-				panel.classList.remove("selected");
-			}
+			if (panel_name == ":selected") {
+				for (child of this._panels.children) {
+					if (child.classList.contains("selected")) {
+						Events.emit("panel.close", child.dataset.panel);
+					}
+				}
+			} else {
+				let panel = this._panelElements[panel_name];
+				if (panel !== undefined) {
+					panel.classList.remove("selected");
+				}
+			}			
 		})
 	},	
 
