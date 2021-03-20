@@ -7,7 +7,15 @@ function nodeWidth(element: cytoscape.NodeSingular) {
 	return String(element.data().name.length*7)+"pt";
 }
 
-export let Styles: cytoscape.Stylesheet[] = [
+function edgeLineStyle(element: cytoscape.EdgeSingular) {
+	if (element.data().observable) {
+		return "solid";
+	} else {
+		return "dashed";
+	}
+}
+
+let node_styles: cytoscape.Stylesheet[] = [
 	{ 	// Style of the network variable nodes
 		'selector': 'node[type = "variable"]',
 		'style': {			
@@ -57,7 +65,55 @@ export let Styles: cytoscape.Stylesheet[] = [
 			'border-color': '#6a7ea5',
 			'border-style': 'solid',
 		}
-	}
+	},
 ]
+
+let edge_styles: cytoscape.Stylesheet[] = [
+	{	// General style of the graph edge.
+		'selector': 'edge',
+		'style': {
+			'width': 3.0,
+			'curve-style': 'bezier',
+			'text-outline-width': 2.3,
+			'text-outline-color': '#cacaca',			
+			'line-color': '#797979',
+			'target-arrow-color': '#797979',
+			'target-arrow-shape': 'triangle',
+		}
+	},
+	{	// For a hovered edge, show a small overlay.
+		'selector': 'edge.highlighted',
+		'style': { 'overlay-opacity': 0.1 },
+	},
+	{	// Show non-observable edges as dashed.
+		'selector': 'edge[observable]',
+		'style': {
+			'line-style': edgeLineStyle,
+			'line-dash-pattern': [8, 3],
+		}
+	},
+	{	// When the edge is an activation, show it as green with normal arrow.
+		'selector': 'edge[monotonicity="activation"]',
+		'style': {
+			'line-color': '#4abd73',
+			'target-arrow-color': '#4abd73',
+			'target-arrow-shape': 'triangle'
+		}
+	},
+	{	// When the edge is an inhibition, show it as red with a `tee` arrow.
+		'selector': 'edge[monotonicity="inhibition"]',
+		'style': {
+			'line-color': '#d05d5d',
+			'target-arrow-color': '#d05d5d',
+			'target-arrow-shape': 'tee',
+		}
+	},	
+	{	// A selected edge should be drawn with the same overlay as a hovered edge.
+		'selector': 'edge:selected',
+		'style': { 'overlay-opacity': 0.1, }
+	},
+]
+
+export let Styles: cytoscape.Stylesheet[] = [].concat(node_styles).concat(edge_styles);
 
 export default Styles;

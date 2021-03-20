@@ -1,7 +1,7 @@
-import Events, { VariableData } from './EditorEvents';
+import Events, { EdgeId, RegulationData, VariableData } from './EditorEvents';
 import CytoscapeStyle from './CytoscapeStyles';
 import Config from '../core/Config';
-import cytoscape from 'cytoscape';
+import cytoscape, { EdgeSingular } from 'cytoscape';
 
 /**
  * Cytoscape editor is responsible for visually representing the regulation graph. It is 
@@ -12,6 +12,8 @@ export let Cytoscape: {
     _container: HTMLElement,
     _cytoscape: cytoscape.Core,    
 	_create_variable: (variable: VariableData) => void,
+	_create_regulation: (regulation: RegulationData) => void,
+	_find_regulation_edge: (edge: EdgeId) => cytoscape.EdgeCollection,
     init: (container: HTMLElement) => void,
 	cy: () => cytoscape.Core,	
 } = {
@@ -51,6 +53,32 @@ export let Cytoscape: {
 		}
 		
 		cy.add(new_node);
+	},
+
+	_create_regulation: function(regulation: RegulationData) {
+		let cy = this._cytoscape as cytoscape.Core;
+
+		let existing = cy.edges(`[source = "${regulation.regulator}"][target = "${regulation.target}"]`);
+		if (existing.length > 0) {
+			let data = existing[0].data();
+			data.monotonicity = regulation.monotonicity;
+			data.observable = regulation.observable;
+			console.log("Regulation ", regulation.regulator, "->", regulation.target, "already exists. Skipping.");
+		}
+
+		cy.add({
+			group: 'edges', data: {
+				source: regulation.regulator, 
+				target: regulation.target,
+				observable: regulation.observable,
+				monotonicity: regulation.monotonicity,
+			}
+		});
+	},
+
+	_find_regulation_edge: function(edge: EdgeId): cytoscape.EdgeCollection {
+		let cy = this._cytoscape as cytoscape.Core;
+		return cy.edges(`[source = "${edge[0]}"][target = "${edge[1]}"]`);		
 	},
 
 	cy(): cytoscape.Core {
@@ -138,6 +166,35 @@ export let Cytoscape: {
 		cy.on('select', selection_handler);
 		cy.on('unselect', selection_handler);
 
+		/*
+			Highlight events for graph edges.
+		*/
+
+		cy.on('mouseover', 'edge', function(event) {
+			document.body.style.cursor = "pointer";
+			let edge = event.target as cytoscape.EdgeSingular;
+			Events.model.regulation.highlight([edge.source().id(), edge.target().id()], true);
+		});
+
+		cy.on('mouseout', 'edge', function(event) {
+			document.body.style.cursor = "auto";
+			let edge = event.target as cytoscape.EdgeSingular;
+			Events.model.regulation.highlight([edge.source().id(), edge.target().id()], false);
+		});
+
+		Events.model.regulation.onHighlight((data) => {			
+			let edge = this._find_regulation_edge(data.edge) as cytoscape.EdgeCollection;
+			if (data.highlighted) {
+				edge.addClass("highlighted");
+			} else {
+				edge.removeClass("highlighted");
+			}
+		});
+
+		/*
+			Listen to other model events to keep the graph up-to-date.
+		*/
+
 		Events.model.onClear(() => {
 			let cy = this.cy() as cytoscape.Core;
 			// Ensures every element is unselected before it is removed, because 
@@ -149,6 +206,10 @@ export let Cytoscape: {
 
 		Events.model.variable.onCreate((variable) => {
 			this._create_variable(variable);
+		});
+
+		Events.model.regulation.onCreate((regulation) => {
+			this._create_regulation(regulation);
 		});
     },
 

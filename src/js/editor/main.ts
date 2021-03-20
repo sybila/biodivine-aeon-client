@@ -9,7 +9,7 @@ import * as aeon from 'aeon-wasm';
 let g2a = `
 #position:CtrA:419,94
 $CtrA:((((!CtrA & GcrA) & !CcrM) & !SciP) | ((CtrA & !CcrM) & !SciP))
-CtrA -> CtrA
+CtrA -?? CtrA
 GcrA -> CtrA
 CcrM -| CtrA
 SciP -| CtrA

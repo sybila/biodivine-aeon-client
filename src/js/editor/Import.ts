@@ -1,4 +1,4 @@
-import Events, { VariableData } from './EditorEvents'
+import Events, { VariableData, RegulationData } from './EditorEvents'
 import * as aeon from 'aeon-wasm'
 
 type Error = { message: string, html?: string };
@@ -6,12 +6,7 @@ type Result<T> = { result?: T, error?: Error[] };
 
 type ModelData = {
     variables: { id: string, name: string }[],
-    regulations: {
-        regulator: string,
-        target: string,
-        observable: boolean,
-        monotonicity: string,
-    },
+    regulations: RegulationData[],
     metadata: { [key: string]: any }
 }
 
@@ -43,6 +38,10 @@ export let Import: {
                 }
 
                 Events.model.variable.create(event);
+            }
+
+            for (let regulation of model_data.regulations) {
+                Events.model.regulation.create(regulation);
             }
         } 
         if (result.error !== undefined) {

@@ -6,16 +6,30 @@ const PANEL_OPEN = "editor.panel.open";
 const PANEL_CLOSE = "editor.panel.close";
 
 const MODEL_CLEAR = "model.clear";
+
 const MODEL_VARIABLE_HIGHLIGHT = "model.variable.highlight";
 const MODEL_VARIABLE_SELECTION = "model.variable.selection";
 const MODEL_VARIABLE_CREATE = "model.variable.create";
 
-type Highlighted = { id: string, highlighted: boolean };
+const MODEL_REGULATION_HIGHLIGHT = "model.regulation.highlight";
+const MODEL_REGULATION_SELECTION = "model.regulation.selection";
+const MODEL_REGULATION_CREATE = "model.regulation.create";
+
+export type EdgeId = [string, string];
+export type HighlightedNode = { id: string, highlighted: boolean };
+export type HighlightedEdge = { edge: EdgeId, highlighted: boolean };
 
 export type VariableData = {
     id: string,
     name: string,
     position?: { x: number, y: number },
+}
+
+export type RegulationData = {
+    regulator: string,
+    target: string,
+    observable: boolean,
+    monotonicity: null | "activation" | "inhibition",
 }
 
 export let EditorEvents = {
@@ -72,9 +86,9 @@ export let EditorEvents = {
                 Events.emit(MODEL_VARIABLE_HIGHLIGHT, { id: id, highlighted: on });
             },
 
-            onHighlight(action: (data: Highlighted) => void) {
+            onHighlight(action: (data: HighlightedNode) => void) {
                 return Events.addListener(MODEL_VARIABLE_HIGHLIGHT, function(data) {
-                    action(data as Highlighted);
+                    action(data as HighlightedNode);
                 });
             },
 
@@ -98,7 +112,41 @@ export let EditorEvents = {
                 });
             },
 
-        }
+        },
+
+        regulation: {
+
+            highlight(edge: EdgeId, on: boolean) {
+                Events.emit(MODEL_REGULATION_HIGHLIGHT, { edge: edge, highlighted: on });
+            },
+
+            onHighlight(action: (data: HighlightedEdge) => void) {
+                return Events.addListener(MODEL_REGULATION_HIGHLIGHT, function(data) {
+                    action(data as HighlightedEdge);
+                });
+            },
+
+            selection(edges: EdgeId[]) {
+                Events.emit(MODEL_REGULATION_SELECTION, edges);
+            },
+
+            onSelections(action: (edges: EdgeId[]) => void) {
+                return Events.addListener(MODEL_REGULATION_SELECTION, function(data) {
+                    action(data as EdgeId[]);
+                });
+            },
+
+            create(regulation: RegulationData) {
+                Events.emit(MODEL_REGULATION_CREATE, regulation);
+            },
+
+            onCreate(action: (regulation: RegulationData) => void) {
+                return Events.addListener(MODEL_REGULATION_CREATE, function(data) {
+                    action(data as RegulationData);
+                });
+            },
+
+        },        
 
     }
 
