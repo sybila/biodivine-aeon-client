@@ -4,15 +4,19 @@
   "description": "Aeon is a tool for analysis of parametrised Boolean networks.",
   "author": "Samuel Pastva <sam.pastva@gmail.com>",
   "license": "MIT",
+  "private": true,
   "scripts": {
-    "start": "parcel serve ./src/html/editor.html",
+    "start": "parcel editor.html",
     "build": "parcel build ./src/html/editor.html"
   },
   "devDependencies": {
-    "@parcel/transformer-less": "^2.0.0-beta.2",
-    "parcel": "^2.0.0-beta.2"
+    "less": "^4.1.1",
+    "parcel-bundler": "^1.12.5",
+    "typescript": "^4.2.3"
   },
   "dependencies": {
+    "@types/cytoscape": "^3.14.12",
+    "aeon-wasm": "file:pkg",
     "cytoscape": "^3.18.1"
   }
 }

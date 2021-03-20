@@ -14,8 +14,6 @@ export let Dock: {
 	init(dock: HTMLElement) {
 		this._dock = dock;
 
-        console.log("Initialized");
-
 		// Emit events when buttons are clicked.        
 		for (let button of dock.children) {
             if (button instanceof HTMLElement && button.tagName === "BUTTON") {
