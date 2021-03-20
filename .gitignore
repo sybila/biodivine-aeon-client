@@ -1,8 +1,13 @@
+# Javascript build files
 /node_modules
 /dist
+.cache
+.parcel-cache
+
+# Rust build files
+/target
+/pkg
 
 .DS_Store
 
 .idea
-.cache
-.parcel-cache
