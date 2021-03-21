@@ -1,3 +1,4 @@
+import Events from './EditorEvents';
 
 export let Menu: {
     _menu: HTMLElement,
@@ -13,21 +14,20 @@ export let Menu: {
         let hint = menu.getElementsByClassName("hint")[0] as HTMLElement;
         let buttons = menu.getElementsByTagName("img");
         for (let i=0; i<buttons.length; i++) {
-            let button = buttons[i];
-            button.addEventListener("mouseenter", () => {
+            let button = buttons[i];            
+            button.onclick = () => { Events.click(button.dataset.event); }
+            button.onmouseleave = () => { hint.classList.add("invisible"); };
+            button.onmouseenter = () => { 
                 hint.textContent = button.alt;
                 hint.classList.remove("invisible");
-            });
-            button.addEventListener("mouseleave", () => {
-                hint.classList.add("invisible");
-            });
+            }            
         }
     },
 
     renderAt: function(position: { x: number, y: number }, zoom: number) {
         let menu = this._menu as HTMLElement;        
         menu.style.left = position.x + "px";
-        menu.style.top = (position.y + (44 * zoom)) + "px";
+        menu.style.top = (position.y + (36 * zoom)) + "px";
         // Scale applies current zoom, translate ensures the middle point of menu is 
         // actually at postion [left, top] (this makes it easier to align).
         // Note the magic constant next to zoom: It turns out we needed smaller font

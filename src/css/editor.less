@@ -44,21 +44,22 @@ body {
     /* Initially, menu is off screen */
 	left: -200pt;
 	top: -200pt;
-    /* This is to accommodate longer hints */
+    /* This restricts the hit box of the floating menut to just the buttons. */
     width: 80pt;
-    /* Ensure hint is in the middle */
-    text-align: center;
+	height: 24pt;
 	/* Ensures the zoom is properly applied when needed */
 	transform-origin: 0% 0%;
     /* We don't animate other stuff because that needs to be in sync with the graph */
     transition: opacity 0.3s;
 	user-select: none;
+	margin-bottom: -22pt;
 
 	.button-row {
 		height: 24pt;
 		width: 80pt;
 		margin: 0 auto;
 		
+		text-align: center;
 		border-radius: 24pt;
 		background-color: @colorActionBackground;
 		box-shadow: 0pt 2pt 5pt @colorShadow;
@@ -66,8 +67,9 @@ body {
 		img:first-child { float: left; }
 		img:last-child { float: right; }
 
-		img {
+		img {			
 			.img-button();
+			display: inline-block;
 			width: 12pt;
     		height: 12pt;
 
@@ -77,10 +79,15 @@ body {
 	}
 
 	.hint {
+		position: relative;
 		display: block;
 		margin: 0 auto;
 		margin-top: 8pt;
+		/* Should fit all hint texts in one line. */
+		width: 110pt;			
 		height: 14pt;
+		/* Adjust to be centered. */
+		left: -15pt;
 		
 		text-align: center;
 		font-size: 10pt;

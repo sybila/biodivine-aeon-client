@@ -11,6 +11,18 @@
 	</head>
 
 	<body>
+		<!-- 
+			A collection of invisible images which we load some icons from.  This is mainly to have the icons 
+			included if we do some minification and optimizer would refuse to include these images in the bundle.
+		-->
+		<div class="gone">
+			<img id="img-visibility-on-24" class="gone" src="/asset/img/visibility_on-24px.svg">
+			<img id="img-visibility-off-24" class="gone" src="/asset/img/visibility_off-24px.svg">
+			<img id="img-trending-up-24" class="gone" src="/asset/img/trending_up-24px.svg">
+			<img id="img-trending-down-24" class="gone" src="/asset/img/trending_down-24px.svg">
+			<img id="img-swap-vert-24" class="gone" src="/asset/img/swap_vert-24px.svg">
+		</div>		
+
 		<div id="editor">
 			<div id="editor-cytoscape"></div>
 
@@ -19,14 +31,27 @@
 			<div id="editor-floating-node-menu" class="floating-menu">
 				<!-- A menu element that is shown for selected graph nodes in the cytoscape editor. -->
 				<div class="button-row">                
-					<img alt="Edit name (E)" src="/asset/img/edit-24px.svg" draggable="false">
-					<img alt="Edit update function (F)" src="/asset/img/functions-24px.svg" draggable="false">
-					<img alt="Remove (⌫)" src="/asset/img/delete-24px.svg" draggable="false">
+					<img data-event="selected-edit-name" alt="Edit name (E)" src="/asset/img/edit-24px.svg" draggable="false">
+					<img data-event="selected-edit-function" alt="Edit update function (F)" src="/asset/img/functions-24px.svg" draggable="false">
+					<img data-event="selected-remove" alt="Remove (⌫)" src="/asset/img/delete-24px.svg" draggable="false">
 				</div>				
 				<span class="hint invisible">Hint</span>
 			</div>
 			
-		
+			<div id="editor-floating-edge-menu" class="floating-menu" style="left: 100px; top: 100px;">
+				<!-- A menu element which is shown for selected edges in the cytoscape editor. -->				
+				<div class="button-row">
+					<img id="editor-floating-edge-menu-observability" data-event="toggle-observability" draggable="false"
+							data-alt-true="Observability off (O)" data-src-true="img-visibility-off-24"
+							data-alt-false="Observability on (O)" data-src-false="img-visibility-on-24">
+					<img id="editor-floating-edge-menu-monotonicity" data-event="toggle-monotonicity" draggable="false"
+							data-alt-null="Make activating (M)" data-src-null="img-trending-up-24"
+							data-alt-activation="Make inhibiting (M)" data-src-activation="img-trending-down-24"
+							data-alt-inhibition="Monotonicity off (M)" data-src-inhibition="img-swap-vert-24">					
+					<img data-event="selected-remove" alt="Remove (⌫)" id="edge-menu-remove" class="button" src="/asset/img/delete-24px.svg" draggable="false">
+				</div>
+				<span class="hint invisible">Hint</span>
+			</div>
 
 			<div id="editor-dock" class="aeon-dock">
 				<!-- 

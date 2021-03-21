@@ -3,6 +3,7 @@ import CytoscapeStyle from './CytoscapeStyles';
 import CytoscapeEdgehandles from './CytoscapeEdgehandles';
 import Config from '../core/Config';
 import NodeMenu from './FloatingNodeMenu';
+import EdgeMenu from './FloatingEdgeMenu';
 import cytoscape from 'cytoscape';
 import edgehandles from 'cytoscape-edgehandles';
 
@@ -23,6 +24,7 @@ export let Cytoscape: {
 	_create_regulation: (regulation: RegulationData) => void,
 	_find_regulation_edge: (edge: EdgeId) => cytoscape.EdgeCollection,
 	_render_selected_node_menu: () => void,
+	_render_selected_edge_menu: () => void,
     init: (container: HTMLElement) => void,
 	cy: () => cytoscape.Core,	
 } = {
@@ -197,6 +199,7 @@ export let Cytoscape: {
 			Events.model.variable.selection(ids);
 
 			Cytoscape._render_selected_node_menu();
+			Cytoscape._render_selected_edge_menu();
 		}
 
 		cy.on('select', selection_handler);
@@ -253,15 +256,19 @@ export let Cytoscape: {
 		*/
 		cy.on('zoom', function() {
 			Cytoscape._render_selected_node_menu();
+			Cytoscape._render_selected_edge_menu();
 		});
 
 		cy.on('pan', function() {
 			Cytoscape._render_selected_node_menu();
+			Cytoscape._render_selected_edge_menu();
 		});
 
-		cy.on('drag', 'node:selected', function() {
+		cy.on('drag', function() {
 			Cytoscape._render_selected_node_menu();
+			Cytoscape._render_selected_edge_menu();
 		});
+
     },
 
 	_render_selected_node_menu: function() {
@@ -273,7 +280,21 @@ export let Cytoscape: {
 		} else {
 			NodeMenu.hide();
 		}
-	}
+	},
+
+	_render_selected_edge_menu: function() {
+		let cy = Cytoscape.cy();
+		let selection = cy.$("edge:selected");
+		if (selection.length == 1) {
+			let edge = selection[0] as cytoscape.EdgeSingular;
+			let data = edge.data();
+			let boundingBox = edge.renderedBoundingBox({});
+			let position = { x: (boundingBox.x1 + boundingBox.x2) / 2, y: (boundingBox.y1 + boundingBox.y2) / 2 };
+			EdgeMenu.renderAt(position, cy.zoom(), data);
+		} else {
+			EdgeMenu.hide();
+		}
+	},
 
 }
 
