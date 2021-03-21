@@ -4,6 +4,7 @@ import CytoscapeEdgehandles from './CytoscapeEdgehandles';
 import Config from '../core/Config';
 import NodeMenu from './FloatingNodeMenu';
 import EdgeMenu from './FloatingEdgeMenu';
+import register_events from './CytoscapeEvents';
 import cytoscape from 'cytoscape';
 import edgehandles from 'cytoscape-edgehandles';
 
@@ -20,25 +21,34 @@ export let Cytoscape: {
     _container: HTMLElement,
     _cytoscape: cytoscape.Core,    
 	_edgehandles: cytoscape.EdgeHandlesApi,
-	_create_variable: (variable: VariableData) => void,
-	_create_regulation: (regulation: RegulationData) => void,
+	_ensure_variable: (variable: VariableData) => void,
+	_remove_variable: (id: string) => void,
+	_ensure_regulation: (regulation: RegulationData) => void,
+	_remove_regulation: (id: EdgeId) => void,
 	_find_regulation_edge: (edge: EdgeId) => cytoscape.EdgeCollection,
 	_render_selected_node_menu: () => void,
 	_render_selected_edge_menu: () => void,
     init: (container: HTMLElement) => void,
-	cy: () => cytoscape.Core,	
+	cy: () => cytoscape.Core,
+	selected_node_ids: () => string[],
+	selected_edge_ids: () => EdgeId[],
+	regulation_data: (id: EdgeId) => RegulationData | undefined,
+	redraw_menus: () => void,
+	clear: () => void,
+	is_empty: () => boolean,
 } = {
 
     _container: undefined,
     _cytoscape: undefined,
 	_edgehandles: undefined,
 
-	_create_variable: function(variable: VariableData) {
+	_ensure_variable: function(variable: VariableData) {
 		let cy = this._cytoscape as cytoscape.Core;
 
 		let existing = cy.getElementById(variable.id);
 		if (existing.length > 0) {
-			existing.data().name = variable.name;			
+			existing.data().name = variable.name;	
+			(cy.style() as any).update();	// For some reason, update is not in `style`.
 			console.log("Varialbe with id", variable.id, "already exists. Skipping.");
 			return;
 		}
@@ -67,7 +77,28 @@ export let Cytoscape: {
 		cy.add(new_node);
 	},
 
-	_create_regulation: function(regulation: RegulationData) {
+	_remove_variable: function(id: string) {
+		let cy = this._cytoscape as cytoscape.Core;
+		let find = cy.$id(id);
+		if (find.length > 0) {
+			let node = find[0] as cytoscape.NodeSingular;			
+			node.unselect();	// Just in case.
+			node.outgoers().forEach((outgoing) => {
+				Events.model.regulation.remove([node.id(), outgoing.id()]);
+			});
+			node.incomers().forEach((incoming) => {
+				Events.model.regulation.remove([incoming.id(), node.id()]);
+			})
+			cy.remove(node);
+			this.redraw_menus();
+		} else {
+			if (Config.DEBUG_MODE) {
+				console.log("Variable", id, "does not exists. Cannot remove.");
+			}
+		}
+	},
+
+	_ensure_regulation: function(regulation: RegulationData) {
 		let cy = this._cytoscape as cytoscape.Core;
 
 		let existing = cy.edges(`[source = "${regulation.regulator}"][target = "${regulation.target}"]`);
@@ -75,7 +106,11 @@ export let Cytoscape: {
 			let data = existing[0].data();
 			data.monotonicity = regulation.monotonicity;
 			data.observable = regulation.observable;
-			console.log("Regulation ", regulation.regulator, "->", regulation.target, "already exists. Skipping.");
+			(cy.style() as any).update();	// For some reason, update is not in `style`.
+			if (existing[0].selected()) {
+				this._render_selected_edge_menu();
+			}
+			return;
 		}
 
 		cy.add({
@@ -88,9 +123,63 @@ export let Cytoscape: {
 		});
 	},
 
+	_remove_regulation: function(this: typeof Cytoscape, id: EdgeId) {				
+		let edge = this._find_regulation_edge(id) as cytoscape.EdgeCollection;
+		edge.unselect();
+		this._cytoscape.remove(edge);	
+		this.redraw_menus();	
+	},
+
 	_find_regulation_edge: function(edge: EdgeId): cytoscape.EdgeCollection {
 		let cy = this._cytoscape as cytoscape.Core;
 		return cy.edges(`[source = "${edge[0]}"][target = "${edge[1]}"]`);		
+	},
+
+	selected_node_ids: function(): string[] {
+		let selection: string[] = [];
+		Cytoscape.cy().$("node:selected").forEach((node) => { selection.push(node.id()); });		
+		return selection;
+	},
+
+	selected_edge_ids: function(): EdgeId[] {
+		let selection: EdgeId[] = [];
+		Cytoscape.cy().$("edge:selected").forEach((edge) => {
+			selection.push([edge.source().id(), edge.target().id()]);
+		})		
+		return selection;
+	},
+
+	regulation_data: function(id: EdgeId): RegulationData | undefined {
+		let edge = this._find_regulation_edge(id);
+		if (edge.length == 1) {
+			let data = edge.data();
+			let regulation: RegulationData = { 
+				regulator: data.source,
+				target: data.target,
+				observable: data.observable,
+				monotonicity: data.monotonicity,
+			}
+			return regulation;
+		} else {
+			return undefined;
+		}
+	},
+
+	redraw_menus: function(): void {
+		this._render_selected_node_menu();
+		this._render_selected_edge_menu();
+	},
+
+	clear: function(): void {
+		let all_variables: string[] = [];
+		Cytoscape.cy().nodes('[type = "variable"]').forEach((n) => { all_variables.push(n.id()); });
+		for (let variable of all_variables) {
+			this._remove_variable(variable);	// This also un-selects the nodes and edges.			
+		}
+	},
+
+	is_empty: function(): boolean {
+		return Cytoscape.cy().nodes('[type = "variable"]').length == 0;
 	},
 
 	cy(): cytoscape.Core {
@@ -111,164 +200,91 @@ export let Cytoscape: {
         this._cytoscape = cy;        
 		this._edgehandles = edge_handles;
 
-		/*
-			Variable highlight events when mouse-over on a variable node.
-		*/		
+		// Register basic interaction events with cytoscape god object.
 
-		cy.on('mouseover', 'node[type = "variable"]', function(event) {
-			document.body.style.cursor = "pointer";
-			let node = event.target as cytoscape.NodeSingular;						
-			Events.model.variable.highlight(node.id(), true);
-		});
-
-		cy.on('mouseover', 'node.eh-handle', function() {
-			document.body.style.cursor = "pointer";
-		});
-
-		cy.on('mouseout', 'node[type = "variable"]', function(event) {
-			document.body.style.cursor = "auto";
-			let node = event.target as cytoscape.NodeSingular;			
-			Events.model.variable.highlight(node.id(), false);
-		});
-
-		cy.on('mouseout', 'node.eh-handle', function() {
-			document.body.style.cursor = "auto";
-		});
-
-		cy.on('mousemove', (event) => {			
-			// Unless anything other than a node is hovered, we want to remove edge handles.			
-			if (event.target.length === undefined || event.target.length == 0) {
-				edge_handles.hide();
-			} else {
-				let element = event.target[0] as cytoscape.Singular;
-				if (element.group() !== "nodes") {
-					edge_handles.hide();
-				}
-			}			
-		});
-
-		Events.model.variable.onHighlight((data) => {
-			let node = cy.$id(data.id);
-			if (node.length > 0) {
-				if (data.highlighted) {
-					node.addClass("highlighted");
-				} else {
-					node.removeClass("highlighted");
-				}
-			}
-		});
-
-		/*
-			Mark pressed variable with a special class.
-		*/
-
-		cy.on('mousedown', 'node[type = "variable"]', function(event) {
-			let node = event.target as cytoscape.NodeSingular;
-			node.addClass("pressed");
-		});
-
-		cy.on('mouseup', 'node[type = "variable"]', function(event) {
-			let node = event.target as cytoscape.NodeSingular;
-			node.removeClass("pressed");
-		});
-
-		/*
-			Also mark dragged variable with a special class.
-		*/
-
-		cy.on('drag', 'node[type = "variable"]', function(event) {
-			let node = event.target as cytoscape.NodeSingular;
-			node.addClass("dragged");
-		});
-
-		cy.on('dragfree', 'node[type = "variable"]', function(event) {
-			let node = event.target as cytoscape.NodeSingular;
-			node.removeClass("dragged");
-		})
-
-		/*
-			When a variable is selected, also send event with all selected variables.
-		*/
-
-		let selection_handler = function(event: cytoscape.EventObject) {
-			let selection = event.cy.$("node:selected");
-			let ids: string[] = [];
-			selection.forEach((item) => {				
-				ids.push(item.id());
+		{	// Init mouse events to show pointer cursor and trigger highlight events.
+			cy.on('mouseover', 'node[type = "variable"]', function(event) {
+				document.body.style.cursor = "pointer";			
+				Events.model.variable.highlight((event.target as cytoscape.NodeSingular).id(), true);
 			});
-			Events.model.variable.selection(ids);
+	
+			cy.on('mouseover', 'node.eh-handle', function() {
+				document.body.style.cursor = "pointer";
+			});
+	
+			cy.on('mouseout', 'node[type = "variable"]', function(event) {
+				document.body.style.cursor = "auto";
+				let node = event.target as cytoscape.NodeSingular;			
+				Events.model.variable.highlight((event.target as cytoscape.NodeSingular).id(), false);
+			});
+	
+			cy.on('mouseout', 'node.eh-handle', function() {
+				document.body.style.cursor = "auto";
+			});
 
-			Cytoscape._render_selected_node_menu();
-			Cytoscape._render_selected_edge_menu();
+			cy.on('mouseover', 'edge', function(event) {
+				document.body.style.cursor = "pointer";
+				let edge = event.target as cytoscape.EdgeSingular;
+				Events.model.regulation.highlight([edge.source().id(), edge.target().id()], true);
+			});
+	
+			cy.on('mouseout', 'edge', function(event) {
+				document.body.style.cursor = "auto";
+				let edge = event.target as cytoscape.EdgeSingular;
+				Events.model.regulation.highlight([edge.source().id(), edge.target().id()], false);
+			});	
+		}
+		
+		{	// Mark pressed and dragged variables with a class so they can be styled separately.
+			cy.on('mousedown', 'node[type = "variable"]', function(event) {
+				(event.target as cytoscape.NodeSingular).addClass("pressed");				
+			});
+
+			cy.on('mouseup', 'node[type = "variable"]', function(event) {
+				(event.target as cytoscape.NodeSingular).removeClass("pressed");				
+			});
+
+			cy.on('drag', 'node[type = "variable"]', function(event) {
+				(event.target as cytoscape.NodeSingular).addClass("dragged");				
+			});
+
+			cy.on('dragfree', 'node[type = "variable"]', function(event) {
+				(event.target as cytoscape.NodeSingular).removeClass("dragged");
+			})
 		}
 
-		cy.on('select', selection_handler);
-		cy.on('unselect', selection_handler);
+		{	// When an element is selected/unselected, also emit global events.
+			let selection_handler = function() {
+				Events.model.variable.selection(Cytoscape.selected_node_ids());
+				Events.model.regulation.selection(Cytoscape.selected_edge_ids());
+			};
+	
+			cy.on('select', selection_handler);
+			cy.on('unselect', selection_handler);
+		}
 
-		/*
-			Highlight events for graph edges.
-		*/
+		{	// When the visibility of the graph changes, trigger menu position re-calculation.
+			cy.on('zoom', function() { Cytoscape.redraw_menus(); });
+			cy.on('pan', function() { Cytoscape.redraw_menus(); });
+			cy.on('drag', function() { Cytoscape.redraw_menus(); });
+			cy.on('select', function() { Cytoscape.redraw_menus(); });
+			cy.on('unselect', function() { Cytoscape.redraw_menus(); });
+		}
 
-		cy.on('mouseover', 'edge', function(event) {
-			document.body.style.cursor = "pointer";
-			let edge = event.target as cytoscape.EdgeSingular;
-			Events.model.regulation.highlight([edge.source().id(), edge.target().id()], true);
-		});
+		{ 	// Unless anything other than a node is hovered, we want to remove edge handles.
+			cy.on('mousemove', (event) => {									
+				if (event.target.length === undefined || event.target.length == 0) {
+					edge_handles.hide();
+				} else {
+					let element = event.target[0] as cytoscape.Singular;
+					if (element.group() !== "nodes") {
+						edge_handles.hide();
+					}
+				}			
+			});
+		}				
 
-		cy.on('mouseout', 'edge', function(event) {
-			document.body.style.cursor = "auto";
-			let edge = event.target as cytoscape.EdgeSingular;
-			Events.model.regulation.highlight([edge.source().id(), edge.target().id()], false);
-		});
-
-		Events.model.regulation.onHighlight((data) => {			
-			let edge = this._find_regulation_edge(data.edge) as cytoscape.EdgeCollection;
-			if (data.highlighted) {
-				edge.addClass("highlighted");
-			} else {
-				edge.removeClass("highlighted");
-			}
-		});
-
-		/*
-			Listen to other model events to keep the graph up-to-date.
-		*/
-
-		Events.model.onClear(() => {
-			let cy = this.cy() as cytoscape.Core;
-			// Ensures every element is unselected before it is removed, because 
-			// this can reset other GUI elements. We generally don't expect a node
-			// to be highlighted or dragged while this is happening.
-			cy.$(':selected').unselect();
-			cy.elements().remove();
-		})
-
-		Events.model.variable.onCreate((variable) => {
-			this._create_variable(variable);
-		});
-
-		Events.model.regulation.onCreate((regulation) => {
-			this._create_regulation(regulation);
-		});
-
-		/*
-			Listen to global zoom/pan events and node drag events and re-draw the floating menus.
-		*/
-		cy.on('zoom', function() {
-			Cytoscape._render_selected_node_menu();
-			Cytoscape._render_selected_edge_menu();
-		});
-
-		cy.on('pan', function() {
-			Cytoscape._render_selected_node_menu();
-			Cytoscape._render_selected_edge_menu();
-		});
-
-		cy.on('drag', function() {
-			Cytoscape._render_selected_node_menu();
-			Cytoscape._render_selected_edge_menu();
-		});
-
+		register_events();
     },
 
 	_render_selected_node_menu: function() {

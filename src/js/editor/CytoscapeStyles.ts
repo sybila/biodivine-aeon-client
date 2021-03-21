@@ -114,6 +114,13 @@ let edge_styles: cytoscape.Stylesheet[] = [
 		'selector': 'edge:selected',
 		'style': { 'overlay-opacity': 0.1, }
 	},
+	{	// More natural looking loops.
+		'selector': 'edge:loop',
+		'style': ({
+			'loop-direction': '0deg',
+			'loop-sweep': '45deg',
+		} as cytoscape.Css.Edge)	// Loop properties are not in type library yet.
+	},
 ];
 
 let edgehandles_style: cytoscape.Stylesheet[] = [

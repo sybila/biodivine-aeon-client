@@ -2,6 +2,7 @@ import Events, { RegulationData } from './EditorEvents';
 
 export let Menu: {
     _menu: HTMLElement,
+    _hint: HTMLElement,
     _monotonicity: HTMLElement,
     _observability: HTMLElement,
     init(menu: HTMLElement): void,
@@ -12,12 +13,14 @@ export let Menu: {
     _menu: undefined,
     _monotonicity: undefined,
     _observability: undefined,
+    _hint: undefined,
 
     init: function(menu: HTMLElement): void {
         this._menu = menu;
         this._monotonicity = document.getElementById("editor-floating-edge-menu-monotonicity");
         this._observability = document.getElementById("editor-floating-edge-menu-observability");
         let hint = menu.getElementsByClassName("hint")[0] as HTMLElement;
+        this._hint = hint;
         let buttons = menu.getElementsByTagName("img");
         for (let i=0; i<buttons.length; i++) {
             let button = buttons[i];            
@@ -41,20 +44,28 @@ export let Menu: {
         
         let observable = String(edge.observable);
         if (observable !== observability.dataset["state"]) {
+            let old_hint = observability.getAttribute("alt");
             observability.dataset["state"] = observable;
             observability.setAttribute("alt", observability.getAttribute("data-alt-"+observable));
             let img_src = document.getElementById(observability.getAttribute("data-src-"+observable));
             observability.setAttribute("src", img_src.getAttribute("src"));
+            if (this._hint.textContent == old_hint) {
+                this._hint.textContent = observability.getAttribute("alt");
+            }
         }
 
         let monotonicity = this._monotonicity as HTMLElement;
 
         let monotonous = String(edge.monotonicity);
         if (monotonous !== monotonicity.dataset["state"]) {
+            let old_hint = monotonicity.getAttribute("alt");
             monotonicity.dataset["state"] = monotonous;
             monotonicity.setAttribute("alt", monotonicity.getAttribute("data-alt-"+monotonous));
             let img_src = document.getElementById(monotonicity.getAttribute("data-src-"+monotonous));
             monotonicity.setAttribute("src", img_src.getAttribute("src"));
+            if (this._hint.textContent == old_hint) {
+                this._hint.textContent = monotonicity.getAttribute("alt");
+            }
         }
     },
 

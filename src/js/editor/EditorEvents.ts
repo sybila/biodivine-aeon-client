@@ -10,10 +10,12 @@ const MODEL_CLEAR = "model.clear";
 const MODEL_VARIABLE_HIGHLIGHT = "model.variable.highlight";
 const MODEL_VARIABLE_SELECTION = "model.variable.selection";
 const MODEL_VARIABLE_CREATE = "model.variable.create";
+const MODEL_VARIABLE_REMOVE = "model.variable.remove";
 
 const MODEL_REGULATION_HIGHLIGHT = "model.regulation.highlight";
 const MODEL_REGULATION_SELECTION = "model.regulation.selection";
 const MODEL_REGULATION_CREATE = "model.regulation.create";
+const MODEL_REGULATION_REMOVE = "model.regulation.remove";
 
 export type EdgeId = [string, string];
 export type HighlightedNode = { id: string, highlighted: boolean };
@@ -38,9 +40,11 @@ export let EditorEvents = {
         Events.emit(CLICK, id);
     },
 
-    onClick(action: (id: string) => void) {
+    onClick(id: string, action: () => void) {
         return Events.addListener(CLICK, function(data) {
-            action(data as string);
+            if (data == id) {
+                action();
+            }
         });
     },
 
@@ -112,6 +116,16 @@ export let EditorEvents = {
                 });
             },
 
+            remove(id: string) {
+                Events.emit(MODEL_VARIABLE_REMOVE, id);
+            },
+
+            onRemove(action: (id: string) => void) {
+                return Events.addListener(MODEL_VARIABLE_REMOVE, function(data) {
+                    action(data as string);
+                })
+            },
+
         },
 
         regulation: {
@@ -146,7 +160,17 @@ export let EditorEvents = {
                 });
             },
 
-        },        
+            remove(id: EdgeId) {
+                Events.emit(MODEL_REGULATION_REMOVE, id);
+            },
+
+            onRemove(action: (id: EdgeId) => void) {
+                return Events.addListener(MODEL_REGULATION_REMOVE, function(data) {
+                    action(data as EdgeId);
+                })
+            },
+
+        },       
 
     }
 
