@@ -1,7 +1,13 @@
 import Events, { EdgeId, RegulationData, VariableData } from './EditorEvents';
 import CytoscapeStyle from './CytoscapeStyles';
+import CytoscapeEdgehandles from './CytoscapeEdgehandles';
 import Config from '../core/Config';
-import cytoscape, { EdgeSingular } from 'cytoscape';
+import cytoscape from 'cytoscape';
+import edgehandles from 'cytoscape-edgehandles';
+
+// The typescript declaration for `edgehandles` object is messed up for some reason,
+// but this works just fine.
+cytoscape.use(((edgehandles as unknown) as cytoscape.Ext));
 
 /**
  * Cytoscape editor is responsible for visually representing the regulation graph. It is 
@@ -11,6 +17,7 @@ import cytoscape, { EdgeSingular } from 'cytoscape';
 export let Cytoscape: {
     _container: HTMLElement,
     _cytoscape: cytoscape.Core,    
+	_edgehandles: cytoscape.EdgeHandlesApi,
 	_create_variable: (variable: VariableData) => void,
 	_create_regulation: (regulation: RegulationData) => void,
 	_find_regulation_edge: (edge: EdgeId) => cytoscape.EdgeCollection,
@@ -20,6 +27,7 @@ export let Cytoscape: {
 
     _container: undefined,
     _cytoscape: undefined,
+	_edgehandles: undefined,
 
 	_create_variable: function(variable: VariableData) {
 		let cy = this._cytoscape as cytoscape.Core;
@@ -93,11 +101,15 @@ export let Cytoscape: {
             boxSelectionEnabled: true,
             style: CytoscapeStyle,
         });
+
+		let edge_handles = cy.edgehandles(CytoscapeEdgehandles);
+		
         this._cytoscape = cy;        
+		this._edgehandles = edge_handles;
 
 		/*
 			Variable highlight events when mouse-over on a variable node.
-		*/
+		*/		
 
 		cy.on('mouseover', 'node[type = "variable"]', function(event) {
 			document.body.style.cursor = "pointer";
@@ -105,10 +117,30 @@ export let Cytoscape: {
 			Events.model.variable.highlight(node.id(), true);
 		});
 
+		cy.on('mouseover', 'node.eh-handle', function() {
+			document.body.style.cursor = "pointer";
+		});
+
 		cy.on('mouseout', 'node[type = "variable"]', function(event) {
 			document.body.style.cursor = "auto";
 			let node = event.target as cytoscape.NodeSingular;			
 			Events.model.variable.highlight(node.id(), false);
+		});
+
+		cy.on('mouseout', 'node.eh-handle', function() {
+			document.body.style.cursor = "auto";
+		});
+
+		cy.on('mousemove', (event) => {			
+			// Unless anything other than a node is hovered, we want to remove edge handles.			
+			if (event.target.length === undefined || event.target.length == 0) {
+				edge_handles.hide();
+			} else {
+				let element = event.target[0] as cytoscape.Singular;
+				if (element.group() !== "nodes") {
+					edge_handles.hide();
+				}
+			}			
 		});
 
 		Events.model.variable.onHighlight((data) => {

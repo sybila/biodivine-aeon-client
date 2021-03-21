@@ -16,7 +16,9 @@
   },
   "dependencies": {
     "@types/cytoscape": "^3.14.12",
+    "@types/cytoscape-edgehandles": "^3.6.0",
     "aeon-wasm": "file:pkg",
-    "cytoscape": "^3.18.1"
+    "cytoscape": "^3.18.1",
+    "cytoscape-edgehandles": "^3.6.0"
   }
 }

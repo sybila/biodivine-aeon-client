@@ -30,7 +30,7 @@ let node_styles: cytoscape.Stylesheet[] = [
             'font-size': '12pt',
 			'padding-left': '8pt',
 			'padding-right': '8pt',
-            'border-width': '1pt',
+            'border-width': '2pt',
             'border-color': '#bdb9b7',
             'border-style': 'solid',
 		}
@@ -79,6 +79,8 @@ let edge_styles: cytoscape.Stylesheet[] = [
 			'line-color': '#797979',
 			'target-arrow-color': '#797979',
 			'target-arrow-shape': 'triangle',
+			'target-distance-from-node': 3.0,
+			'source-distance-from-node': 0.0,			
 		}
 	},
 	{	// For a hovered edge, show a small overlay.
@@ -112,8 +114,53 @@ let edge_styles: cytoscape.Stylesheet[] = [
 		'selector': 'edge:selected',
 		'style': { 'overlay-opacity': 0.1, }
 	},
+];
+
+let edgehandles_style: cytoscape.Stylesheet[] = [
+	{	// Make the source of the interactive edge look as if it is selected
+		'selector': 'node.eh-source',
+		'style': {
+			'border-width': '2pt',
+			'border-color': '#6a7ea5',
+			'border-style': 'solid',
+		}
+	},
+	{	// Edge handles pseudo-node for adding
+		'selector': '.eh-handle',
+		'style': {
+			'width': '16pt',
+			'height': '16pt',
+			'shape': 'rectangle',
+			'background-opacity': 0,
+			'background-image': function() {
+				return 'data:image/svg+xml;utf8,' + encodeURIComponent(ADD_BOX_SVG);
+			},
+			'background-width': '16pt',
+			'background-height': '16pt',			
+			'overlay-opacity': 0,
+			'border-width': 0,
+			'border-opacity': 0,
+		}
+	},		        
+	{	// Change ghost edge preview colors
+		'selector': '.eh-preview, .eh-ghost-edge',
+		'style': {
+			'background-color': '#797979',
+			'line-color': '#797979',
+			'target-arrow-color': '#797979',
+			'target-arrow-shape': 'triangle',
+			'border-width': '2pt',
+			'border-color': '#ffffff',
+			'border-style': 'solid',
+			'color': '#ffffff',
+		}
+	},
+	{	// Hide ghost edge when a snapped preview is visible
+		'selector': '.eh-ghost-edge.eh-preview-active',
+		'style': { 'opacity': 0 }
+	}
 ]
 
-export let Styles: cytoscape.Stylesheet[] = [].concat(node_styles).concat(edge_styles);
+export let Styles: cytoscape.Stylesheet[] = [].concat(node_styles).concat(edge_styles).concat(edgehandles_style);
 
 export default Styles;
