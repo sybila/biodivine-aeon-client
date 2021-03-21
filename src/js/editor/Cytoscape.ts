@@ -2,6 +2,7 @@ import Events, { EdgeId, RegulationData, VariableData } from './EditorEvents';
 import CytoscapeStyle from './CytoscapeStyles';
 import CytoscapeEdgehandles from './CytoscapeEdgehandles';
 import Config from '../core/Config';
+import NodeMenu from './FloatingNodeMenu';
 import cytoscape from 'cytoscape';
 import edgehandles from 'cytoscape-edgehandles';
 
@@ -21,6 +22,7 @@ export let Cytoscape: {
 	_create_variable: (variable: VariableData) => void,
 	_create_regulation: (regulation: RegulationData) => void,
 	_find_regulation_edge: (edge: EdgeId) => cytoscape.EdgeCollection,
+	_render_selected_node_menu: () => void,
     init: (container: HTMLElement) => void,
 	cy: () => cytoscape.Core,	
 } = {
@@ -193,6 +195,8 @@ export let Cytoscape: {
 				ids.push(item.id());
 			});
 			Events.model.variable.selection(ids);
+
+			Cytoscape._render_selected_node_menu();
 		}
 
 		cy.on('select', selection_handler);
@@ -243,7 +247,33 @@ export let Cytoscape: {
 		Events.model.regulation.onCreate((regulation) => {
 			this._create_regulation(regulation);
 		});
+
+		/*
+			Listen to global zoom/pan events and node drag events and re-draw the floating menus.
+		*/
+		cy.on('zoom', function() {
+			Cytoscape._render_selected_node_menu();
+		});
+
+		cy.on('pan', function() {
+			Cytoscape._render_selected_node_menu();
+		});
+
+		cy.on('drag', 'node:selected', function() {
+			Cytoscape._render_selected_node_menu();
+		});
     },
+
+	_render_selected_node_menu: function() {
+		let cy = Cytoscape.cy();
+		let selection = cy.$("node:selected");
+		if (selection.length == 1) {
+			let node = selection[0] as cytoscape.NodeSingular;				
+			NodeMenu.renderAt(node.renderedPosition(), cy.zoom());
+		} else {
+			NodeMenu.hide();
+		}
+	}
 
 }
 

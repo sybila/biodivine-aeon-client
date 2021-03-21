@@ -8,10 +8,11 @@
 @colorSecondaryDark: #9a2d33;
 
 @colorActionBackground: #ECEFF1;
+@colorShadow: #d0d0d0;
 
 body {
     font-family: 'Lato', sans-serif;
-    margin: 0px;
+    margin: 0;
 }
 
 .heebo {
@@ -20,6 +21,10 @@ body {
 
 .gone {
     display: none;
+}
+
+.invisible {
+    opacity: 0;
 }
 
 /* Aeon logo */
@@ -71,9 +76,9 @@ body {
         height: 48pt; 
 
         background-color: @colorActionBackground;
-        border: 0px;
-        border-radius: 24px;
-        box-shadow: 0px 2px 5px #d0d0d0;        
+        border: 0;
+        border-radius: 16pt;
+        box-shadow: 0pt 2pt 5pt @colorShadow;        
         cursor: pointer;
         user-select: none;
     }
@@ -94,7 +99,7 @@ body {
         padding: 8pt;
 
         background-color: @colorActionBackground;        
-        border-radius: 24px;
+        border-radius: 16pt;
 
         transition: background-color 0.3s;
     }
@@ -143,7 +148,7 @@ body {
         resize: horizontal;
     
         background-color: #f5f5f5;
-        box-shadow: 0px 2px 5px #d0d0d0;
+        box-shadow: 0pt 2pt 5pt @colorShadow;
         padding: 8pt;
         border-radius: 8pt;
         overflow-y: auto;    
@@ -165,19 +170,24 @@ body {
 
 /* Small image button without description */
 
-.img-button-24 {
-    width: 16pt;
-    height: 16pt;
-
-    padding: 4pt;
-    border-radius: 8pt;
-    cursor: pointer;        
+.img-button {
+    cursor: pointer;
 
     transition: background-color 0.3s;
 
     &:hover {
         background-color: darken(@colorActionBackground, 10%);
     }
+}
+
+.img-button-24 {
+    .img-button();
+    
+    width: 16pt;
+    height: 16pt;
+
+    padding: 4pt;
+    border-radius: 8pt;
 }
 
 /* Design grid */

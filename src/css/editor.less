@@ -36,3 +36,58 @@ body {
 
     background: #f9f9f9;    
 }
+
+/* Floating cytoscape menu styles */
+
+.floating-menu {
+	position: absolute;
+    /* Initially, menu is off screen */
+	left: -200pt;
+	top: -200pt;
+    /* This is to accommodate longer hints */
+    width: 80pt;
+    /* Ensure hint is in the middle */
+    text-align: center;
+	/* Ensures the zoom is properly applied when needed */
+	transform-origin: 0% 0%;
+    /* We don't animate other stuff because that needs to be in sync with the graph */
+    transition: opacity 0.3s;
+	user-select: none;
+
+	.button-row {
+		height: 24pt;
+		width: 80pt;
+		margin: 0 auto;
+		
+		border-radius: 24pt;
+		background-color: @colorActionBackground;
+		box-shadow: 0pt 2pt 5pt @colorShadow;
+
+		img:first-child { float: left; }
+		img:last-child { float: right; }
+
+		img {
+			.img-button();
+			width: 12pt;
+    		height: 12pt;
+
+    		padding: 6pt;
+    		border-radius: 24pt;			
+		}
+	}
+
+	.hint {
+		display: block;
+		margin: 0 auto;
+		margin-top: 8pt;
+		height: 14pt;
+		
+		text-align: center;
+		font-size: 10pt;
+		font-weight: bold;
+    	transition: opacity 0.3s;    	
+    	text-shadow: 0pt 2pt 5pt @colorShadow;
+		pointer-events: none;		
+	}
+
+}

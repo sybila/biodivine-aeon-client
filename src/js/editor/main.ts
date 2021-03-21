@@ -3,6 +3,7 @@ import Panels from './Panels';
 import Cytoscape from './Cytoscape';
 import Events from './EditorEvents';
 import Import from './Import';
+import NodeMenu from './FloatingNodeMenu';
 
 import * as aeon from 'aeon-wasm';
 
@@ -36,6 +37,7 @@ CcrM -> DnaA
 
 Dock.init(document.getElementById("editor-dock"));
 Panels.init(document.getElementById("editor-panels"));
+NodeMenu.init(document.getElementById("editor-floating-node-menu"));
 
 // fonts api is currently experimental, though widely supported.
 if ((document as any).fonts === undefined) {
