@@ -5,13 +5,19 @@ import Config from '../core/Config';
 import NodeMenu from './FloatingNodeMenu';
 import EdgeMenu from './FloatingEdgeMenu';
 import register_events from './CytoscapeEvents';
-import cytoscape from 'cytoscape';
-import edgehandles from 'cytoscape-edgehandles';
 import Import from './Import';
+import cytoscape, { NodeSingular } from 'cytoscape';
+import edgehandles from 'cytoscape-edgehandles';
+import coseBilkent from 'cytoscape-cose-bilkent';
+import dagre from 'cytoscape-dagre';
+import collapse from 'cytoscape-expand-collapse';
 
 // The typescript declaration for `edgehandles` object is messed up for some reason,
 // but this works just fine.
-cytoscape.use(((edgehandles as unknown) as cytoscape.Ext));
+cytoscape.use((edgehandles as unknown) as cytoscape.Ext);
+cytoscape.use((coseBilkent as unknown) as cytoscape.Ext);
+cytoscape.use((dagre as unknown) as cytoscape.Ext);
+cytoscape.use((collapse as unknown) as cytoscape.Ext);
 
 /**
  * Cytoscape editor is responsible for visually representing the regulation graph. It is 
@@ -22,6 +28,8 @@ export let Cytoscape: {
     _container: HTMLElement,
     _cytoscape: cytoscape.Core,    
 	_edgehandles: cytoscape.EdgeHandlesApi,
+	_collapse: any,
+	_scc_nodes_enabled: boolean,
 	_last_click: number,	// Used for detection of double-click events.
 	_ensure_variable: (variable: VariableData) => void,
 	_remove_variable: (id: string) => void,
@@ -54,12 +62,20 @@ export let Cytoscape: {
 	is_empty: () => boolean,
 	/* Zoom/pan the model to fit it completely into viewport. */	
 	viewport_fit: () => void,
+	/* Apply automatic layout to the current graph. */
+	apply_auto_layout: () => void,
+	/* Create compund node for every SCC. */
+	create_scc_nodes: () => void,
+	/* Remove SCC compound nodes. */
+	remove_scc_nodes: () => void,
 } = {
 
     _container: undefined,
     _cytoscape: undefined,
 	_edgehandles: undefined,
 	_last_click: undefined,
+	_collapse: undefined,
+	_scc_nodes_enabled: false,
 
 	_ensure_variable: function(variable: VariableData) {
 		let cy = this._cytoscape as cytoscape.Core;
@@ -140,6 +156,11 @@ export let Cytoscape: {
 				monotonicity: regulation.monotonicity,
 			}
 		});
+
+		if (Cytoscape._scc_nodes_enabled) {
+			// Recompute SCCs when a regulation is created.
+			Cytoscape.create_scc_nodes();
+		}
 	},
 
 	_remove_regulation: function(this: typeof Cytoscape, id: EdgeId) {				
@@ -242,9 +263,11 @@ export let Cytoscape: {
         });
 
 		let edge_handles = cy.edgehandles(CytoscapeEdgehandles);
-		
+		let expand_collapse = (cy as any).expandCollapse();
+
         this._cytoscape = cy;        
-		this._edgehandles = edge_handles;
+		this._edgehandles = edge_handles;		
+		this._collapse = expand_collapse;
 
 		// Register basic interaction events with cytoscape god object.
 
@@ -385,8 +408,139 @@ export let Cytoscape: {
 	viewport_fit: function() {
 		// The padding we want to apply is 10% of the larger viewport dimension.
 		let padding = 0.1 * Math.max(window.innerWidth, window.innerHeight);
-		Cytoscape.cy().fit(undefined, padding);
+		Cytoscape.cy().animate({
+			fit: {
+				eles: Cytoscape.cy().elements(),
+				padding: padding
+			},
+			duration: 200,
+		});
 	},
+
+	apply_auto_layout: function() {
+		/*
+			This function uses various "random" Cytoscape extension from the internet and is
+			therefore not typesafe. The layout algorithm starts by layouting each SCC individually
+			using cose, then collapse SCCs into singular nodes, layout them using dagre, and then 
+			expand the nodes back into the original graph.
+		*/
+		// First, ensure SCC nodes exist:
+		let remove_scc_when_done = false;
+		if (!this._scc_nodes_enabled) {
+			remove_scc_when_done = true;
+			Cytoscape.create_scc_nodes();
+		}
+
+		let cy = Cytoscape.cy();
+		let scc_nodes = cy.nodes('[type = "scc"]');
+		if (scc_nodes.length == 0) {
+			// Graph is acyclic.
+			cy.layout({
+				name: 'dagre',
+				spacingFactor: 1.5,
+				directed: true,
+				avoidOverlap: true,
+				ranker: 'longest-path',
+				edgeSep: 50,
+				rankSep: 50,
+				fit: true,
+				animate: true,
+				animationDuration: 300,
+				nodeDimensionsIncludeLabels: true,
+			} as cytoscape.LayoutOptions)
+		} else {
+			// First, process components:
+			let collapse_and_expand = () => {
+				Cytoscape._collapse.collapseAll({
+					animate: false,
+					fisheye: false,
+					//cueEnable: false,
+					animationDuration: 300,
+					layoutBy: {
+						name: 'dagre',						
+						spacingFactor: 1.5,
+						directed: true,						
+						avoidOverlap: true,
+						ranker: 'longest-path',
+						edgeSep: 50,
+						rankSep: 50,
+						fit: false,
+						animate: true,
+						animationDuration: 300,
+						nodeDimensionsIncludeLabels: true,
+						ready: () => {
+							setTimeout(() => {
+								// Once the layout is done, start expansion again.
+								Cytoscape._collapse.expandAll({
+									animate: true,
+									fisheye: false,
+									//cueEnable: false,
+									animationDuration: 1000,
+									layoutBy: () => {
+										Cytoscape.viewport_fit();
+
+										if (remove_scc_when_done) {
+											Cytoscape.remove_scc_nodes();
+										}									
+									},
+								});
+							}, 300);					
+						}
+					}
+				})
+			}
+			let recursion = (i: number) => {
+				if (i >= scc_nodes.length) {
+					setTimeout(() => {
+						collapse_and_expand();
+					}, 300);					
+					return;
+				}
+
+				let scc_node = scc_nodes[i];
+				let child = scc_node.children()[0];
+				let component = child.successors().intersect(child.predecessors());				
+				component.layout(({
+					name: 'cose-bilkent',
+					animate: true,
+					animationDuration: 300,
+					fit: false,
+					// Edge length depedns on the sqrt of the number of edges. 
+					// More edges means we want to put the nodes further away to make more space
+					idealEdgeLength: 30 * Math.max(2.0, Math.sqrt(component.edges().length)),
+					nodeRepulsion: 10000,
+    				nodeDimensionsIncludeLabels: true,
+					ready: () => {
+						// Once the layout is done, move to the next component.
+						if (Config.DEBUG_MODE) { console.log("Finished layout of", component); }																		
+						recursion(i + 1);
+					}
+				} as unknown) as cytoscape.CoseLayoutOptions).run();
+			}
+			recursion(0);
+		}		
+	},
+
+	create_scc_nodes: function() {
+		if (Cytoscape._scc_nodes_enabled) {
+			Cytoscape.remove_scc_nodes();	// Clear existing SCCs.
+		} else {
+			Cytoscape._scc_nodes_enabled = true;
+		}
+		let cy = Cytoscape.cy();
+		cy.elements().tarjanStronglyConnectedComponents().components.forEach((component) => {
+			if (component.nodes().length > 1) {
+				let scc_node = cy.add({ group: 'nodes', data: { type: 'scc' }, });
+				component.nodes().move({ parent: scc_node.id() });
+			}	
+		});
+	},
+
+	remove_scc_nodes: function() {	
+		Cytoscape._scc_nodes_enabled = false;			
+		Cytoscape.cy().$("[type = 'scc']").children().move({ parent: null });
+		Cytoscape.cy().$("[type = 'scc']").remove();	
+	}
 
 }
 
@@ -403,7 +557,43 @@ let DefaultLayout: cytoscape.LayoutOptions = {
     refresh: 20,
     fit: true,
     name: 'cose',
-    padding: 250,
+    padding: (Math.max(window.innerWidth, window.innerHeight) * 0.1),
     nodeOverlap: 10,
     nodeDimensionsIncludeLabels: true,
 }
+
+Events.onClick("model-apply-layout", function() {	
+	Cytoscape.apply_auto_layout();
+});
+
+Events.onClick("cytoscape-zoom-to-fit", function() {
+	Cytoscape.viewport_fit();
+});
+
+Events.onClick("cytoscape-zoom-minus", function() {
+	Cytoscape.cy().stop();
+	Cytoscape.cy().animate({ 
+		zoom: {
+			level: Math.max(Cytoscape.cy().zoom() * 0.8, 0.001),
+			renderedPosition: {
+				x: Cytoscape._container.clientWidth / 2,
+				y: Cytoscape._container.clientHeight / 2,
+			},
+		}, 
+		duration: 100,
+	});
+});
+
+Events.onClick("cytoscape-zoom-plus", function() {
+	Cytoscape.cy().stop();
+	Cytoscape.cy().animate({ 
+		zoom: {
+			level: Math.min(Cytoscape.cy().zoom() * 1.2, 100),
+			renderedPosition: {
+				x: Cytoscape._container.clientWidth / 2,
+				y: Cytoscape._container.clientHeight / 2,
+			},
+		}, 
+		duration: 100,
+	});
+});

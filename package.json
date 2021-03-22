@@ -19,7 +19,10 @@
     "@types/cytoscape-edgehandles": "^3.6.0",
     "aeon-wasm": "file:pkg",
     "cytoscape": "^3.18.1",
+    "cytoscape-cose-bilkent": "^4.1.0",
+    "cytoscape-dagre": "^2.3.2",
     "cytoscape-edgehandles": "^3.6.0",
+    "cytoscape-expand-collapse": "^4.0.0",
     "hotkeys-js": "^3.8.3"
   }
 }

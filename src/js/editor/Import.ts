@@ -55,9 +55,12 @@ Events.onClick("model-import-bnet", function() {
     Dialogs.confirm({ 
         message: "BoolNet support is currently experimental. You may encounter valid `.bnet` models which cannot be imported. Continue?", 
         onPositive: function() {
-            Dialogs.select_file(".bnet,.txt", function(file_content) {
-                Import.importBnetModel(file_content);
-            });
+            // Run the import with delay, because in some cases it looks like the open file dialog is not shown.
+            setTimeout(function() {
+                Dialogs.select_file(".bnet,.txt", function(file_content) {
+                    Import.importBnetModel(file_content);
+                });
+            }, 100);
         }
     });    
 });
@@ -78,7 +81,11 @@ export let Import: {
             Dialogs.alert_error(make_error_message(model));
         } else {            
             let loadModel = () => {
+                let show_sccs = Cytoscape._scc_nodes_enabled;
+                Cytoscape.remove_scc_nodes();   // Pause SCC recomputation during import.
+
                 Events.model.clear();
+                let layout_applied = false;
                 let model_data = model.result;
                 let positions = model_data.metadata["position"];
                 if (positions === undefined) {
@@ -95,6 +102,7 @@ export let Import: {
                             let x = parseFloat(position_data[0]);
                             let y = parseFloat(position_data[1]);
                             if (x === x && y === y) {	// test for NaN
+                                layout_applied = true;
                                 event.position = { x: x, y: y };
                             }				                        
                         }
@@ -108,7 +116,19 @@ export let Import: {
                 }
 
                 Cytoscape.viewport_fit();
-                // TODO: Prompt to apply auto layout if no position data was detected.
+                
+                if (show_sccs) {
+                    Cytoscape.create_scc_nodes();
+                }
+
+                if (!layout_applied) {
+                    Dialogs.confirm({
+                        message: "Model seems to be missing layout data. Do you want to apply an automatic layout now?",
+                        onPositive: function() {
+                            Cytoscape.apply_auto_layout();
+                        },
+                    })
+                }
             }
 
             if (Cytoscape.is_empty()) {

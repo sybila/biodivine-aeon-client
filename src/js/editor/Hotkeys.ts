@@ -27,7 +27,7 @@ export function register() {
         }
     });
 
-    hotkeys('n,+', function(event) {
+    hotkeys('n', function(event) {
         event.preventDefault();
         Import.try_create_variable();
     });
@@ -40,6 +40,24 @@ export function register() {
             event.preventDefault();
             Cytoscape.clear_selection();
         }
+    });
+
+    hotkeys('ctrl+-', function(event) {
+        console.log(event);
+        event.preventDefault()
+        Events.click('cytoscape-zoom-minus');
+    });
+
+    hotkeys('ctrl+=', function(event) {
+        console.log(event);
+        event.preventDefault()
+        Events.click('cytoscape-zoom-plus');
+    });
+
+
+    hotkeys('ctrl+0', function(event) {
+        event.preventDefault()
+        Events.click('cytoscape-zoom-to-fit');
     });
 }
 

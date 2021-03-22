@@ -1,4 +1,5 @@
-import Events, { ClickEvent } from './EditorEvents';
+import Cytoscape from './Cytoscape';
+import Events from './EditorEvents';
 
 type ElementMap = { [key: string]: HTMLElement }
 
@@ -45,7 +46,19 @@ export let Dock: {
 			if (button !== undefined) {
 				button.classList.remove("selected");
 			}			
-		});		
+		});	
+		
+		// Enable SCC button
+		let button = document.getElementById("editor-model-toggle-scc")
+		button.onclick = () => {
+			if (button.classList.contains("selected")) {
+				button.classList.remove("selected");
+				Cytoscape.remove_scc_nodes();
+			} else {
+				button.classList.add("selected");
+				Cytoscape.create_scc_nodes();
+			}
+		};
 	},	
 
 }

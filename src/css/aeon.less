@@ -240,6 +240,31 @@ body {
     border-radius: 8pt;
 }
 
+.img-button-solid-32 {
+    position: relative;
+    width: 32pt;
+    height: 32pt;
+    cursor: pointer;
+    
+    transition: background-color 0.3s;
+    box-shadow: 0pt 2pt 5pt @colorShadow;        
+    border-radius: 8pt;
+    border: 0;
+
+    &:hover, &:focus {
+        outline: none;
+        background-color: darken(@colorActionBackground, 10%);
+    }    
+
+    img {
+        position: absolute;
+        width: 16pt;
+        height: 16pt;
+        top: 8pt;
+        left: 8pt;
+    }
+}
+
 /* Compound button is a button with two texts, typically the second text is used as description. */
 
 .compound-button {

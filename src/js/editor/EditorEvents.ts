@@ -49,6 +49,9 @@ export type ClickEvent =
     | "selected-remove"                 // Remove the selected model elements (variables/regulations).
     | "selected-edit-name"              // Open editor for the name of the selected variable.
     | "selected-edit-function"          // Open editor for the function of the selected variable.    
+    | "cytoscape-zoom-to-fit"           // Fit graph to viewport
+    | "cytoscape-zoom-plus"
+    | "cytoscape-zoom-minus"
     ;
 
 export let EditorEvents = {

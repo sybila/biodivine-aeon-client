@@ -53,6 +53,21 @@
 				<span class="hint invisible">Hint</span>
 			</div>
 
+
+			<div id="editor-zoom-menu">								
+				<button data-clickable data-event="cytoscape-zoom-to-fit" class="img-button-solid-32" style="margin-right: 8pt;">
+					<img alt="Zoom to fit" src="/asset/img/location-24px.svg" draggable="false">
+				</button>
+
+				<button data-clickable data-event="cytoscape-zoom-minus" class="img-button-solid-32" style="margin-right: 8pt;">
+					<img alt="Zoom to fit" src="/asset/img/zoom-minus-24px.svg" draggable="false">
+				</button>
+
+				<button data-clickable data-event="cytoscape-zoom-plus" class="img-button-solid-32">
+					<img alt="Zoom to fit" src="/asset/img/zoom-plus-24px.svg" draggable="false">
+				</button>
+			</div>
+
 			<div id="editor-dock" class="aeon-dock">
 				<!-- 
 					Dock ensures via CSS that each button has a floating label when hovered.
@@ -63,19 +78,22 @@
 				-->
 				<button data-clickable data-event="aeon-start-computation">
 					<img alt="Start Analysis" src="/asset/img/play_circle_filled-48px.svg" draggable="false"><label>Start Analysis</label>
-				</button>
+				</button>				
 				<button data-selectable data-panel="compute-engine">
 					<img alt="Compute Engine" src="/asset/img/engine-48px.svg" draggable="false"><label>Compute Engine</label>
 				</button>
 				<button data-selectable data-panel="import-export">
 					<img alt="Import/Export" src="/asset/img/file_copy-48px.svg" draggable="false"><label>Import/Export</label>
-				</button>			
-				<button data-selectable data-panel="model-editor">
-					<img alt="Model Editor" src="/asset/img/model-48px.svg" draggable="false"><label>Model Editor</label>
 				</button>
 				<button data-clickable data-event="model-apply-layout">
 					<img alt="Apply Layout" src="/asset/img/view_quilt-48px.svg" draggable="false"><label>Apply Layout</label>
+				</button>							
+				<button data-selectable data-panel="model-editor">
+					<img alt="Model Editor" src="/asset/img/model-48px.svg" draggable="false"><label>Model Editor</label>
 				</button>
+				<button id="editor-model-toggle-scc">
+					<img alt="Network SCCs" src="/asset/img/graph-48px.svg" draggable="false"><label>Network SCCs</label>
+				</button>				
 				<button data-selectable data-panel="attractors">
 					<img alt="Attractors" src="/asset/img/call_split-48px.svg" draggable="false"><label>Attractors</label>
 				</button>
@@ -97,7 +115,7 @@
 					<h1>Compute Engine</h1><div onclick="console.log(this)">Close</div>
 				</div>
 	
-				<div data-panel="import-export" class="fixed selected">
+				<div data-panel="import-export" class="fixed">
 					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
 	
 					<h2 style="margin-bottom: 8pt;">Model File</h2>

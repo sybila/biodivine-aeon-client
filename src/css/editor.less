@@ -8,9 +8,8 @@ body {
 #editor-dock {
 	position: fixed;
 
-    top: 50%;
-	/* 7 buttons and 6 margins */
-    margin-top: calc((7 * 48pt + 6 * 8pt) / -2);
+    top: 0;
+	margin-top: 8pt;	
     margin-left: 8pt;
 }
 
@@ -35,6 +34,12 @@ body {
     z-index: -1;
 
     background: #f9f9f9;    
+}
+
+#editor-zoom-menu {
+	position: absolute;
+	right: 16pt;
+	bottom: 16pt;	
 }
 
 /* Floating cytoscape menu styles */
