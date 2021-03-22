@@ -28,7 +28,7 @@
 
 			<h1 class="aeon-logo">Aeon<em>/</em><span>BIODIVINE</span></h1>
 			
-			<div id="editor-floating-node-menu" class="floating-menu">
+			<div id="editor-floating-node-menu" class="floating-menu invisible">
 				<!-- A menu element that is shown for selected graph nodes in the cytoscape editor. -->
 				<div class="button-row">                
 					<img data-event="selected-edit-name" alt="Edit name (E)" src="/asset/img/edit-24px.svg" draggable="false">
@@ -38,7 +38,7 @@
 				<span class="hint invisible">Hint</span>
 			</div>
 			
-			<div id="editor-floating-edge-menu" class="floating-menu">
+			<div id="editor-floating-edge-menu" class="floating-menu invisible">
 				<!-- A menu element which is shown for selected edges in the cytoscape editor. -->				
 				<div class="button-row">
 					<img id="editor-floating-edge-menu-observability" data-event="selected-toggle-observability" draggable="false"
@@ -48,7 +48,7 @@
 							data-alt-null="Make activating (M)" data-src-null="img-trending-up-24"
 							data-alt-activation="Make inhibiting (M)" data-src-activation="img-trending-down-24"
 							data-alt-inhibition="Monotonicity off (M)" data-src-inhibition="img-swap-vert-24">					
-					<img data-event="selected-remove" alt="Remove (⌫)" id="edge-menu-remove" class="button" src="/asset/img/delete-24px.svg" draggable="false">
+					<img data-event="selected-remove" alt="Remove (⌫)" src="/asset/img/delete-24px.svg" draggable="false">
 				</div>
 				<span class="hint invisible">Hint</span>
 			</div>
@@ -61,7 +61,7 @@
 					When this event is detected, the button becomes selected. Dock also listens to `panel.close` 
 					and unselects buttons based on closed panels.
 				-->
-				<button data-clickable data-event="start-computation">
+				<button data-clickable data-event="aeon-start-computation">
 					<img alt="Start Analysis" src="/asset/img/play_circle_filled-48px.svg" draggable="false"><label>Start Analysis</label>
 				</button>
 				<button data-selectable data-panel="compute-engine">
@@ -73,7 +73,7 @@
 				<button data-selectable data-panel="model-editor">
 					<img alt="Model Editor" src="/asset/img/model-48px.svg" draggable="false"><label>Model Editor</label>
 				</button>
-				<button data-clickable data-event="apply-layout">
+				<button data-clickable data-event="model-apply-layout">
 					<img alt="Apply Layout" src="/asset/img/view_quilt-48px.svg" draggable="false"><label>Apply Layout</label>
 				</button>
 				<button data-selectable data-panel="attractors">

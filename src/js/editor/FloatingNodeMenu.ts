@@ -1,10 +1,11 @@
-import Events from './EditorEvents';
+import Events, { ClickEvent } from './EditorEvents';
 
 export let Menu: {
     _menu: HTMLElement,
     init(menu: HTMLElement): void,
     renderAt(position: { x: number, y: number}, zoom: number): void,
     hide(): void,
+    is_visible(): boolean,
 } = {
 
     _menu: undefined,
@@ -15,7 +16,7 @@ export let Menu: {
         let buttons = menu.getElementsByTagName("img");
         for (let i=0; i<buttons.length; i++) {
             let button = buttons[i];            
-            button.onclick = () => { Events.click(button.dataset.event); }
+            button.onclick = () => { Events.click(button.dataset.event as ClickEvent); }
             button.onmouseleave = () => { hint.classList.add("invisible"); };
             button.onmouseenter = () => { 
                 hint.textContent = button.alt;
@@ -26,6 +27,7 @@ export let Menu: {
 
     renderAt: function(position: { x: number, y: number }, zoom: number) {
         let menu = this._menu as HTMLElement;        
+        menu.classList.remove("invisible");
         menu.style.left = position.x + "px";
         menu.style.top = (position.y + (36 * zoom)) + "px";
         // Scale applies current zoom, translate ensures the middle point of menu is 
@@ -39,9 +41,14 @@ export let Menu: {
 
     hide: function() {
         let menu = this._menu as HTMLElement;        
+        menu.classList.add("invisible");
         menu.style.left = "-100pt";
         menu.style.top = "-100pt";
-    }
+    },
+
+    is_visible: function(): boolean {
+        return (this._menu as HTMLElement).classList.contains("invisible");
+    },
 
 }
 

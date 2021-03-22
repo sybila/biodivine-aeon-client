@@ -7,6 +7,7 @@ import EdgeMenu from './FloatingEdgeMenu';
 import register_events from './CytoscapeEvents';
 import cytoscape from 'cytoscape';
 import edgehandles from 'cytoscape-edgehandles';
+import Import from './Import';
 
 // The typescript declaration for `edgehandles` object is messed up for some reason,
 // but this works just fine.
@@ -21,6 +22,7 @@ export let Cytoscape: {
     _container: HTMLElement,
     _cytoscape: cytoscape.Core,    
 	_edgehandles: cytoscape.EdgeHandlesApi,
+	_last_click: number,	// Used for detection of double-click events.
 	_ensure_variable: (variable: VariableData) => void,
 	_remove_variable: (id: string) => void,
 	_ensure_regulation: (regulation: RegulationData) => void,
@@ -30,17 +32,20 @@ export let Cytoscape: {
 	_render_selected_edge_menu: () => void,
     init: (container: HTMLElement) => void,
 	cy: () => cytoscape.Core,
+	has_selection: (selector?: string) => boolean,
 	selected_node_ids: () => string[],
 	selected_edge_ids: () => EdgeId[],
 	regulation_data: (id: EdgeId) => RegulationData | undefined,
+	variable_data: (id: string) => VariableData | undefined,
 	redraw_menus: () => void,
 	clear: () => void,
-	is_empty: () => boolean,
+	is_empty: () => boolean,	
 } = {
 
     _container: undefined,
     _cytoscape: undefined,
 	_edgehandles: undefined,
+	_last_click: undefined,
 
 	_ensure_variable: function(variable: VariableData) {
 		let cy = this._cytoscape as cytoscape.Core;
@@ -147,6 +152,29 @@ export let Cytoscape: {
 			selection.push([edge.source().id(), edge.target().id()]);
 		})		
 		return selection;
+	},
+
+	has_selection: function(selector?: string): boolean {
+		let cy = Cytoscape.cy();
+		if (typeof selector == "string") {
+			return cy.$(selector+":selected").length > 0;
+		} else {
+			return cy.$(":selected").length > 0;
+		}
+	},
+
+	variable_data: function(id: string): VariableData | undefined {
+		let nodes = Cytoscape.cy().getElementById(id);
+		if (nodes.length > 0) {
+			let node = nodes[0];
+			return {
+				id: id,
+				name: node.data().name,
+				position: node.position()
+			}
+		} else {
+			return undefined;
+		}
 	},
 
 	regulation_data: function(id: EdgeId): RegulationData | undefined {
@@ -282,7 +310,31 @@ export let Cytoscape: {
 					}
 				}			
 			});
-		}				
+		}	
+		
+		{	// Detect double clicks and trigger variable creation for them.
+			cy.on('click', (event) => {
+				let original_event = event.originalEvent;
+				if (original_event.getModifierState("Ctrl") ||
+					original_event.getModifierState("Shift") ||
+					original_event.getModifierState("Alt") ||
+					original_event.getModifierState("Fn") ||
+					original_event.getModifierState("Hyper") ||
+					original_event.getModifierState("OS") ||
+					original_event.getModifierState("Super") ||
+					original_event.getModifierState("Win")) {
+					return;	// Ignore click if it has some modifier key set.
+				}
+				if (event.target.length === undefined || event.target.length == 0) {
+					// Only triggered when clicked into empty space.
+					let now = (new Date()).getTime();
+					if (this._last_click !== undefined && now - this._last_click < Config.DOUBLE_CLICK_DELAY) {
+						Import.try_create_variable(undefined, undefined, event.position);
+					}
+					this._last_click = now;
+				}				
+			});			
+		}
 
 		register_events();
     },

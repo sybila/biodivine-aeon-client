@@ -1,4 +1,4 @@
-import Events, { RegulationData } from './EditorEvents';
+import Events, { ClickEvent, RegulationData } from './EditorEvents';
 
 export let Menu: {
     _menu: HTMLElement,
@@ -8,6 +8,7 @@ export let Menu: {
     init(menu: HTMLElement): void,
     renderAt(position: { x: number, y: number }, zoom: number, edge: RegulationData): void,
     hide(): void,
+    is_visible(): boolean,
 } = {
 
     _menu: undefined,
@@ -24,7 +25,7 @@ export let Menu: {
         let buttons = menu.getElementsByTagName("img");
         for (let i=0; i<buttons.length; i++) {
             let button = buttons[i];            
-            button.onclick = () => { Events.click(button.dataset.event); }
+            button.onclick = () => { Events.click(button.dataset.event as ClickEvent); }
             button.onmouseleave = () => { hint.classList.add("invisible"); };
             button.onmouseenter = () => { 
                 hint.textContent = button.alt;
@@ -35,6 +36,7 @@ export let Menu: {
 
     renderAt(position: { x: number, y: number }, zoom: number, edge: RegulationData): void {
         let menu = this._menu as HTMLElement;        
+        menu.classList.remove("invisible");
         menu.style.left = position.x + "px";
         menu.style.top = (position.y + (36 * zoom)) + "px";
         menu.style.transform = "scale(" + (zoom * 0.75) + ") translate(-50%, -50%)";
@@ -71,9 +73,15 @@ export let Menu: {
 
     hide() {
         let menu = this._menu as HTMLElement;
+        menu.classList.add("invisible");
         menu.style.left = "-100pt";
         menu.style.top = "-100pt";
-    }
+    },
+
+    is_visible: function(): boolean {
+        let menu = this._menu as HTMLElement;
+        return !menu.classList.contains("invisible");
+    },
 
 }
 

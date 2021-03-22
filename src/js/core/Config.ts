@@ -22,6 +22,9 @@ export let Config = {
 
 	// Applicable when in online mode. Sets the default address of the compute engine server.
 	SERVER_ADDRESS: "http://localhost:8000",
+
+	// Delay (ms) for detection of double clicks in the editor.
+	DOUBLE_CLICK_DELAY: 400,
 }
 
 

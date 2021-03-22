@@ -1,5 +1,6 @@
-import Events, { VariableData, RegulationData } from './EditorEvents'
-import * as aeon from 'aeon-wasm'
+import Events, { VariableData, RegulationData } from './EditorEvents';
+import * as aeon from 'aeon-wasm';
+import Cytoscape from './Cytoscape';
 
 type Error = { message: string, html?: string };
 type Result<T> = { result?: T, error?: Error[] };
@@ -12,6 +13,9 @@ type ModelData = {
 
 export let Import: {
     importAeonModel: (model_string: string) => void,
+    get_next_variable_id: () => string, // Find next available variable ID.
+    // Try to create a new variable with the given properties (filling out the missing values).
+    try_create_variable: (id?: string, name?: string, position?: { x: number, y: number }) => void,
 } = {
 
     importAeonModel: function(model_string: string) {
@@ -48,7 +52,23 @@ export let Import: {
             console.log("Invalid model");
             console.log(result.error);
         }
-    }
+    },
+
+    get_next_variable_id: function(): string {
+        let i = 1;
+        while (Cytoscape.variable_data(String(i)) !== undefined) { i += 1; }
+        return String(i);
+    },
+
+    try_create_variable(id?: string, name?: string, position?: { x: number, y: number }) {
+        if (id === undefined) { id = Import.get_next_variable_id(); }
+        if (name === undefined) { name = "x_"+id; }
+        if (Cytoscape.variable_data(id) !== undefined) {
+            console.log("Variable", id, name, "already exists.");
+        } else {
+            Events.model.variable.create({ id: id, name: name, position: position })
+        }        
+    },
 
 };
 

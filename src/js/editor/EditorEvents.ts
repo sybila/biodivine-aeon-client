@@ -34,13 +34,24 @@ export type RegulationData = {
     monotonicity: null | "activation" | "inhibition",
 }
 
+// Here, we keep names of different click event so that they are stored in one consistent place.
+export type ClickEvent = 
+    "aeon-start-computation"  // Start the computation of attractors.
+    | "model-apply-layout"      // Apply automatic layout to the current model.
+    | "selected-toggle-observability"   // Toggle observability of the selected edge.
+    | "selected-toggle-monotonicity"    // Toggle monotonicity of the selected edge.
+    | "selected-remove"                 // Remove the selected model elements (variables/regulations).
+    | "selected-edit-name"              // Open editor for the name of the selected variable.
+    | "selected-edit-function"          // Open editor for the function of the selected variable.    
+    ;
+
 export let EditorEvents = {
 
-    click(id: string): void {
+    click(id: ClickEvent): void {
         Events.emit(CLICK, id);
     },
 
-    onClick(id: string, action: () => void) {
+    onClick(id: ClickEvent, action: () => void) {
         return Events.addListener(CLICK, function(data) {
             if (data == id) {
                 action();
