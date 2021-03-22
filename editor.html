@@ -97,10 +97,78 @@
 					<h1>Compute Engine</h1><div onclick="console.log(this)">Close</div>
 				</div>
 	
-				<div data-panel="import-export">
+				<div data-panel="import-export" class="fixed selected">
 					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
 	
-					<h1>Import Export</h1>
+					<h2 style="margin-bottom: 8pt;">Model File</h2>
+
+					<div style="position: relative; margin-bottom: 8pt;">
+						<div class="column left">
+							<h3 style="margin-bottom: 8pt;">Import</h3>
+	
+							<!--
+								<button data-clickable data-event="model-import-local" class="compound-button" style="margin-bottom: 8pt;">
+									<span class="left">Local<br>Storage</span><span class="right"><small>Last<br>loaded model</small></span>
+								</button>
+							-->
+	
+							<button data-clickable data-event="model-import-aeon" class="compound-button" style="margin-bottom: 8pt;">
+								<span class="left">.AEON</span><span class="right"><small>Parametrised<br>network</small></span>
+							</button>
+	
+							<button data-clickable data-event="model-import-sbml" class="compound-button" style="margin-bottom: 8pt;">
+								<span class="left">.SBML</span><span class="right"><small>Standard<br>SBML-qual</small></span>
+							</label>
+
+							<button data-clickable data-event="model-import-bnet" class="compound-button">
+								<span class="left">.BNET</span><span class="right"><small>BoolNet<br>network</small></span>
+							</label>
+						</div>
+	
+						<div class="column right">
+							<h3 style="margin-bottom: 8pt;">Export</h3>
+	
+							<button data-clickable data-event="model-export-aeon" class="compound-button" style="margin-bottom: 8pt;">
+								<span class="left">.AEON</span><span class="right"><small>Parametrised<br>network</small></span>
+							</button>
+		
+							<button data-clickable data-event="model-export-sbml-basic" class="compound-button" style="margin-bottom: 8pt;">
+								<span class="left">.SBML</span><span class="right"><small>Standard<br>SBML-qual</small></span>
+							</button>
+
+							<button data-clickable data-event="model-export-sbml-param" class="compound-button">
+								<span class="left">.SBML<br><small style="font-size: 8pt;">(param.)</small></span><span class="right"><small>SBML with<br>par. functions</small></span>
+							</button>								
+						</div>
+	
+						<div class="column-separator" style="margin: 40pt 0 16pt 0"></div>
+						<div style="clear: both;"></div>						
+					</div>					
+
+					<h3 style="margin-bottom: 8pt; margin-top: 32pt;">Example Models</h3>  
+
+					<div id="editor-examples" style="position: relative;">
+						<div class="column left">
+							<button data-example="g2a" class="compound-button" style="margin-bottom: 8pt;">
+								<span class="left">G2A</span><span class="right"><small>Cell<br>Division</small></span>
+							</button>         
+                			<button data-example="g2b" class="compound-button">
+								<span class="left">G2B</span><span class="right"><small>Cell<br>Division</small></span>
+							</button>
+						</div>
+						<div class="column right">
+							<button data-example="orlando" class="compound-button" style="margin-bottom: 8pt;">
+								<span class="left">Orlando</span><span class="right"><small>Budding<br>Yeast</small></span>
+							</button>
+                			<button data-example="irons" class="compound-button">
+								<span class="left">Irons</span><span class="right"><small>Budding<br>Yeast</small></span>
+							</button>                
+                
+						</div>
+
+						<div class="column-separator" style="margin: 16pt 0 16pt 0"></div>
+						<div style="clear: both;"></div>
+					</div>                
 				</div>
 	
 				<div data-panel="model-editor">

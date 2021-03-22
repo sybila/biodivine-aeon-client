@@ -1,55 +1,42 @@
 import Dock from './Dock';
 import Panels from './Panels';
 import Cytoscape from './Cytoscape';
-import Events from './EditorEvents';
 import Import from './Import';
+import Examples from './ExampleModels';
 import NodeMenu from './FloatingNodeMenu';
 import EdgeMenu from './FloatingEdgeMenu';
 import register_keys from './Hotkeys';
+import Events, { ClickEvent } from './EditorEvents';
 
-import * as aeon from 'aeon-wasm';
+function init() {
+    Dock.init(document.getElementById("editor-dock"));
+    Panels.init(document.getElementById("editor-panels"));
+    NodeMenu.init(document.getElementById("editor-floating-node-menu"));
+    EdgeMenu.init(document.getElementById("editor-floating-edge-menu"));
+    Cytoscape.init(document.getElementById("editor-cytoscape"));
+    Examples.init(document.getElementById("editor-examples"));
+    register_keys();    // Keyboard shortcuts
 
-let g2a = `
-#position:CtrA:419,94
-$CtrA:((((!CtrA & GcrA) & !CcrM) & !SciP) | ((CtrA & !CcrM) & !SciP))
-CtrA -?? CtrA
-GcrA -> CtrA
-CcrM -| CtrA
-SciP -| CtrA
-#position:GcrA:325,135
-$GcrA:(!CtrA & DnaA)
-CtrA -| GcrA
-DnaA -> GcrA
-#position:CcrM:462,222
-$CcrM:((CtrA & !CcrM) & !SciP)
-CtrA -> CcrM
-CcrM -| CcrM
-SciP -| CcrM
-#position:SciP:506,133
-$SciP:(CtrA & !DnaA)
-CtrA -> SciP
-DnaA -| SciP
-#position:DnaA:374,224
-$DnaA:(((CtrA & !GcrA) & !DnaA) & CcrM)
-CtrA -> DnaA
-GcrA -| DnaA
-DnaA -| DnaA
-CcrM -> DnaA
-`
+    /* Make every button with `data-clickable` emit event according to its value. */
+    let buttons = document.getElementsByTagName("button");
+    for (let i=0; i<buttons.length; i++) {
+        let button = buttons[i];
+        if (button.dataset.clickable !== undefined) {
+            button.onclick = function() {                                             
+                button.blur();  // clear focus
+                Events.click((this as HTMLElement).dataset["event"] as ClickEvent);
+            };
+        }
+    }
 
-Dock.init(document.getElementById("editor-dock"));
-Panels.init(document.getElementById("editor-panels"));
-NodeMenu.init(document.getElementById("editor-floating-node-menu"));
-EdgeMenu.init(document.getElementById("editor-floating-edge-menu"));
-register_keys();
+    Import.importAeonModel(Examples.g2a);
+}
 
 // fonts api is currently experimental, though widely supported.
 if ((document as any).fonts === undefined) {
-    Cytoscape.init(document.getElementById("editor-cytoscape"));
+    init()
 } else {
     (document as any).fonts.load('1rem "Anonymous Pro"').then(() => {
-        Cytoscape.init(document.getElementById("editor-cytoscape"));
-
-        Import.importAeonModel(g2a);
+        init()
     });
 }

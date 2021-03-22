@@ -9,7 +9,7 @@ path = "src/rust/lib.rs"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-biodivine-lib-param-bn = "0.1.0"
+biodivine-lib-param-bn = { git = "https://github.com/sybila/biodivine-lib-param-bn.git" }
 wasm-bindgen = "0.2.71"
 json = "0.12.4"
 

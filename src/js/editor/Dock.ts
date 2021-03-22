@@ -1,4 +1,4 @@
-import Events from './EditorEvents';
+import Events, { ClickEvent } from './EditorEvents';
 
 type ElementMap = { [key: string]: HTMLElement }
 
@@ -16,14 +16,7 @@ export let Dock: {
 
 		// Emit events when buttons are clicked.        
 		for (let button of dock.children) {
-            if (button instanceof HTMLElement && button.tagName === "BUTTON") {
-                if (button.dataset.clickable !== undefined) {
-                    button.onclick = function() {
-                                             
-                        Events.click((this as HTMLElement).dataset["event"]);
-                    };
-                }
-    
+            if (button instanceof HTMLElement && button.tagName === "BUTTON") {            
                 if (button.dataset.selectable !== undefined) {
                     this._panelButtons[button.dataset.panel] = button;
                     button.onclick = function() {

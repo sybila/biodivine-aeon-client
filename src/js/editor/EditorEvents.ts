@@ -38,6 +38,12 @@ export type RegulationData = {
 export type ClickEvent = 
     "aeon-start-computation"  // Start the computation of attractors.
     | "model-apply-layout"      // Apply automatic layout to the current model.
+    | "model-import-bnet"       // Import model from .bnet file.
+    | "model-import-aeon"       // Import model from .aeon file.
+    | "model-import-sbml"       // Import model from .sbml file.
+    | "model-export-aeon"       // Export model to .aeon file.
+    | "model-export-sbml-basic"       // Export instantiated model to an .sbml file.
+    | "model-export-sbml-param"       // Export model to a parametrised .sbml file.
     | "selected-toggle-observability"   // Toggle observability of the selected edge.
     | "selected-toggle-monotonicity"    // Toggle monotonicity of the selected edge.
     | "selected-remove"                 // Remove the selected model elements (variables/regulations).

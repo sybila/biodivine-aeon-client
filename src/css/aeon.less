@@ -7,6 +7,7 @@
 @colorSecondaryLight: #ff8d8a;
 @colorSecondaryDark: #9a2d33;
 
+@colorBackground: #f5f5f5;
 @colorActionBackground: #ECEFF1;
 @colorShadow: #d0d0d0;
 
@@ -63,6 +64,7 @@ body {
 
 .aeon-dock {        
     width: 48pt;     
+    z-index: 1000;
  
     /*
         Button renders the default background and shadow.
@@ -147,15 +149,63 @@ body {
         min-width: 360pt;
         resize: horizontal;
     
-        background-color: #f5f5f5;
+        background-color: @colorBackground;
         box-shadow: 0pt 2pt 5pt @colorShadow;
         padding: 8pt;
         border-radius: 8pt;
         overflow-y: auto;    
+
+        h2 {
+            margin: 0 auto;
+            height: 16pt; /* This will align the heading with the grid. */
+
+            user-select: none;
+            text-align: center;
+            font-size: 14pt;
+            font-weight: 900;
+        }
+
+        h3 {
+            margin: 0 auto;
+            height: 16pt;
+
+            user-select: none;
+            text-align: center;
+            font-size: 13pt;
+            font-weight: 700;
+        }
     }
     
     &> div.selected {
         display: block;    
+    }
+
+    &> div.fixed {
+        resize: none;
+        width: 360pt;
+
+        /* In fixed-width panels, you can use a two-column layout. */
+        .column {
+            /* 360 / 2, minus 16 for padding and 1 for border. */
+            width: 162pt;
+
+            padding: 8pt;
+            
+            &.left {  float: left; }
+            
+            &.right { float: right; }
+        }
+
+        .column-separator {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+
+            width: 1pt;
+            background: darken(@colorActionBackground, 10%);
+            border-radius: 2pt;
+        }
     }
     
     
@@ -188,6 +238,59 @@ body {
 
     padding: 4pt;
     border-radius: 8pt;
+}
+
+/* Compound button is a button with two texts, typically the second text is used as description. */
+
+.compound-button {
+    display: inline-block;
+    height: 40pt;
+    
+    padding: 0;
+    font-size: 11pt;
+    font-weight: 600;
+    text-align: center;
+    background-color: @colorActionBackground;
+    border: 0;
+    border-radius: 8pt;
+    box-shadow: 0pt 1pt 3pt @colorShadow;        
+    cursor: pointer;
+    user-select: none;
+
+    transition: background-color 0.1s;
+
+    &:focus, &:hover {        
+        outline: none;
+        background-color: darken(@colorActionBackground, 10%);
+
+        span.right {
+            background-color: darken(@colorActionBackground, 20%);
+        }
+    }
+
+    span {
+        display: table-cell;
+        height: 40pt;        
+        width: 96pt;
+
+        transition: 0.3s;
+        vertical-align: middle;        
+
+        small {
+            font-size: 10pt;
+        }
+        
+        &.left {
+            width: 72pt;
+        }
+
+        &.right {
+            background-color: darken(@colorActionBackground, 10%);
+            border-top-right-radius: 8pt;
+            border-bottom-right-radius: 8pt;
+        }
+    }
+
 }
 
 /* Design grid */

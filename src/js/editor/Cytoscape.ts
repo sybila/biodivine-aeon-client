@@ -32,14 +32,28 @@ export let Cytoscape: {
 	_render_selected_edge_menu: () => void,
     init: (container: HTMLElement) => void,
 	cy: () => cytoscape.Core,
+	/* True if *something* is selected. */
 	has_selection: (selector?: string) => boolean,
+	/* Clear all selected elements (also triggering unselect events for them). */
+	clear_selection: () => void,
+	/* Ids of currently selected variables. */
 	selected_node_ids: () => string[],
+	/* Ids of currently selected regulations. */
 	selected_edge_ids: () => EdgeId[],
+	/* Get data of a specific regulation, or undefined if it does not exist. */
 	regulation_data: (id: EdgeId) => RegulationData | undefined,
+	/* Get data of a specific variable, or undefined if it does not exist. */
 	variable_data: (id: string) => VariableData | undefined,
+	/* Render floating edge and node menus at appropriate positions. */
 	redraw_menus: () => void,
+	/* 	Savely remove all graph elements.
+		However, this method will not invoke any events for the removed entities.
+	 */
 	clear: () => void,
-	is_empty: () => boolean,	
+	/* True if the graph is empty. */
+	is_empty: () => boolean,
+	/* Zoom/pan the model to fit it completely into viewport. */	
+	viewport_fit: () => void,
 } = {
 
     _container: undefined,
@@ -161,6 +175,10 @@ export let Cytoscape: {
 		} else {
 			return cy.$(":selected").length > 0;
 		}
+	},
+
+	clear_selection: function(): void {
+		Cytoscape.cy().$(":selected").unselect();
 	},
 
 	variable_data: function(id: string): VariableData | undefined {
@@ -362,6 +380,12 @@ export let Cytoscape: {
 		} else {
 			EdgeMenu.hide();
 		}
+	},
+
+	viewport_fit: function() {
+		// The padding we want to apply is 10% of the larger viewport dimension.
+		let padding = 0.1 * Math.max(window.innerWidth, window.innerHeight);
+		Cytoscape.cy().fit(undefined, padding);
 	},
 
 }

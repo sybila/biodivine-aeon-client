@@ -31,9 +31,8 @@ dependencies = [
 
 [[package]]
 name = "biodivine-lib-param-bn"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ad744f7e529d9ca822f836b131a74cb1aa4467df17c0bb94885c1b860647097d"
+version = "0.2.0-SNAPSHOT"
+source = "git+https://github.com/sybila/biodivine-lib-param-bn.git#6930f09c0200023c2a2d4b56f35cbadcd75bb218"
 dependencies = [
  "biodivine-lib-bdd",
  "bitvector",

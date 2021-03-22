@@ -2,39 +2,20 @@
 extern crate json;
 
 extern crate wasm_bindgen;
-use wasm_bindgen::prelude::*;
+use biodivine_lib_param_bn::sbml::Layout;
 use biodivine_lib_param_bn::{BooleanNetwork, Monotonicity};
-use std::convert::TryFrom;
 use json::JsonValue;
+use std::convert::TryFrom;
+use wasm_bindgen::prelude::*;
+
 
 #[wasm_bindgen]
-pub fn read_aeon_model(model_str: String) -> String {
-    let model = BooleanNetwork::try_from(model_str.as_str());
+pub fn read_bnet_model(model_str: String) -> String {
+    let model = BooleanNetwork::try_from_bnet(model_str.as_str());
     let value = match model {
         Ok(network) => {
-            let graph = network.as_graph();
-            let variables = graph
-                .variables()
-                .map(|id| object! {
-                    "id": usize::from(id).to_string(),
-                    "name": graph.get_variable_name(id).clone(),
-                })
-                .collect::<Vec<_>>();
-            let regulations = graph
-                .regulations()
-                .map(|r| object! {
-                    "regulator": usize::from(r.get_regulator()).to_string(),
-                    "target": usize::from(r.get_target()).to_string(),
-                    "observable": r.is_observable(),
-                    "monotonicity": r.get_monotonicity().map(|m| monotonicity_to_json(m)),
-                })
-                .collect::<Vec<_>>();
             object! {
-                "result": object! {
-                    "variables": variables,
-                    "regulations": regulations,
-                    "metadata": extract_metadata(model_str.as_str()),
-                }
+                "result": network_to_json(&network)
             }
         }
         Err(error) => {
@@ -49,11 +30,108 @@ pub fn read_aeon_model(model_str: String) -> String {
     value.to_string()
 }
 
+#[wasm_bindgen]
+pub fn read_aeon_model(model_str: String) -> String {
+    let model = BooleanNetwork::try_from(model_str.as_str());
+    let value = match model {
+        Ok(network) => {
+            let mut value = network_to_json(&network);
+            let meta_data = extract_metadata(model_str.as_str());
+            value["metadata"] = meta_data;
+            object! {
+                "result": value
+            }
+        }
+        Err(error) => {
+            object! {
+                "error": array![
+                    object! { "message": error.clone() }
+                ]
+            }
+        }
+    };
+
+    value.to_string()
+}
+
+#[wasm_bindgen]
+pub fn read_sbml_model(model_str: String) -> String {
+    let mut warnings = Vec::new();
+    let result = BooleanNetwork::try_from_sbml_strict(model_str.as_str(), &mut warnings);
+    let value = match result {
+        Ok((network, layout)) => {
+            let mut value = network_to_json(&network);
+            let meta_data = layout_to_metadata(&layout);
+            value["metadata"] = meta_data;
+            let mut result = object! { "result": value };
+            if !warnings.is_empty() {
+                // If there are some warnings, export them as well.
+                let mut errors = JsonValue::new_array();
+                for warning in warnings.iter() {
+                    errors
+                        .push(object! {
+                            "message": warning.clone(),
+                        })
+                        .unwrap();
+                }
+                result["error"] = errors;
+            }
+            result
+        }
+        Err(error) => {
+            object! {
+                "error": array![
+                    object! { "message": error.clone() }
+                ]
+            }
+        }
+    };
+
+    value.to_string()
+}
+
+fn network_to_json(network: &BooleanNetwork) -> JsonValue {
+    let graph = network.as_graph();
+    let variables = graph
+        .variables()
+        .map(|id| {
+            object! {
+                "id": usize::from(id).to_string(),
+                "name": graph.get_variable_name(id).clone(),
+            }
+        })
+        .collect::<Vec<_>>();
+    let regulations = graph
+        .regulations()
+        .map(|r| {
+            object! {
+                "regulator": usize::from(r.get_regulator()).to_string(),
+                "target": usize::from(r.get_target()).to_string(),
+                "observable": r.is_observable(),
+                "monotonicity": r.get_monotonicity().map(|m| monotonicity_to_json(m)),
+            }
+        })
+        .collect::<Vec<_>>();
+    object! {
+        "variables": variables,
+        "regulations": regulations,
+        "metadata": JsonValue::new_object(),
+    }
+}
+
 fn monotonicity_to_json(m: Monotonicity) -> JsonValue {
     match m {
         Monotonicity::Activation => "activation".into(),
         Monotonicity::Inhibition => "inhibition".into(),
     }
+}
+
+fn layout_to_metadata(layout: &Layout) -> JsonValue {
+    let mut positions = JsonValue::new_object();
+    for (name, position) in layout.iter() {
+        positions[name.as_str()] = format!("{},{}", position.0, position.1).into();
+    }
+    return object! { "position": positions };
 }
 
 fn extract_metadata(model: &str) -> JsonValue {
@@ -70,7 +148,7 @@ fn extract_metadata(model: &str) -> JsonValue {
 
 fn apply_metadata(metadata: &mut JsonValue, data: &[&str]) {
     if data.len() < 2 {
-        return
+        return;
     } else if data.len() == 2 {
         metadata.insert(data[0], data[1]).unwrap();
     } else {

@@ -6,6 +6,7 @@ export let Panels: {
     _panels: HTMLElement,
     _panelElements: ElementMap,
     init: (panels: HTMLElement) => void,
+	is_open: () => string | undefined,
 } = {
 
 	_panels: undefined,
@@ -59,6 +60,16 @@ export let Panels: {
 			}			
 		});
 	},	
+
+	is_open: function() {
+		let panels = this._panelElements as ElementMap;
+		for (let panel_name of Object.keys(panels)) {
+			if (panels[panel_name].classList.contains("selected")) {
+				return panel_name;
+			}
+		}
+		return undefined;
+	},
 
 }
 

@@ -3,6 +3,7 @@ import Events from './EditorEvents';
 import EdgeMenu from './FloatingEdgeMenu';
 import Cytoscape from './Cytoscape';
 import Import from './Import';
+import Panels from './Panels';
 
 export function register() {
     hotkeys('o', function(event) {
@@ -29,6 +30,16 @@ export function register() {
     hotkeys('n,+', function(event) {
         event.preventDefault();
         Import.try_create_variable();
+    });
+
+    hotkeys('esc', function(event) {        
+        if (Panels.is_open() !== undefined) {
+            event.preventDefault();
+            Events.panel.close(":selected");
+        } else if (Cytoscape.has_selection()) {
+            event.preventDefault();
+            Cytoscape.clear_selection();
+        }
     });
 }
 
