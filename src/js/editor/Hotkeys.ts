@@ -42,20 +42,20 @@ export function register() {
         }
     });
 
-    hotkeys('ctrl+-', function(event) {
+    hotkeys('ctrl+-,command+-', function(event) {
         console.log(event);
         event.preventDefault()
         Events.click('cytoscape-zoom-minus');
     });
 
-    hotkeys('ctrl+=', function(event) {
+    hotkeys('ctrl+=,command+=', function(event) {
         console.log(event);
         event.preventDefault()
         Events.click('cytoscape-zoom-plus');
     });
 
 
-    hotkeys('ctrl+0', function(event) {
+    hotkeys('ctrl+0,command+0', function(event) {
         event.preventDefault()
         Events.click('cytoscape-zoom-to-fit');
     });
