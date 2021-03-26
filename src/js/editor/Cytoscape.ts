@@ -447,7 +447,7 @@ export let Cytoscape: {
 				animate: true,
 				animationDuration: 300,
 				nodeDimensionsIncludeLabels: true,
-			} as cytoscape.LayoutOptions)
+			} as cytoscape.LayoutOptions).run();
 		} else {
 			// First, process components:
 			let collapse_and_expand = () => {
@@ -470,6 +470,7 @@ export let Cytoscape: {
 						nodeDimensionsIncludeLabels: true,
 						ready: () => {
 							setTimeout(() => {
+								console.log("Expand!");
 								// Once the layout is done, start expansion again.
 								Cytoscape._collapse.expandAll({
 									animate: true,
@@ -489,8 +490,9 @@ export let Cytoscape: {
 					}
 				})
 			}
-			let recursion = (i: number) => {
+			let recursion = (i: number) => {				
 				if (i >= scc_nodes.length) {
+					console.log("Start dagre!");
 					setTimeout(() => {
 						collapse_and_expand();
 					}, 300);					
