@@ -119,11 +119,11 @@
 				<div data-panel="import-export" class="fixed">
 					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
 	
-					<h2 style="margin-bottom: 8pt;">Model File</h2>
+					<h2 style="margin-bottom: 8pt;" class="single-line">Model File</h2>
 
 					<div style="position: relative; margin-bottom: 8pt;">
 						<div class="column left">
-							<h3 style="margin-bottom: 8pt;">Import</h3>
+							<h3 style="margin-bottom: 8pt;" class="single-line">Import</h3>
 	
 							<!--
 								<button data-clickable data-event="model-import-local" class="compound-button" style="margin-bottom: 8pt;">
@@ -145,7 +145,7 @@
 						</div>
 	
 						<div class="column right">
-							<h3 style="margin-bottom: 8pt;">Export</h3>
+							<h3 style="margin-bottom: 8pt;" class="single-line">Export</h3>
 	
 							<button data-clickable data-event="model-export-aeon" class="compound-button" style="margin-bottom: 8pt;">
 								<span class="left">.AEON</span><span class="right"><small>Parametrised<br>network</small></span>
@@ -164,7 +164,7 @@
 						<div style="clear: both;"></div>						
 					</div>					
 
-					<h3 style="margin-bottom: 8pt; margin-top: 32pt;">Example Models</h3>  
+					<h3 style="margin-bottom: 8pt; margin-top: 32pt;" class="single-line">Example Models</h3>  
 
 					<div id="editor-examples" style="position: relative;">
 						<div class="column left">
@@ -190,10 +190,64 @@
 					</div>                
 				</div>
 	
-				<div data-panel="model-editor">
+				<div id="editor-model-panel" data-panel="model-editor" class="selected">
 					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
 	
-					<h1>Model Editor</h1>
+					<div>
+						<div class="inline-input" style="width: calc(100% - 96pt); margin: 0 48pt 0 48pt;">
+							<h3 data-editable data-event="model-name" data-default="Untitled model" contenteditable="true">Untitled model</h3>
+						</div>
+						
+						<div class="inline-input" style="width: calc(100% - 16pt); margin: 0 8pt 0 8pt;">
+							<div class="scroll" style="width: 100%;">
+								<div data-editable data-event="model-description" data-default="Model description..." contenteditable="true" style="width: 100%;">
+									Model lks;dfjasl;kjsdl;kafjasf;gkljfdsl;kgj;sldzkfjvsdkl;fgdjfkl;sfjgkl;fsdjgkl;zfjdfzklv;jfgkl;fjszlf;kgjz;kldjgxvb;lkjdescription...
+								</div>
+							</div>							
+						</div>
+					</div>				
+
+					<!--
+					<div class="invisible-input full-line" id="model-description" contenteditable data-placeholder="(model description)" style="margin-top: 4px; margin-bottom: 4px;"></div>      
+	
+					<div style="height: 30px;">
+						<h3 style="font-family: 'FiraMono'; text-transform: uppercase;"> ● Overview</h3>
+					</div>
+					<table id="model-stats">
+						<tr class="row">    <td>Variables: </td>        <td class="value">-</td>     <td>Parameter space size: </td>  <td class="value">-</td> </tr>
+						<tr class="row">    <td>Regulations: </td>      <td class="value">-</td>     <td>State space size: </td> <td class="value">-</td> </tr>
+						<tr class="row">    <td>Max. in-degree: </td>   <td class="value">-</td>     <td>Max. out-degree: </td>       <td class="value">-</td> </tr>
+						<tr class="row">    <td colspan="2">Explicit parameters: </td>  <td colspan="2">(none)</td>   </tr>
+					</table>                   
+					<div style="height: 40px;">
+						<h3 style="float: left; font-family: 'FiraMono'; text-transform: uppercase;"> ● Variables</h3>
+						<button id="button-add-variable" class="image-button" onclick="let id = LiveModel.addVariable(); CytoscapeEditor.showNode(id);" style="float: right;">Add variable (N) <img src="/asset/img/add_box-24px.svg"></button>
+					</div>
+					<div style="clear: both;"></div>
+					<div id="model-variables" class="full-line"></div>                       
+					<div class="templates gone">
+						<div id="model-variable-template" class="model-variable">
+							<div class="invisible-input">
+								<input class="variable-name" type="text" name="variable-name" value="Variable name" placeholder="(variable name)" style="font-size: 18px;" spellcheck='false' autocorrect='off'>
+							</div>
+							<img alt="Remove variable" src="/asset/img/delete-24px.svg" class="model-variable-remove button">
+							<img alt="Show variable" src="/asset/img/search-24px.svg" class="model-variable-show button">
+							<br>
+							<h4> ● Regulators</h4>
+							<div class="model-variable-regulators full-line"></div>
+							<h4> ● Update Function</h4>
+							<div class="invisible-input full-line variable-function" contenteditable data-placeholder="(default)" spellcheck='false' autocorrect='off' style="font-size: 16px; text-align: center;"></div>
+							<div class="variable-function-status"></div>
+						</div>
+	
+						<div id="model-regulation-template" class="model-regulation">
+							<span class="model-regulation-regulator">Some name</span>
+							<span class="model-regulation-short">(->)</span>
+							<span class="model-regulation-observable">observable</span>
+							<span class="model-regulation-monotonicity">activation</span>
+						</div>                    
+					</div>
+					-->
 				</div>
 	
 				<div data-panel="attractors">

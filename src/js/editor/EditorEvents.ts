@@ -54,6 +54,10 @@ export type ClickEvent =
     | "cytoscape-zoom-minus"
     ;
 
+export type EditEvent =
+    "model-name"
+    ;
+
 export let EditorEvents = {
 
     click(id: ClickEvent): void {

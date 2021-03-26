@@ -7,6 +7,7 @@ import NodeMenu from './FloatingNodeMenu';
 import EdgeMenu from './FloatingEdgeMenu';
 import register_keys from './Hotkeys';
 import Events, { ClickEvent } from './EditorEvents';
+import EditorPanel from './ModelPanel';
 
 function init() {
     Dock.init(document.getElementById("editor-dock"));
@@ -18,16 +19,29 @@ function init() {
     register_keys();    // Keyboard shortcuts
 
     /* Make every button with `data-clickable` emit event according to its value. */
-    let buttons = document.getElementsByTagName("button");
-    for (let i=0; i<buttons.length; i++) {
-        let button = buttons[i];
-        if (button.dataset.clickable !== undefined) {
-            button.onclick = function() {                                             
-                button.blur();  // clear focus
-                Events.click((this as HTMLElement).dataset["event"] as ClickEvent);
-            };
-        }
-    }
+    document.querySelectorAll('[data-clickable]').forEach(function (node) {
+        (node as HTMLElement).onclick = function() {
+            let button = this as HTMLElement;
+            button.blur();
+            Events.click(button.dataset["event"] as ClickEvent);
+        };        
+    });
+
+    document.querySelectorAll('[data-editable]').forEach(function (node) {    
+        (node as HTMLElement).onblur = function() {
+            let editable = this as HTMLElement;
+            let text = editable.innerText.trim();
+            if (text.length == 0) {
+                text = editable.dataset["default"];
+                editable.innerText = editable.dataset["default"];
+            } else {
+                editable.innerText = text;
+            }
+            console.log(text);         
+            // TODO: Send event.
+        };
+    });
+
 
     Import.importAeonModel(Examples.g2a);
 }

@@ -153,11 +153,16 @@ body {
         box-shadow: 0pt 2pt 5pt @colorShadow;
         padding: 8pt;
         border-radius: 8pt;
-        overflow-y: auto;    
+        /* This unfortunately disables vertical scrolling, but it enables floating elements outside of this div. */
+        overflow-y: visible;    
+        overflow-x: visible;
 
         h2 {
             margin: 0 auto;
-            height: 16pt; /* This will align the heading with the grid. */
+
+            &.single-line {
+                height: 16pt; /* This will align the heading with the grid. */
+            }            
 
             user-select: none;
             text-align: center;
@@ -167,7 +172,10 @@ body {
 
         h3 {
             margin: 0 auto;
-            height: 16pt;
+
+            &.single-line {
+                height: 16pt;
+            }            
 
             user-select: none;
             text-align: center;
@@ -313,6 +321,77 @@ body {
             background-color: darken(@colorActionBackground, 10%);
             border-top-right-radius: 8pt;
             border-bottom-right-radius: 8pt;
+        }
+    }
+
+}
+
+/* Invisible input is an input object that looks like a normal text, but when clicked becomes editable. */
+
+.inline-input {
+    text-align: center;
+
+    .scroll {         
+        position: relative;        
+
+        &:hover::after { /* Show edit icon when hovered. */
+            opacity: 1;
+        }
+    
+        /* A small "edit" icon which is visible when the element is hovered. */
+        &::after {
+            position: absolute;
+            display: block;
+            right: -28pt;
+            top: 0px;
+            width: 16pt;
+            height: 16pt;
+            
+            content: url('/asset/img/edit-16pt.svg');
+            background-color: @colorSecondary;
+            border-radius: 8pt;
+            padding: 4pt;
+            box-shadow: 0pt 1pt 2pt @colorShadow;                                
+            
+            opacity: 0;            
+            transition: opacity 0.2s;
+        }
+
+        &:focus-within::after {  /* Hide edit icon when in editing mode*/
+            opacity: 0;
+        }
+
+    }
+
+    [contenteditable=true] {
+        width: auto;
+        display: inline-block;
+        padding: 4pt;
+        /* Used to hide the padding so that the positioning is relative to content, not padded content. */
+        position: relative;
+        left: -4pt;
+        top: -4pt;
+        right: -4pt;
+        bottom: -4pt;
+        max-width: 100%;
+        max-height: 100px;
+        overflow-y: scroll;    
+        
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        cursor: pointer;           
+        border-radius: 4pt;
+        border: 1px solid transparent;       
+        transition: background-color 0.1s;
+    
+        &:focus {
+            background: white;
+            outline: none;            
+            cursor: text;
+            box-shadow: 0pt 1pt 2pt @colorShadow;                    
+            //border: 1px solid black;
         }
     }
 
