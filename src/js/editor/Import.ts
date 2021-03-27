@@ -115,6 +115,15 @@ export let Import: {
                     Events.model.regulation.create(regulation);
                 }
 
+                // Update model name and description:
+                if (model_data.metadata["name"] !== undefined) {
+                    Events.value("model-name", model_data.metadata["name"]);
+                }                
+                if (model_data.metadata["description"] !== undefined) {
+                    console.log(String(model_data.metadata["description"]));
+                    Events.value("model-description", model_data.metadata["description"]);
+                }
+
                 Cytoscape.viewport_fit();
                 
                 if (show_sccs) {
@@ -151,6 +160,7 @@ export let Import: {
 
     importAeonModel: function(model_string: string) {
         // TODO: Put all of this into a service worker, since it can take a lot of time!        
+        console.log(aeon.read_aeon_model(model_string));
         let json = JSON.parse(aeon.read_aeon_model(model_string));
         let result = json as Result<ModelData>;
         Import.importModel(result);               

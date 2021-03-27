@@ -138,7 +138,7 @@ fn extract_metadata(model: &str) -> JsonValue {
     let mut metadata = JsonValue::new_object();
     model.lines().map(|l| l.trim()).for_each(|line| {
         if line.starts_with('#') {
-            let segments = line[1..].split(':').collect::<Vec<_>>();
+            let segments = line[1..].splitn(2,':').collect::<Vec<_>>();
             apply_metadata(&mut metadata, &segments);
         }
     });
@@ -149,15 +149,16 @@ fn extract_metadata(model: &str) -> JsonValue {
 fn apply_metadata(metadata: &mut JsonValue, data: &[&str]) {
     if data.len() < 2 {
         return;
-    } else if data.len() == 2 {
-        metadata.insert(data[0], data[1]).unwrap();
-    } else {
+    } else if data[0] == "position" {   // Keep splitting:
+        let next_level = data[1].splitn(2, ':').collect::<Vec<_>>();
         if metadata.has_key(data[0]) {
-            apply_metadata(&mut metadata[data[0]], &data[1..]);
+            apply_metadata(&mut metadata[data[0]], &next_level);
         } else {
             let mut value = JsonValue::new_object();
-            apply_metadata(&mut value, &data[1..]);
+            apply_metadata(&mut value, &next_level);
             metadata.insert(data[0], value).unwrap();
         }
+    } else {
+        metadata.insert(data[0], data[1]).unwrap();
     }
 }

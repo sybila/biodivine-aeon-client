@@ -86,12 +86,12 @@
 				<button data-selectable data-panel="import-export">
 					<img alt="Import/Export" src="/asset/img/file_copy-48px.svg" draggable="false"><label>Import/Export</label>
 				</button>
-				<button data-clickable data-event="model-apply-layout">
-					<img alt="Apply Layout" src="/asset/img/view_quilt-48px.svg" draggable="false"><label>Apply Layout</label>
-				</button>							
 				<button data-selectable data-panel="model-editor">
 					<img alt="Model Editor" src="/asset/img/model-48px.svg" draggable="false"><label>Model Editor</label>
 				</button>
+				<button data-clickable data-event="model-apply-layout">
+					<img alt="Apply Layout" src="/asset/img/view_quilt-48px.svg" draggable="false"><label>Apply Layout</label>
+				</button>				
 				<button id="editor-model-toggle-scc">
 					<img alt="Network SCCs" src="/asset/img/graph-48px.svg" draggable="false"><label>Network SCCs</label>
 				</button>				
@@ -109,17 +109,11 @@
 					only one panel visible. Panels listen to `panel.open` and `panel.close` events with correspoding
 					`data-panel` values.
 				-->
-				
-				<div data-panel="compute-engine">
-					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
-	
-					<h1>Compute Engine</h1><div onclick="console.log(this)">Close</div>
-				</div>
-	
+								
 				<div data-panel="import-export" class="fixed">
 					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
 	
-					<h2 style="margin-bottom: 8pt;" class="single-line">Model File</h2>
+					<h2 style="margin: 0 48pt 8pt 48pt;" class="single-line">Model File</h2>
 
 					<div style="position: relative; margin-bottom: 8pt;">
 						<div class="column left">
@@ -194,19 +188,24 @@
 					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
 	
 					<div>
-						<div class="inline-input" style="width: calc(100% - 96pt); margin: 0 48pt 0 48pt;">
-							<h3 data-editable data-event="model-name" data-default="Untitled model" contenteditable="true">Untitled model</h3>
-						</div>
+						<div style="margin: 0 48pt 0 48pt;">
+							<div class="inline-input" style="text-align: center; max-width: 320pt; margin: 0 auto;">
+								<h3 data-editable data-event="model-name" data-default="Untitled model" contenteditable="true">
+									Untitled model
+								</h3>
+							</div>
+						</div>						
 						
-						<div class="inline-input" style="width: calc(100% - 16pt); margin: 0 8pt 0 8pt;">
-							<div class="scroll" style="width: 100%;">
-								<div data-editable data-event="model-description" data-default="Model description..." contenteditable="true" style="width: 100%;">
-									Model lks;dfjasl;kjsdl;kafjasf;gkljfdsl;kgj;sldzkfjvsdkl;fgdjfkl;sfjgkl;fsdjgkl;zfjdfzklv;jfgkl;fjszlf;kgjz;kldjgxvb;lkjdescription...
+						<div style="margin: 8pt 8pt 0 8pt;">
+							<div class="inline-input no-indicator" style="max-width: 480pt; margin: 0 auto;">
+								<div data-editable data-event="model-description" data-default="Model description..." contenteditable="true" class="paragraph">
+									Model description...
 								</div>
-							</div>							
-						</div>
-					</div>				
-
+							</div>
+						</div>					
+	
+						<span class="inline-input-indicator invisible">
+					</div>					
 					<!--
 					<div class="invisible-input full-line" id="model-description" contenteditable data-placeholder="(model description)" style="margin-top: 4px; margin-bottom: 4px;"></div>      
 	
@@ -250,7 +249,7 @@
 					-->
 				</div>
 	
-				<div data-panel="attractors">
+				<!--<div data-panel="attractors">
 					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
 	
 					<h1>Attractors</h1>
@@ -260,7 +259,7 @@
 					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
 	
 					<h1>Help</h1>
-				</div>
+				</div>-->
 	
 			</div>
 		</div>		

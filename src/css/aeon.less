@@ -141,11 +141,11 @@ body {
 /* Switchable resizeable panel windows. */
 
 .aeon-panels {
-    
+    display: block;        
+
     &> div {
         display: none;
         width: 480pt;
-        max-width: ~"min(75%, 960pt)";
         min-width: 360pt;
         resize: horizontal;
     
@@ -153,8 +153,7 @@ body {
         box-shadow: 0pt 2pt 5pt @colorShadow;
         padding: 8pt;
         border-radius: 8pt;
-        /* This unfortunately disables vertical scrolling, but it enables floating elements outside of this div. */
-        overflow-y: visible;    
+        overflow-y: scroll;    
         overflow-x: visible;
 
         h2 {
@@ -185,7 +184,7 @@ body {
     }
     
     &> div.selected {
-        display: block;    
+        display: inline-block;    
     }
 
     &> div.fixed {
@@ -219,9 +218,10 @@ body {
     
     /* Position panel close button. */
     .panel-close {
-        position: absolute;
-        top: 4pt;
-        left: 4pt;
+        float: left;
+        position: relative;
+        top: -4pt;
+        left: -4pt;
     }
     
 }
@@ -255,6 +255,7 @@ body {
     cursor: pointer;
     
     transition: background-color 0.3s;
+    background-color: @colorActionBackground;    
     box-shadow: 0pt 2pt 5pt @colorShadow;        
     border-radius: 8pt;
     border: 0;
@@ -328,71 +329,76 @@ body {
 
 /* Invisible input is an input object that looks like a normal text, but when clicked becomes editable. */
 
-.inline-input {
-    text-align: center;
-
-    .scroll {         
-        position: relative;        
-
-        &:hover::after { /* Show edit icon when hovered. */
-            opacity: 1;
-        }
+.inline-input-indicator {
+    /* Indicator is declared separately so that is can be placed outside of the inline input. */
+    position: absolute;
+    display: block;
+    width: 16pt;
+    height: 16pt;
+    margin-left: 4pt;
     
-        /* A small "edit" icon which is visible when the element is hovered. */
-        &::after {
-            position: absolute;
-            display: block;
-            right: -28pt;
-            top: 0px;
-            width: 16pt;
-            height: 16pt;
-            
-            content: url('/asset/img/edit-16pt.svg');
-            background-color: @colorSecondary;
-            border-radius: 8pt;
-            padding: 4pt;
-            box-shadow: 0pt 1pt 2pt @colorShadow;                                
-            
-            opacity: 0;            
-            transition: opacity 0.2s;
-        }
+    content: url('/asset/img/edit-16pt.svg');
+    background-color: @colorSecondary;
+    border-radius: 8pt;
+    padding: 4pt;
+    box-shadow: 0pt 1pt 2pt @colorShadow;                                
+    
+    transition: opacity 0.2s;        
+}
 
-        &:focus-within::after {  /* Hide edit icon when in editing mode*/
-            opacity: 0;
-        }
-
-    }
+.inline-input {
 
     [contenteditable=true] {
         width: auto;
         display: inline-block;
         padding: 4pt;
-        /* Used to hide the padding so that the positioning is relative to content, not padded content. */
+        /*  Used to hide the padding so that the positioning 
+            is relative to content, not padded content. */
         position: relative;
         left: -4pt;
         top: -4pt;
         right: -4pt;
         bottom: -4pt;
         max-width: 100%;
-        max-height: 100px;
-        overflow-y: scroll;    
-        
-        &::-webkit-scrollbar {
-            display: none;
-        }
 
         cursor: pointer;           
         border-radius: 4pt;
-        border: 1px solid transparent;       
+        //border: 1px solid transparent;       
         transition: background-color 0.1s;
-    
+        
         &:focus {
             background: white;
             outline: none;            
             cursor: text;
-            box-shadow: 0pt 1pt 2pt @colorShadow;                    
-            //border: 1px solid black;
+            box-shadow: 0pt 1pt 2pt @colorShadow;
+        }        
+
+        /*  A small "edit" icon which is visible 
+            when the element is hovered. */
+        &::after {
+            .inline-input-indicator();
+            right: -28pt;
+            top: 0px;
+            
+            opacity: 0;
         }
+
+        &:hover::after { /* Show icon when hovered. */ opacity: 1; }
+
+        &:focus::after { /* Hide edit icon when in editing mode. */ opacity: 0; }
+    }
+
+    &.no-indicator {
+        [contenteditable=true] {
+            &::after {
+                display: none;
+            }
+        }
+    }
+
+    .paragraph {
+        width: 100%; 
+        text-align: justify;        
     }
 
 }

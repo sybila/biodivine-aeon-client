@@ -2,6 +2,7 @@ import Events from '../core/Events';
 import Config from '../core/Config';
 
 const CLICK = "editor.click";
+const VALUE = "editor.value";
 const PANEL_OPEN = "editor.panel.open";
 const PANEL_CLOSE = "editor.panel.close";
 
@@ -54,11 +55,15 @@ export type ClickEvent =
     | "cytoscape-zoom-minus"
     ;
 
-export type EditEvent =
+// Valid names of value events.
+export type ValueEvent =
     "model-name"
+    | "model-description"
     ;
 
 export let EditorEvents = {
+
+    _values: {},
 
     click(id: ClickEvent): void {
         Events.emit(CLICK, id);
@@ -68,6 +73,19 @@ export let EditorEvents = {
         return Events.addListener(CLICK, function(data) {
             if (data == id) {
                 action();
+            }
+        });
+    },
+
+    value(id: ValueEvent, value: string): void {
+        this._values[id] = value;
+        Events.emit(VALUE, { id: id, value: value });
+    },
+
+    onValue(id: ValueEvent, action: (value: string) => void) {
+        return Events.addListener(VALUE, (data) => {
+            if (data.id == id) {
+                action(data.value);
             }
         });
     },
