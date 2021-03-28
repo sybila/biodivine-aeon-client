@@ -8,10 +8,22 @@ edition = "2018"
 path = "src/rust/lib.rs"
 crate-type = ["cdylib", "rlib"]
 
+[[bin]]
+name = "aeon"
+path = "src/rust/aeon.rs"
+required-features = ["platform-native"]
+
+
 [dependencies]
 biodivine-lib-param-bn = { git = "https://github.com/sybila/biodivine-lib-param-bn.git" }
 wasm-bindgen = "0.2.71"
 json = "0.12.4"
+web-view = { version = "0.7.3", features = ["edge"], optional = true }
+tokio = { version = "1", features = ["full"], optional = true }
+warp = { version = "0.3", optional = true }
+
+[features]
+platform-native = ["web-view", "tokio", "warp"]
 
 [profile.release]
 # Tell `rustc` to optimize for small code size.

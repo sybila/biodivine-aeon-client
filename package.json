@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "start": "parcel editor.html",
-    "build": "parcel build ./src/html/editor.html"
+    "build": "parcel build editor.html"
   },
   "devDependencies": {
     "less": "^4.1.1",
@@ -17,7 +17,7 @@
   "dependencies": {
     "@types/cytoscape": "^3.14.12",
     "@types/cytoscape-edgehandles": "^3.6.0",
-    "aeon-wasm": "file:pkg",
+    "aeon-wasm": "file:target/aeon-wasm-pkg",
     "cytoscape": "^3.18.1",
     "cytoscape-cose-bilkent": "^4.1.0",
     "cytoscape-dagre": "^2.3.2",

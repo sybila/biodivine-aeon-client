@@ -1,0 +1,6 @@
+[book]
+authors = ["Samuel Pastva"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Aeon 2020"

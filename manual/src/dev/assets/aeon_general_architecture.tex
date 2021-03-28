@@ -1,0 +1,54 @@
+\documentclass[convert={density=300,size=1920x1080,outext=.png}]{standalone}
+\usepackage{tikz}
+\usepackage{helvet}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+% To build, run:
+% pdflatex -shell-escape aeon_general_architecture.tex
+% (needs imagemagick)
+
+
+\begin{document}
+	\begin{tikzpicture}
+		
+		\draw (0,0) rectangle (5,3);
+				
+		\node (start)  at (1.7, 0.8) {};
+		\draw[->, >=stealth, thick] (start) edge[double] (1.7, 1.7);
+		\node (start2)  at (3.3, 1.9) {};		
+		\draw[->, >=stealth, thick] (start2) edge[black, double] (3.3, 1.0);		
+		
+		
+		\draw[fill=red!30!black!20] (0.2,0.2) rectangle (4.8,1);
+		\draw[fill=green!30!black!20] (0.2,1.7) rectangle (4.8,2.5);		
+
+		\node[] (browser) at (2.5,2.75) {\footnotesize Web Browser};
+		\node[] (browser) at (2.5,3.3) {\footnotesize \textbf{Aeon Online}};		
+		\node[] (browser) at (2.5,0.55) {\footnotesize Web Assembly Rust Backend};		
+		\node[] (browser) at (2.5,2.05) {\footnotesize HTML + JavaScript User Interface};				
+		
+		\draw (6, -0.5) edge[dashed] (6, 4);
+
+		\begin{scope}[shift={(7,0)}]
+			\draw (0,0) rectangle (5,3);
+			\draw[fill=yellow!30!black!20] (0.2,1.7) rectangle (4.8,2.5);		
+			
+			\node (start)  at (3.0, 0.8) {};
+			\draw[->, >=stealth, thick] (start) edge[double] (3.0, 1.8);
+			\node (start2)  at (4.0, 2.0) {};		
+			\draw[->, >=stealth, thick] (start2) edge[black, double] (4.0, 1.0);		
+			
+			
+			\draw[fill=red!30!black!20] (0.2,0.2) rectangle (4.8,1);
+			\draw[fill=green!30!black!20] (1.7,1.8) rectangle (4.7,2.4);					
+			
+			\node[] (browser) at (2.5,2.75) {\footnotesize Native App Process};
+			\node[] (browser) at (2.5,3.3) {\footnotesize \textbf{Aeon Desktop}};		
+			\node[] (browser) at (2.5,0.55) {\footnotesize Native Rust Backend};		
+			\node[] (browser) at (0.95,2.08) {\footnotesize WebView};				
+			\node[] (browser) at (3.2,2.05) {\footnotesize HTML + JavaScript};
+		\end{scope}
+				
+	\end{tikzpicture}
+\end{document}

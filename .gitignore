@@ -1,3 +1,8 @@
+# Manual build files
+/manual/book
+*.aux
+*.log
+
 # Javascript build files
 /node_modules
 /dist

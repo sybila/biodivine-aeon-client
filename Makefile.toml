@@ -1,0 +1,17 @@
+[tasks.aeon-wasm]
+command = "wasm-pack"
+args = ["build", "--out-dir", "target/aeon-wasm-pkg"]
+
+[tasks.run-native]
+command = "cargo"
+args = ["run", "--bin", "aeon", "--features", "platform-native"]
+
+[tasks.run-online]
+dependencies = ["aeon-wasm"]
+command = "npm"
+args = ["run", "start"]
+
+[tasks.build-online]
+dependencies = ["aeon-wasm"]
+command = "npm"
+args = ["run", "build", "--", "--out-dir", "target/aeon-online", "${@}"]
