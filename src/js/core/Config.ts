@@ -1,7 +1,3 @@
-/*
-	This script defines configuration values for other components.
-*/
-
 /**
  * Non-configurable constants that are used in Aeon components.
  */

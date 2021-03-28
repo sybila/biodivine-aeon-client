@@ -4,11 +4,16 @@ export type EventCallback = (data: any) => void;
  * A small global event bus responsible for passing and routing messages
  * throughout the application. 
  * 
+ * Each event can be sent and saved, in which case, the value is preserved.
+ * Make sure this does not cause memory leaks and use `clear` to remove any
+ * saved value when it is no longer needed.
+ * 
  * Here, we don't assume any type safety. It is up to the application to 
  * implement a type safe wrapper on top of the global event bus, or create 
- * their own local safe instances.
+ * their own local safe instances. 
  */
 export class EventBus {
+	saved: { [key: string]: any | undefined } = {}
 	eventListeners: { [key: string]: EventCallback[] | undefined } = {}
 
 	/**
@@ -54,7 +59,7 @@ export class EventBus {
 	 * @param name Name of the event to fire.
 	 * @param payload Payload data for the fired event.
 	 */
-	async emit(name: string, payload: any) {
+	async emit(name: string, payload: any): Promise<void> {
 		if (this.eventListeners[name]) {
 			await Promise.all(this.eventListeners[name].map((listener) => {
 				new Promise<void>((resolve) => { 
@@ -66,10 +71,46 @@ export class EventBus {
 		}		
 	}
 
+	/**
+	 * Emit an event, just like `emit` would, but first save it into 
+	 * an internal cache.
+	 */
+	async emitAndSave(name: string, payload: any): Promise<void> {
+		this.saved[name] = payload;
+		return this.emit(name, payload);
+	}
+
+	/**
+	 * Delete any saved values associated with the provided event. 
+	 * Note that this will not notify any listeners!
+	 */
+	clear(name: string) {
+		if (this.saved[name]) {
+			delete this.saved[name];
+		}
+	}
+
+	/**
+	 * Get value saved for the given event.
+	 */
+	get(name: string): any | undefined {
+		return this.saved[name];
+	}
+
+	/**
+	 * Remove any listeners and saved values associated with this event bus.
+	 * 
+	 * Afterwards, any calls on this bus are invalid and should fail.
+	 */
+	destroy() {
+		this.saved = undefined;
+		this.eventListeners = undefined;
+	}
+
 }
 
-let events = new EventBus();
+let global_events = new EventBus();
 // Make events available globally.
-(window as any).events = events;
+(window as any).global_events = global_events;
 
-export default events;
+export default global_events;

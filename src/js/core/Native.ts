@@ -58,7 +58,7 @@ class NativeBridge {
         let responder = this.pendingRequests[id];
         if (responder) {            
             responder(response);
-            delete this.pendingRequests["id"];                        
+            delete this.pendingRequests["id"];            
         } else if (Config.DEBUG_MODE) {
             console.log("Unhandled response: ", response);
         }

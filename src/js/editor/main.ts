@@ -7,10 +7,16 @@ import NodeMenu from './FloatingNodeMenu';
 import EdgeMenu from './FloatingEdgeMenu';
 import register_keys from './Hotkeys';
 import Events, { ClickEvent, EditorEvents, ValueEvent } from './EditorEvents';
-import ModelPanel from './ModelPanel';
+import ModelPanel from './ModelPanel';*/
+import UiBus from '../core/UiEvents';
 
 function init() {
-    Dock.init(document.getElementById("editor-dock"));
+    UiBus.registerEvents(document);
+
+    UiBus.onClick('cytoscape-zoom-to-fit', () => {
+        console.log("Fit!");
+    });
+    /*Dock.init(document.getElementById("editor-dock"));
     Panels.init(document.getElementById("editor-panels"));
     NodeMenu.init(document.getElementById("editor-floating-node-menu"));
     EdgeMenu.init(document.getElementById("editor-floating-edge-menu"));
@@ -47,25 +53,16 @@ function init() {
     });
 
 
-    Import.importAeonModel(Examples.g2a);
+    Import.importAeonModel(Examples.g2a);*/
 }
 
-// fonts api is currently experimental, though widely supported.
+// Fonts api is currently experimental, though widely supported.
 if ((document as any).fonts === undefined) {
     init()
 } else {
+    // If possible, wait for fonts to load, because otherwise cytoscape
+    // may render them weirdly.
     (document as any).fonts.load('1rem "Anonymous Pro"').then(() => {
         init()
     });
-}*/
-
-import Dialogs from '../core/Dialogs';
-
-setTimeout(() => {
-    Dialogs.confirm("Hello?").then((result) => {
-        console.log("Got result", result);
-        if (result) {
-            Dialogs.alert("Yes!");
-        }
-    });
-}, 1000);
+}
