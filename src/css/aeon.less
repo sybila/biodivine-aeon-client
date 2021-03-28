@@ -11,6 +11,9 @@
 @colorActionBackground: #ECEFF1;
 @colorShadow: #d0d0d0;
 
+@colorActivation: #4abd73;
+@colorInhibition: #d05d5d;
+
 body {
     font-family: 'Lato', sans-serif;
     margin: 0;
@@ -18,6 +21,10 @@ body {
 
 .heebo {
     font-family: 'Heebo', sans-serif;
+}
+
+.monospace {
+    font-family: 'Anonymous Pro', monospace;
 }
 
 .gone {
@@ -87,6 +94,10 @@ body {
 
     button:focus {
         outline: none;
+        
+        img {
+            background-color: darken(@colorActionBackground, 10%);
+        }
     }
 
     /*
@@ -181,6 +192,30 @@ body {
             font-size: 13pt;
             font-weight: 700;
         }
+
+        h4 {
+            font-family: 'Anonymous Pro', monospace;
+            height: 16pt;
+            margin: 0;
+
+            text-transform: uppercase;            
+            user-select: none;
+            font-size: 12pt;          
+            font-weight: 600;  
+        }
+
+        /* Styling for a basic "content box" inside a panel. */
+        .box {
+            padding: 8pt;
+            background-color: lighten(@colorBackground, 10%);
+            border-radius: 8pt;
+            box-shadow: 0pt 1pt 2pt @colorShadow;            
+
+            .inline-input [contenteditable="true"]:focus {
+                background-color: @colorActionBackground;
+                box-shadow: none;
+            }
+        }
     }
     
     &> div.selected {
@@ -235,6 +270,7 @@ body {
 
     &:hover {
         background-color: darken(@colorActionBackground, 10%);
+        box-shadow: 0pt 1pt 2pt @colorShadow;
     }
 }
 
@@ -367,7 +403,7 @@ body {
         transition: background-color 0.1s;
         
         &:focus {
-            background: white;
+            background: lighten(@colorBackground, 10%);
             outline: none;            
             cursor: text;
             box-shadow: 0pt 1pt 2pt @colorShadow;
@@ -402,6 +438,17 @@ body {
     }
 
 }
+
+/* A clickable piece of text. */
+.inline-button {
+    cursor: pointer;    
+
+    &:hover {
+        font-weight: 700;
+    }
+}
+
+
 
 /* Design grid */
 

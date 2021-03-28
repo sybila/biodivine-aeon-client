@@ -43,7 +43,65 @@ body {
 	bottom: 16pt;	
 }
 
+.inline-input .model-variable-name {
+	display: table-cell;
+	height: 16pt;
+	vertical-align: middle;
+	
+	font-family: 'Anonymous Pro', monospace;
+	font-size: 14pt;
+	word-wrap: anywhere;
+	padding-top: 5pt;
+	padding-bottom: 3pt;
+}
 
+.inline-input .model-variable-function {
+	min-height: 16pt;
+	
+	font-family: 'Anonymous Pro', monospace;
+	font-size: 14pt;
+	word-wrap: anywhere;
+	padding-top: 5pt;
+	padding-bottom: 3pt;
+}
+
+.model-regulations {
+	user-select: none;
+	text-align: center;
+	font-family: 'Anonymous Pro', monospace;
+
+	border-spacing: 0;
+
+	td {
+		padding: 4pt;		
+	}
+
+	tr td:first-child {
+		border-top-left-radius: 4pt;
+		border-bottom-left-radius: 4pt;
+	}
+
+	tr td:last-child {
+		border-top-right-radius: 4pt;
+		border-bottom-right-radius: 4pt;
+	}
+
+	tr:hover {
+		background-color: @colorActionBackground;		
+	}	
+}
+
+.activation {
+	color: @colorActivation;
+}
+
+.inhibition {
+	color: @colorInhibition;
+}
+
+.non-observable {
+	color: #cacaca;
+}
 
 /* Floating cytoscape menu styles */
 

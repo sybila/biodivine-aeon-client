@@ -190,25 +190,81 @@
 					<div>
 						<div style="margin: 0 48pt 0 48pt;">
 							<div class="inline-input" style="text-align: center; max-width: 320pt; margin: 0 auto;">
-								<h3 data-editable data-event="model-name" data-default="Untitled model" contenteditable="true">
+								<h3	id="editor-model-name"
+									data-editable data-event="model-name" data-default="Untitled model" 
+									contenteditable="true">
 									Untitled model
 								</h3>
 							</div>
 						</div>						
 						
-						<div style="margin: 8pt 8pt 0 8pt;">
+						<div style="margin: 8pt 4pt 0 4pt;">
 							<div class="inline-input no-indicator" style="max-width: 480pt; margin: 0 auto;">
-								<div data-editable data-event="model-description" data-default="Model description..." contenteditable="true" class="paragraph">
+								<div 	id="editor-model-description" class="paragraph"
+										data-editable data-event="model-description" data-default="Model description..." 
+										contenteditable="true">
 									Model description...
 								</div>
 							</div>
 						</div>					
 	
 						<span class="inline-input-indicator invisible">
-					</div>					
-					<!--
-					<div class="invisible-input full-line" id="model-description" contenteditable data-placeholder="(model description)" style="margin-top: 4px; margin-bottom: 4px;"></div>      
-	
+					</div>	
+					
+					<div style="margin-top: 8pt;">
+						<div id="model-variable-template" class="model-variable box">
+							<img 	data-clickable="true" data-event="variable-show"
+									alt="Remove variable" src="/asset/img/delete-24px.svg" 
+									class="img-button-24" style="float: right; position: relative; right: -4pt; top: -4pt;">
+							<img 	data-clickable="true" data-event="variable-remove"
+									alt="Show variable" src="/asset/img/location-24px.svg" 
+									class="img-button-24" style="float: left; position: relative; left: -4pt; top: -4pt;">
+							
+							<div style="margin: 0 28pt 0 28pt;">
+								<div class="inline-input" style="text-align: left; max-width: 320pt;">
+									<strong class="model-variable-name" 
+											data-editable data-event="model-variable-name" 
+											contenteditable="true" spellcheck="false">
+										Var-name
+									</strong>									
+								</div>								
+							</div>
+
+							<div style="clear: both;"></div>
+							
+							<div>
+								<h4 style="margin-left: 4pt;"> ● Regulators</h4>
+								<table class="model-regulations" style="margin: 4pt 8pt 4pt 8pt;">
+									<tr>
+										<td style="width: 100%; text-align: right;">Some name</td>
+										<td style="min-width: 24pt;">-></td>
+										<td class="inline-button" style="min-width: 96pt;">non-observable</td>
+										<td class="activation" style="min-width: 96pt;">non-monotonous</td>
+									</tr>
+									<tr>
+										<td style="width: 100%; text-align: right;">Some  lonfa asd knas;dl nsald naslk;d nalsd  salkd aname</td>
+										<td style="min-width: 24pt;">-></td>
+										<td class="inline-button" style="min-width: 96pt;">non-observable</td>
+										<td class="activation" style="min-width: 96pt;">non-monotonous</td>
+									</tr>
+								</table>
+								<div class="model-regulation-row" style="margin: 0 24pt 0 24pt;">
+									
+								</div>								
+							</div>
+							<h4 style="margin-left: 4pt;"> ● Update Function</h4>
+							<div style="margin: 0 24pt 0 24pt;">
+								<div class="inline-input" style="text-align: center; margin: 0 auto;">
+									<div 	class="model-variable-function"
+											data-editable="true" data-event="model-variable-function" data-default="f_X(...)"
+											contenteditable="true" spellcheck="false">
+										f_X(...)
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--					
 					<div style="height: 30px;">
 						<h3 style="font-family: 'FiraMono'; text-transform: uppercase;"> ● Overview</h3>
 					</div>
