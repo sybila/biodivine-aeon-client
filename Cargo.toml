@@ -22,8 +22,13 @@ web-view = { version = "0.7.3", features = ["edge"], optional = true }
 tokio = { version = "1", features = ["full"], optional = true }
 warp = { version = "0.3", optional = true }
 
+[dependencies.native-dialog]
+version = "0.5.5"
+optional = true
+features = ["windows_dpi_awareness", "windows_visual_styles"]
+
 [features]
-platform-native = ["web-view", "tokio", "warp"]
+platform-native = ["web-view", "tokio", "warp", "native-dialog"]
 
 [profile.release]
 # Tell `rustc` to optimize for small code size.

@@ -58,7 +58,7 @@ class NativeBridge {
         let responder = this.pendingRequests[id];
         if (responder) {            
             responder(response);
-            delete this.pendingRequests["id"];            
+            delete this.pendingRequests["id"];                        
         } else if (Config.DEBUG_MODE) {
             console.log("Unhandled response: ", response);
         }
@@ -66,7 +66,7 @@ class NativeBridge {
 }
 
 let native_bridge = new NativeBridge();
-Object.freeze(native_bridge);
+// Note: we cannot freeze NativeBridge, because it has a mutable internal map.
 export default native_bridge;
 
 // Export native bridge as a global window property so that the 

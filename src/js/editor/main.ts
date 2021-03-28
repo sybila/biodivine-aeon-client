@@ -1,4 +1,4 @@
-import Dock from './Dock';
+/*import Dock from './Dock';
 import Panels from './Panels';
 import Cytoscape from './Cytoscape';
 import Import from './Import';
@@ -19,7 +19,7 @@ function init() {
     ModelPanel.init(document.getElementById("editor-model-panel"));
     register_keys();    // Keyboard shortcuts
 
-    /* Make every button with `data-clickable` emit event according to its value. */
+    // Make every button with `data-clickable` emit event according to its value.
     document.querySelectorAll('[data-clickable]').forEach(function (node) {
         (node as HTMLElement).onclick = function() {
             let button = this as HTMLElement;
@@ -57,4 +57,15 @@ if ((document as any).fonts === undefined) {
     (document as any).fonts.load('1rem "Anonymous Pro"').then(() => {
         init()
     });
-}
+}*/
+
+import Dialogs from '../core/Dialogs';
+
+setTimeout(() => {
+    Dialogs.confirm("Hello?").then((result) => {
+        console.log("Got result", result);
+        if (result) {
+            Dialogs.alert("Yes!");
+        }
+    });
+}, 1000);
