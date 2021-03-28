@@ -1,21 +1,32 @@
 import Config from './Config';
 
 /**
- * Native request describes a piece of data that will be sent to the
- * native process and can then receive a response back.
+ * An error type that may be returned by a native call.
  */
-type NativeRequest = {
-    path: string,
-    data: any,
-}
+export type Error = { message: string, html?: string };
 
+/**
+ * A result type which is returned by a native call.
+ * 
+ * Note that result and error are not mutually exclusive. If the result
+ * is present, then then error still may be included to indicate some
+ * warnings. It is up to the native call to specify the semantics.
+ */
+export type Result<T> = { result?: T, error?: Error[] };
+
+
+/**
+ * Native bridge is a helper singleton which is responsible for communication with the native interface. 
+ * 
+ * It allows you to send a request and then handle the response to that request via a `Promise`.
+ */
 class NativeBridge {
 
     /**
      * Map where we store the callbacks for requrests which were sent to the
      * native backend but have not been answered yet.
      */
-    pendingRequests: { [key: string]: (response: any) => void, } = {}
+    pendingRequests: { [key: string]: (response: Result<any>) => void, } = {}
     nextId: number = 0
 
     /**
@@ -24,8 +35,8 @@ class NativeBridge {
      * @param data Arbitrary object that will be passed off as JSON.
      * @returns A promise to the response provided by the backend.
      */
-    async send(path: string, data: any): Promise<any> {        
-        return new Promise((resolve: (response: any) => void) => {            
+    async send<T>(path: string, data: any): Promise<Result<T>> {        
+        return new Promise<Result<T>>((resolve: (response: Result<T>) => void) => {            
             let requestId = String(this.nextId);
             this.nextId += 1;
             this.pendingRequests[requestId] = resolve;
@@ -43,9 +54,9 @@ class NativeBridge {
      * @param id Id of the request the backend is responding to.
      * @param response Arbitrary data (most likely JSON-ish).
      */
-    response(id: string, response: any) {
+    respond(id: string, response: Result<any>) {
         let responder = this.pendingRequests[id];
-        if (responder) {
+        if (responder) {            
             responder(response);
             delete this.pendingRequests["id"];            
         } else if (Config.DEBUG_MODE) {

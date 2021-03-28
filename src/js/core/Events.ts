@@ -48,7 +48,6 @@ export class EventBus {
 	}
 
 	/**
-	 * /**
 	 * Emit an event with the given name and payload. The listeners will be executed
 	 * asynchronously. If you need to perform something after the event has been 
 	 * delivered to all the listeners, you can await the returned `Promise`. 
@@ -58,7 +57,11 @@ export class EventBus {
 	async emit(name: string, payload: any) {
 		if (this.eventListeners[name]) {
 			await Promise.all(this.eventListeners[name].map((listener) => {
-				new Promise<void>((resolve) => { listener(payload); resolve(); })
+				new Promise<void>((resolve) => { 
+					setTimeout(() => {
+						listener(payload); resolve(); 
+					}, 0);					
+				});
 			}));
 		}		
 	}
