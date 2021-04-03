@@ -1,0 +1,40 @@
+@import url('../colors.less');
+
+/* 
+    Aeon logo defines a unified "logo" component.
+
+    The logo will fit exactly into the 266x24px box (except for the slash that sticks out). The positioning is to account for font whitespace around the logo.
+*/
+
+.aeon-logo {
+    height: 24px;
+    width: 266px;
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    top: -25px;
+    left: -6px;
+
+    font-family: 'Heebo', sans-serif;
+    color: @colorPrimary;  
+    font-weight: 500;
+    font-size: 34px;
+    letter-spacing: 0.01ch;
+    user-select: none;
+
+    transform: scale(0.95, 1.0);
+
+    span {
+        color: @colorSecondary;
+        font-weight: 900;
+        letter-spacing: 0.1ch;
+    }
+
+    /* Highlight the forward slash. */
+    em {
+        font-size: 1.4em;
+        font-style: normal;
+        position: relative;
+        top: 0.07em;
+    }
+}

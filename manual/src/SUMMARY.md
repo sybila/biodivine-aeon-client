@@ -18,4 +18,4 @@
     - [Rust Guidelines](./dev/guidelines/rust.md)
     - [Web App Template](./dev/guidelines/web_template.md)
     - [Web App Guidelines](./dev/guidelines/web.md)
-
+  - [Boolean Network Editor](./dev/network_editor.md)

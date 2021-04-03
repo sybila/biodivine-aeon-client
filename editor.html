@@ -1,323 +1,295 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Aeon | Model Editor</title>     
+<head>
+	<title>Aeon | Model Editor</title>     
 
-		<link rel="shortcut icon" href="./favicon.ico">
-		<link href="/asset/font/aeon-fonts.less" rel="stylesheet">
-		<link href="/src/css/editor.less" rel="stylesheet">					
-	</head>
+	<link rel="shortcut icon" href="./favicon.ico">
+	<link href="/asset/font/aeon-fonts.less" rel="stylesheet">
+	<link href="/src/css/editor.less" rel="stylesheet">					
+</head>
 
-	<body>
-		<!-- 
-			A collection of invisible images which we load some icons from.  This is mainly to have the icons 
-			included if we do some minification and optimizer would refuse to include these images in the bundle.
-		-->
-		<div class="gone">
-			<img id="img-visibility-on-24" class="gone" src="/asset/img/visibility_on-24px.svg">
-			<img id="img-visibility-off-24" class="gone" src="/asset/img/visibility_off-24px.svg">
-			<img id="img-trending-up-24" class="gone" src="/asset/img/trending_up-24px.svg">
-			<img id="img-trending-down-24" class="gone" src="/asset/img/trending_down-24px.svg">
-			<img id="img-swap-vert-24" class="gone" src="/asset/img/swap_vert-24px.svg">
-		</div>		
+<body>
+	<!-- 
+		A collection of invisible images which we load some icons from.  This is mainly to have the icons 
+		included if we do some minification and optimizer would refuse to include these images in the bundle.
+	-->
+	<div class="gone">
+		<img id="img-visibility-on-24" class="gone" src="/asset/img/visibility_on-24px.svg">
+		<img id="img-visibility-off-24" class="gone" src="/asset/img/visibility_off-24px.svg">
+		<img id="img-trending-up-24" class="gone" src="/asset/img/trending_up-24px.svg">
+		<img id="img-trending-down-24" class="gone" src="/asset/img/trending_down-24px.svg">
+		<img id="img-swap-vert-24" class="gone" src="/asset/img/swap_vert-24px.svg">
+	</div>		
 
-		<div id="editor">
-			<div id="editor-cytoscape"></div>
+	<div id="editor">
+		<div id="editor-cytoscape"></div>
 
+		<div id="editor-aeon-logo">
 			<h1 class="aeon-logo">Aeon<em>/</em><span>BIODIVINE</span></h1>
-			
-			<div id="editor-floating-node-menu" class="floating-menu invisible">
-				<!-- A menu element that is shown for selected graph nodes in the cytoscape editor. -->
-				<div class="button-row">                
-					<img data-event="selected-edit-name" alt="Edit name (E)" src="/asset/img/edit-24px.svg" draggable="false">
-					<img data-event="selected-edit-function" alt="Edit update function (F)" src="/asset/img/functions-24px.svg" draggable="false">
-					<img data-event="selected-remove" alt="Remove (⌫)" src="/asset/img/delete-24px.svg" draggable="false">
-				</div>				
-				<span class="hint invisible">Hint</span>
-			</div>
-			
-			<div id="editor-floating-edge-menu" class="floating-menu invisible">
-				<!-- A menu element which is shown for selected edges in the cytoscape editor. -->				
-				<div class="button-row">
-					<img id="editor-floating-edge-menu-observability" data-event="selected-toggle-observability" draggable="false"
-							data-alt-true="Observability off (O)" data-src-true="img-visibility-off-24"
-							data-alt-false="Observability on (O)" data-src-false="img-visibility-on-24">
-					<img id="editor-floating-edge-menu-monotonicity" data-event="selected-toggle-monotonicity" draggable="false"
-							data-alt-null="Make activating (M)" data-src-null="img-trending-up-24"
-							data-alt-activation="Make inhibiting (M)" data-src-activation="img-trending-down-24"
-							data-alt-inhibition="Monotonicity off (M)" data-src-inhibition="img-swap-vert-24">					
-					<img data-event="selected-remove" alt="Remove (⌫)" src="/asset/img/delete-24px.svg" draggable="false">
-				</div>
-				<span class="hint invisible">Hint</span>
-			</div>
-
-
-			<div id="editor-zoom-menu">								
-				<button data-clickable data-event="cytoscape-zoom-to-fit" class="img-button-solid-32" style="margin-right: 8pt;">
-					<img alt="Zoom to fit" src="/asset/img/location-24px.svg" draggable="false">
-				</button>
-
-				<button data-clickable data-event="cytoscape-zoom-minus" class="img-button-solid-32" style="margin-right: 8pt;">
-					<img alt="Zoom to fit" src="/asset/img/zoom-minus-24px.svg" draggable="false">
-				</button>
-
-				<button data-clickable data-event="cytoscape-zoom-plus" class="img-button-solid-32">
-					<img alt="Zoom to fit" src="/asset/img/zoom-plus-24px.svg" draggable="false">
-				</button>
-			</div>
-
-			<div id="editor-dock" class="aeon-dock">
-				<!-- 
-					Dock ensures via CSS that each button has a floating label when hovered.
-					When a button is clickable, it emits an event based on its `data-event` attribute.
-					Selectable buttons emit `panel.open` events with the associated `data-panel` payload.
-					When this event is detected, the button becomes selected. Dock also listens to `panel.close` 
-					and unselects buttons based on closed panels.
-				-->
-				<button data-clickable data-event="aeon-start-computation">
-					<img alt="Start Analysis" src="/asset/img/play_circle_filled-48px.svg" draggable="false"><label>Start Analysis</label>
-				</button>				
-				<button data-selectable data-panel="compute-engine">
-					<img alt="Compute Engine" src="/asset/img/engine-48px.svg" draggable="false"><label>Compute Engine</label>
-				</button>
-				<button data-selectable data-panel="import-export">
-					<img alt="Import/Export" src="/asset/img/file_copy-48px.svg" draggable="false"><label>Import/Export</label>
-				</button>
-				<button data-selectable data-panel="model-editor">
-					<img alt="Model Editor" src="/asset/img/model-48px.svg" draggable="false"><label>Model Editor</label>
-				</button>
-				<button data-clickable data-event="model-apply-layout">
-					<img alt="Apply Layout" src="/asset/img/view_quilt-48px.svg" draggable="false"><label>Apply Layout</label>
-				</button>				
-				<button id="editor-model-toggle-scc">
-					<img alt="Network SCCs" src="/asset/img/graph-48px.svg" draggable="false"><label>Network SCCs</label>
-				</button>				
-				<button data-selectable data-panel="attractors">
-					<img alt="Attractors" src="/asset/img/call_split-48px.svg" draggable="false"><label>Attractors</label>
-				</button>
-				<button data-selectable data-panel="help">
-					<img alt="About and Help" src="/asset/img/help-48px.svg" draggable="false"><label>About and Help</label>
-				</button>
-			</div>
-
-			<div id="editor-panels" class="aeon-panels">
-				<!-- 
-					Panels are multi-purpose windows that appear on the left side of the screen and there is always 
-					only one panel visible. Panels listen to `panel.open` and `panel.close` events with correspoding
-					`data-panel` values.
-				-->
-								
-				<div data-panel="import-export" class="fixed">
-					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
-	
-					<h2 style="margin: 0 48pt 8pt 48pt;" class="single-line">Model File</h2>
-
-					<div style="position: relative; margin-bottom: 8pt;">
-						<div class="column left">
-							<h3 style="margin-bottom: 8pt;" class="single-line">Import</h3>
-	
-							<!--
-								<button data-clickable data-event="model-import-local" class="compound-button" style="margin-bottom: 8pt;">
-									<span class="left">Local<br>Storage</span><span class="right"><small>Last<br>loaded model</small></span>
-								</button>
-							-->
-	
-							<button data-clickable data-event="model-import-aeon" class="compound-button" style="margin-bottom: 8pt;">
-								<span class="left">.AEON</span><span class="right"><small>Parametrised<br>network</small></span>
-							</button>
-	
-							<button data-clickable data-event="model-import-sbml" class="compound-button" style="margin-bottom: 8pt;">
-								<span class="left">.SBML</span><span class="right"><small>Standard<br>SBML-qual</small></span>
-							</label>
-
-							<button data-clickable data-event="model-import-bnet" class="compound-button">
-								<span class="left">.BNET</span><span class="right"><small>BoolNet<br>network</small></span>
-							</label>
-						</div>
-	
-						<div class="column right">
-							<h3 style="margin-bottom: 8pt;" class="single-line">Export</h3>
-	
-							<button data-clickable data-event="model-export-aeon" class="compound-button" style="margin-bottom: 8pt;">
-								<span class="left">.AEON</span><span class="right"><small>Parametrised<br>network</small></span>
-							</button>
+		</div>			
 		
-							<button data-clickable data-event="model-export-sbml-basic" class="compound-button" style="margin-bottom: 8pt;">
-								<span class="left">.SBML</span><span class="right"><small>Standard<br>SBML-qual</small></span>
-							</button>
+		<div id="editor-floating-node-menu" class="floating-menu invisible">
+			<!-- A menu element that is shown for selected graph nodes in the cytoscape editor. -->
+			<div class="button-row">                
+				<img data-event="selected-edit-name" alt="Edit name (E)" src="/asset/img/edit-24px.svg" draggable="false">
+				<img data-event="selected-edit-function" alt="Edit update function (F)" src="/asset/img/functions-24px.svg" draggable="false">
+				<img data-event="selected-remove" alt="Remove (⌫)" src="/asset/img/delete-24px.svg" draggable="false">
+			</div>				
+			<span class="hint invisible">Hint</span>
+		</div>
+		
+		<div id="editor-floating-edge-menu" class="floating-menu invisible">
+			<!-- A menu element which is shown for selected edges in the cytoscape editor. -->				
+			<div class="button-row">
+				<img id="editor-floating-edge-menu-observability" data-event="selected-toggle-observability" draggable="false"
+						data-alt-true="Observability off (O)" data-src-true="img-visibility-off-24"
+						data-alt-false="Observability on (O)" data-src-false="img-visibility-on-24">
+				<img id="editor-floating-edge-menu-monotonicity" data-event="selected-toggle-monotonicity" draggable="false"
+						data-alt-null="Make activating (M)" data-src-null="img-trending-up-24"
+						data-alt-activation="Make inhibiting (M)" data-src-activation="img-trending-down-24"
+						data-alt-inhibition="Monotonicity off (M)" data-src-inhibition="img-swap-vert-24">					
+				<img data-event="selected-remove" alt="Remove (⌫)" src="/asset/img/delete-24px.svg" draggable="false">
+			</div>
+			<span class="hint invisible">Hint</span>
+		</div>
 
-							<button data-clickable data-event="model-export-sbml-param" class="compound-button">
-								<span class="left">.SBML<br><small style="font-size: 8pt;">(param.)</small></span><span class="right"><small>SBML with<br>par. functions</small></span>
-							</button>								
-						</div>
+
+		<div id="editor-zoom-menu">								
+			<button data-clickable data-event="cytoscape-zoom-to-fit" class="img-button-solid-32" style="margin-right: 8pt;">
+				<img alt="Zoom to fit" src="/asset/img/location-24px.svg" draggable="false">
+			</button>
+
+			<button data-clickable data-event="cytoscape-zoom-minus" class="img-button-solid-32" style="margin-right: 8pt;">
+				<img alt="Zoom to fit" src="/asset/img/zoom-minus-24px.svg" draggable="false">
+			</button>
+
+			<button data-clickable data-event="cytoscape-zoom-plus" class="img-button-solid-32">
+				<img alt="Zoom to fit" src="/asset/img/zoom-plus-24px.svg" draggable="false">
+			</button>
+		</div>
+
+		<div id="editor-aeon-dock" class="aeon-dock">				
+			<button data-clickable data-event="aeon-start-computation">
+				<img alt="Start Analysis" src="/asset/img/play_circle_filled-48px.svg" draggable="false"><label>Start Analysis</label>
+			</button>							
+			<button data-selectable data-group="panels" data-toggle data-event="import-export">
+				<img alt="Import/Export" src="/asset/img/file_copy-48px.svg" draggable="false"><label>Import/Export</label>
+			</button>
+			<button data-selectable data-group="panels" data-toggle data-event="model-editor">
+				<img alt="Model Editor" src="/asset/img/model-48px.svg" draggable="false"><label>Model Editor</label>
+			</button>
+			<button data-clickable data-event="model-apply-layout">
+				<img alt="Apply Layout" src="/asset/img/view_quilt-48px.svg" draggable="false"><label>Apply Layout</label>
+			</button>				
+			<button data-selectable data-group="show-scc" data-toggle data-event="show-scc">
+				<img alt="Network SCCs" src="/asset/img/graph-48px.svg" draggable="false"><label>Network SCCs</label>
+			</button>				
+			<button data-selectable data-group="panels" data-toggle data-event="attractors">
+				<img alt="Attractors" src="/asset/img/call_split-48px.svg" draggable="false"><label>Attractors</label>
+			</button>
+			<button data-selectable data-group="panels" data-toggle data-event="help">
+				<img alt="About and Help" src="/asset/img/help-48px.svg" draggable="false"><label>About and Help</label>
+			</button>
+		</div>
+
+		<div id="editor-panels">
+			<div data-panel="import-export" class="aeon-panel gone">
+				<button data-selectable data-group="panels" data-event="panel-close"
+						class="inline-image-button" style="float: left;">
+					<img src="/asset/img/close-24px.svg" draggable="false">
+				</button>
+
+				<h2 style="margin: 0 48px 8px 48px;">Model file</h2>
+				
+				<div class="columns" style="margin-bottom: 8px;">
+					<div class="column left spacing-8" style="text-align: center;">
+						<h3 class="single-line">Import</h3>
+						
+						<button data-clickable data-event="model-import-aeon"
+							class="compound-button">
+							<span class="left">.AEON</span>
+							<span class="right"><small>Parametrised<br>network</small></span>
+						</button>
+
+						<button data-clickable data-event="model-import-sbml" 
+							class="compound-button">
+							<span class="left">.SBML</span>
+							<span class="right"><small>Standard<br>SBML-qual</small></span>
+						</button>
+
+						<button data-clickable data-event="model-import-bnet" 
+							class="compound-button">
+							<span class="left">.BNET</span>
+							<span class="right"><small>BoolNet<br>network</small></span>
+						</button>
+					</div>
+
+					<div class="column right spacing-8" style="text-align: center;">
+						<h3 class="single-line">Export</h3>
+
+						<button data-clickable data-event="model-export-aeon" 
+							class="compound-button">
+							<span class="left">.AEON</span>
+							<span class="right"><small>Parametrised<br>network</small></span>
+						</button>
 	
-						<div class="column-separator" style="margin: 40pt 0 16pt 0"></div>
-						<div style="clear: both;"></div>						
+						<button data-clickable data-event="model-export-sbml-basic" 
+							class="compound-button">
+							<span class="left">.SBML</span>
+							<span class="right"><small>Standard<br>SBML-qual</small></span>
+						</button>
+
+						<button data-clickable data-event="model-export-sbml-param" 
+							class="compound-button">
+							<span class="left">.SBML<br><small style="font-size: 10px;">(param.)</small></span>
+							<span class="right"><small>SBML with<br>par. functions</small></span>
+						</button>								
+					</div>
+
+					<div class="column-separator" style="margin: 40pt 0 16pt 0"></div>
+					<div style="clear: both;"></div>						
+				</div>					
+
+				<h3 style="margin-bottom: 8px; margin-top: 32px;" class="single-line">Example Models</h3>  
+
+				<div class="columns">
+					<div class="column left spacing-8" style="text-align: center;">
+						<button data-clickable data-event="load-example" data-example="g2a"
+							class="compound-button">
+							<span class="left">G2A</span>
+							<span class="right"><small>Cell<br>Division</small></span>
+						</button>         
+
+						<button data-clickable data-event="load-example" data-example="g2b"
+							class="compound-button">
+							<span class="left">G2B</span>
+							<span class="right"><small>Cell<br>Division</small></span>
+						</button>
+					</div>
+					<div class="column right spacing-8" style="text-align: center;">
+						<button data-clickable data-event="load-example" data-example="orlando" 
+							class="compound-button">
+							<span class="left">Orlando</span>
+							<span class="right"><small>Budding<br>Yeast</small></span>
+						</button>
+						<button data-clickable data-event="load-example" data-example="irons" 
+							class="compound-button">
+							<span class="left">Irons</span>
+							<span class="right"><small>Budding<br>Yeast</small></span>
+						</button>                
+			
+					</div>
+
+					<div class="column-separator" style="margin: 16pt 0 16pt 0"></div>
+					<div style="clear: both;"></div>
+				</div>                
+			</div>
+
+		</div>
+
+		<!--
+		<div id="editor-panels" class="aeon-panels">
+							
+			<div data-panel="import-export" class="fixed">
+				<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
+
+				<h2 style="margin: 0 48pt 8pt 48pt;" class="single-line">Model File</h2>
+
+				
+			</div>
+
+			<div id="editor-model-panel" data-panel="model-editor" class="selected">
+				<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
+
+				<div>
+					<div style="margin: 0 48pt 0 48pt;">
+						<div class="inline-input" style="text-align: center; max-width: 320pt; margin: 0 auto;">
+							<h3	id="editor-model-name"
+								data-editable data-event="model-name" data-default="Untitled model" 
+								contenteditable="true">
+								Untitled model
+							</h3>
+						</div>
+					</div>						
+					
+					<div style="margin: 8pt 4pt 0 4pt;">
+						<div class="inline-input no-indicator" style="max-width: 480pt; margin: 0 auto;">
+							<div 	id="editor-model-description" class="paragraph"
+									data-editable data-event="model-description" data-default="Model description..." 
+									contenteditable="true">
+								Model description...
+							</div>
+						</div>
 					</div>					
 
-					<h3 style="margin-bottom: 8pt; margin-top: 32pt;" class="single-line">Example Models</h3>  
-
-					<div id="editor-examples" style="position: relative;">
-						<div class="column left">
-							<button data-example="g2a" class="compound-button" style="margin-bottom: 8pt;">
-								<span class="left">G2A</span><span class="right"><small>Cell<br>Division</small></span>
-							</button>         
-                			<button data-example="g2b" class="compound-button">
-								<span class="left">G2B</span><span class="right"><small>Cell<br>Division</small></span>
-							</button>
-						</div>
-						<div class="column right">
-							<button data-example="orlando" class="compound-button" style="margin-bottom: 8pt;">
-								<span class="left">Orlando</span><span class="right"><small>Budding<br>Yeast</small></span>
-							</button>
-                			<button data-example="irons" class="compound-button">
-								<span class="left">Irons</span><span class="right"><small>Budding<br>Yeast</small></span>
-							</button>                
-                
-						</div>
-
-						<div class="column-separator" style="margin: 16pt 0 16pt 0"></div>
-						<div style="clear: both;"></div>
-					</div>                
-				</div>
-	
-				<div id="editor-model-panel" data-panel="model-editor" class="selected">
-					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
-	
-					<div>
-						<div style="margin: 0 48pt 0 48pt;">
-							<div class="inline-input" style="text-align: center; max-width: 320pt; margin: 0 auto;">
-								<h3	id="editor-model-name"
-									data-editable data-event="model-name" data-default="Untitled model" 
-									contenteditable="true">
-									Untitled model
-								</h3>
-							</div>
-						</div>						
+					<span class="inline-input-indicator invisible">
+				</div>	
+				
+				<div style="margin-top: 8pt;">
+					<div id="model-variable-template" class="model-variable box">
+						<img 	data-clickable="true" data-event="variable-show"
+								alt="Remove variable" src="/asset/img/delete-24px.svg" 
+								class="img-button-24" style="float: right; position: relative; right: -4pt; top: -4pt;">
+						<img 	data-clickable="true" data-event="variable-remove"
+								alt="Show variable" src="/asset/img/location-24px.svg" 
+								class="img-button-24" style="float: left; position: relative; left: -4pt; top: -4pt;">
 						
-						<div style="margin: 8pt 4pt 0 4pt;">
-							<div class="inline-input no-indicator" style="max-width: 480pt; margin: 0 auto;">
-								<div 	id="editor-model-description" class="paragraph"
-										data-editable data-event="model-description" data-default="Model description..." 
-										contenteditable="true">
-									Model description...
-								</div>
-							</div>
-						</div>					
-	
-						<span class="inline-input-indicator invisible">
-					</div>	
-					
-					<div style="margin-top: 8pt;">
-						<div id="model-variable-template" class="model-variable box">
-							<img 	data-clickable="true" data-event="variable-show"
-									alt="Remove variable" src="/asset/img/delete-24px.svg" 
-									class="img-button-24" style="float: right; position: relative; right: -4pt; top: -4pt;">
-							<img 	data-clickable="true" data-event="variable-remove"
-									alt="Show variable" src="/asset/img/location-24px.svg" 
-									class="img-button-24" style="float: left; position: relative; left: -4pt; top: -4pt;">
-							
-							<div style="margin: 0 28pt 0 28pt;">
-								<div class="inline-input" style="text-align: left; max-width: 320pt;">
-									<strong class="model-variable-name" 
-											data-editable data-event="model-variable-name" 
-											contenteditable="true" spellcheck="false">
-										Var-name
-									</strong>									
-								</div>								
-							</div>
+						<div style="margin: 0 28pt 0 28pt;">
+							<div class="inline-input" style="text-align: left; max-width: 320pt;">
+								<strong class="model-variable-name" 
+										data-editable data-event="model-variable-name" 
+										contenteditable="true" spellcheck="false">
+									Var-name
+								</strong>									
+							</div>								
+						</div>
 
-							<div style="clear: both;"></div>
-							
-							<div>
-								<h4 style="margin-left: 4pt;"> ● Regulators</h4>
-								<table class="model-regulations" style="margin: 4pt 8pt 4pt 8pt;">
-									<tr>
-										<td style="width: 100%; text-align: right;">Some name</td>
-										<td style="min-width: 24pt;">-></td>
-										<td class="inline-button" style="min-width: 96pt;">non-observable</td>
-										<td class="activation" style="min-width: 96pt;">non-monotonous</td>
-									</tr>
-									<tr>
-										<td style="width: 100%; text-align: right;">Some  lonfa asd knas;dl nsald naslk;d nalsd  salkd aname</td>
-										<td style="min-width: 24pt;">-></td>
-										<td class="inline-button" style="min-width: 96pt;">non-observable</td>
-										<td class="activation" style="min-width: 96pt;">non-monotonous</td>
-									</tr>
-								</table>
-								<div class="model-regulation-row" style="margin: 0 24pt 0 24pt;">
-									
-								</div>								
-							</div>
-							<h4 style="margin-left: 4pt;"> ● Update Function</h4>
-							<div style="margin: 0 24pt 0 24pt;">
-								<div class="inline-input" style="text-align: center; margin: 0 auto;">
-									<div 	class="model-variable-function"
-											data-editable="true" data-event="model-variable-function" data-default="f_X(...)"
-											contenteditable="true" spellcheck="false">
-										f_X(...)
-									</div>
+						<div style="clear: both;"></div>
+						
+						<div>
+							<h4 style="margin-left: 4pt;"> ● Regulators</h4>
+							<table class="model-regulations" style="margin: 4pt 8pt 4pt 8pt;">
+								<tr>
+									<td style="width: 100%; text-align: right;">Some name</td>
+									<td style="min-width: 24pt;">-></td>
+									<td class="inline-button" style="min-width: 96pt;">non-observable</td>
+									<td class="activation" style="min-width: 96pt;">non-monotonous</td>
+								</tr>
+								<tr>
+									<td style="width: 100%; text-align: right;">Some  lonfa asd knas;dl nsald naslk;d nalsd  salkd aname</td>
+									<td style="min-width: 24pt;">-></td>
+									<td class="inline-button" style="min-width: 96pt;">non-observable</td>
+									<td class="activation" style="min-width: 96pt;">non-monotonous</td>
+								</tr>
+							</table>
+							<div class="model-regulation-row" style="margin: 0 24pt 0 24pt;">
+								
+							</div>								
+						</div>
+						<h4 style="margin-left: 4pt;"> ● Update Function</h4>
+						<div style="margin: 0 24pt 0 24pt;">
+							<div class="inline-input" style="text-align: center; margin: 0 auto;">
+								<div 	class="model-variable-function"
+										data-editable="true" data-event="model-variable-function" data-default="f_X(...)"
+										contenteditable="true" spellcheck="false">
+									f_X(...)
 								</div>
 							</div>
 						</div>
 					</div>
-					<!--					
-					<div style="height: 30px;">
-						<h3 style="font-family: 'FiraMono'; text-transform: uppercase;"> ● Overview</h3>
-					</div>
-					<table id="model-stats">
-						<tr class="row">    <td>Variables: </td>        <td class="value">-</td>     <td>Parameter space size: </td>  <td class="value">-</td> </tr>
-						<tr class="row">    <td>Regulations: </td>      <td class="value">-</td>     <td>State space size: </td> <td class="value">-</td> </tr>
-						<tr class="row">    <td>Max. in-degree: </td>   <td class="value">-</td>     <td>Max. out-degree: </td>       <td class="value">-</td> </tr>
-						<tr class="row">    <td colspan="2">Explicit parameters: </td>  <td colspan="2">(none)</td>   </tr>
-					</table>                   
-					<div style="height: 40px;">
-						<h3 style="float: left; font-family: 'FiraMono'; text-transform: uppercase;"> ● Variables</h3>
-						<button id="button-add-variable" class="image-button" onclick="let id = LiveModel.addVariable(); CytoscapeEditor.showNode(id);" style="float: right;">Add variable (N) <img src="/asset/img/add_box-24px.svg"></button>
-					</div>
-					<div style="clear: both;"></div>
-					<div id="model-variables" class="full-line"></div>                       
-					<div class="templates gone">
-						<div id="model-variable-template" class="model-variable">
-							<div class="invisible-input">
-								<input class="variable-name" type="text" name="variable-name" value="Variable name" placeholder="(variable name)" style="font-size: 18px;" spellcheck='false' autocorrect='off'>
-							</div>
-							<img alt="Remove variable" src="/asset/img/delete-24px.svg" class="model-variable-remove button">
-							<img alt="Show variable" src="/asset/img/search-24px.svg" class="model-variable-show button">
-							<br>
-							<h4> ● Regulators</h4>
-							<div class="model-variable-regulators full-line"></div>
-							<h4> ● Update Function</h4>
-							<div class="invisible-input full-line variable-function" contenteditable data-placeholder="(default)" spellcheck='false' autocorrect='off' style="font-size: 16px; text-align: center;"></div>
-							<div class="variable-function-status"></div>
-						</div>
-	
-						<div id="model-regulation-template" class="model-regulation">
-							<span class="model-regulation-regulator">Some name</span>
-							<span class="model-regulation-short">(->)</span>
-							<span class="model-regulation-observable">observable</span>
-							<span class="model-regulation-monotonicity">activation</span>
-						</div>                    
-					</div>
-					-->
 				</div>
-	
-				<!--<div data-panel="attractors">
-					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
-	
-					<h1>Attractors</h1>
-				</div>
-	
-				<div data-panel="help">
-					<img alt="Close panel" src="/asset/img/close-24px.svg" class="img-button-24 panel-close" draggable="false">
-	
-					<h1>Help</h1>
-				</div>-->
-	
 			</div>
-		</div>		
+		-->
+		</div>
+	</div>		
 
-		<!-- Finally, run the main function once the document is loaded. -->
-		<script src="/src/js/editor/main.ts"></script>
-	</body>
+	<div class="gone">
+		<div class="design-horizontal-gridline" style="top: 24px;"></div>
+		<div class="design-horizontal-gridline" style="top: 48px;"></div>
+		<div class="design-vertical-gridline" style="right: 24px;"></div>			
+	</div>
+
+	<!-- Finally, run the main function once the document is loaded. -->
+	<script src="/src/js/editor/main.ts"></script>
+</body>
 </html>

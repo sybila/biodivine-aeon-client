@@ -1,0 +1,84 @@
+/* 
+    Dock with floating buttons. 
+
+    The dock is 48px wide and can display a hint label when a button is hovered. Additionally, button focus and `selected` behaviour should be handled gracefully.
+*/
+
+.aeon-dock {        
+    width: 48px;
+    /* Ensures the hover labels are drawn over anything around the dock. */
+    z-index: 9999;
+
+    /*
+        Button renders the default background and shadow. If will stretch when the label becomes visible, but the animation is performed by the label.
+
+        The image has its own background, the color of which responds to hover/focus/etc. The color of button background stays the same.
+    */
+    button {
+        position: relative;
+        display: block;
+        height: 48px; 
+        padding: 0; /* Reset default value. */
+
+        /* Adds spacing between individual buttons. */
+        &:not(:first-child) { margin-top: 8px; }
+
+        background-color: @colorActionBackground;
+        border: 0;
+        border-radius: 16px;
+        box-shadow: 0pt 2px 5px @colorShadow;        
+        cursor: pointer;
+        user-select: none;
+
+        /* Override default focus behaviour with a darker background. */
+        &:focus {
+            outline: none;
+            img { background-color: darken(@colorActionBackground, 10%); }
+        }
+
+        /* Selected button gets an even darker image background. */
+        &.selected {
+            img { background-color: darken(@colorActionBackground, 20%); }
+        }
+
+        /* Image is the actual "button" that the user clicks. */
+        img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 48px;
+            height: 48px;
+            padding: 8px;
+
+            background-color: @colorActionBackground;        
+            border-radius: 16px;
+
+            transition: background-color 0.3s;
+
+            /* When hovered, darken background just as when focused. */
+            &:hover { background-color: darken(@colorActionBackground, 10%); }
+        }
+
+        /* Label is the hidden hint text. */
+        label {
+            display: inline-block;
+            width: 48px;
+            padding-left: 48px;
+
+            font-size: 0;
+            font-weight: 700;
+            white-space: nowrap;
+
+            transition-property: width;
+            transition-duration: 0.3s;                      
+        }
+
+        /* When image is hovered, show label, but only if not selected. */
+        &:not(.selected) img:hover + label {        
+            /* To enable width animation, the width has to be fixed. */
+            width: 192px;
+            
+            font-size: 1.0em;
+        }
+    }                
+}

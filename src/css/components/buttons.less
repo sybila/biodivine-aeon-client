@@ -1,0 +1,99 @@
+
+/*
+    Inline imgage button is an image button that has no background 
+    and can be therefore easily placed between other text elements.
+
+    Once howeverd on focused, a background is shown. Don't forget to
+    set draggable=false to the image.
+
+    Total button dimensions are 24x24, but the actual content dimensions
+    are 16x16 and the button position is adjusted to make this content
+    actually align without the invisible padding.
+*/
+.inline-image-button {
+    display: inline-block;
+    position: relative;
+    width: 24px;
+    height: 24px;
+    top: -4px;
+    left: -4px;
+
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s;
+    background-color: transparent;
+    border-radius: 8px;
+    border: 0;
+
+    &:hover, &:focus {
+        outline: none;
+        background-color: darken(@colorActionBackground, 10%);
+        box-shadow: 0pt 1pt 2pt @colorShadow;
+    }
+
+    img {
+        position: absolute;
+        /* Slightly adjusted because most icons have their own padding. */
+        width: 18px;
+        height: 18px;
+        top: 3px;
+        left: 3px;
+    }
+}
+
+/* 
+    Compound button is a button with two texts, typically the second text is used as description. 
+
+    It has a fixed size of 48x200 (there is a possibility to make it stretch, but that depends on the use case, so it is not included here). It supports hover and focus, but not selection.
+*/
+
+.compound-button {
+    display: inline-block;
+    height: 48px;
+    
+    padding: 0;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    background-color: @colorActionBackground;
+    border: 0;
+    border-radius: 8px;
+    box-shadow: 0pt 1px 3px @colorShadow;        
+    cursor: pointer;
+    user-select: none;
+
+    transition: background-color 0.1s;
+
+    &:focus, &:hover {        
+        outline: none;
+        background-color: darken(@colorActionBackground, 10%);
+
+        span.right {
+            background-color: darken(@colorActionBackground, 20%);
+        }
+    }
+
+    span {
+        display: table-cell;
+        height: 48px;
+
+        transition: 0.3s;
+        vertical-align: middle;
+
+        small {
+            font-size: 13px;
+        }
+        
+        &.left {
+            width: 80px;
+        }
+
+        &.right {
+            width: 120px;
+            background-color: darken(@colorActionBackground, 10%);
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+    }
+
+}

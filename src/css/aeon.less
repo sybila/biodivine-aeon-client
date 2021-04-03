@@ -1,22 +1,12 @@
-
-@colorPrimary: #3A568C;
-@colorPrimaryLight: #6a82bc;
-@colorPrimaryDark: #002e5e;
-
-@colorSecondary: #d05d5d;
-@colorSecondaryLight: #ff8d8a;
-@colorSecondaryDark: #9a2d33;
-
-@colorBackground: #f5f5f5;
-@colorActionBackground: #ECEFF1;
-@colorShadow: #d0d0d0;
-
-@colorActivation: #4abd73;
-@colorInhibition: #d05d5d;
+@import url('./colors.less');
 
 body {
     font-family: 'Lato', sans-serif;
     margin: 0;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 .heebo {
@@ -35,117 +25,10 @@ body {
     opacity: 0;
 }
 
-/* Aeon logo */
-
-.aeon-logo {
-    position: fixed;
-    top: 12pt;
-    right: 18pt;
-    margin: 0;
-
-    text-align: right;
-    font-family: 'Heebo', sans-serif;
-    color: @colorPrimary;  
-    font-weight: 500;
-    font-size: 24pt;      
-    letter-spacing: 0.01ch;
-    user-select: none;
-
-    transform: scale(0.95, 1.0);
-
-    span {
-        color: @colorSecondary;
-        font-weight: 900;
-        letter-spacing: 0.1ch;
-    }
-
-    em {
-        font-size: 2.4rem;
-        font-style: normal;
-        position: relative;
-        top: 0.2rem;
-    }
-}
-
-/* Dock with floating buttons. */
-
-.aeon-dock {        
-    width: 48pt;     
-    z-index: 1000;
- 
-    /*
-        Button renders the default background and shadow.
-        If will stretch when the label becomes visible,
-        but the animation is performed by the label.
-    */
-    button {
-        position: relative;
-        display: block;
-        margin-bottom: 8pt;
-        height: 48pt; 
-
-        background-color: @colorActionBackground;
-        border: 0;
-        border-radius: 16pt;
-        box-shadow: 0pt 2pt 5pt @colorShadow;        
-        cursor: pointer;
-        user-select: none;
-    }
-
-    button:focus {
-        outline: none;
-        
-        img {
-            background-color: darken(@colorActionBackground, 10%);
-        }
-    }
-
-    /*
-        Image is the actual "button" part of the component.
-    */
-    button img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 32pt;
-        height: 32pt;
-        padding: 8pt;
-
-        background-color: @colorActionBackground;        
-        border-radius: 16pt;
-
-        transition: background-color 0.3s;
-    }
-
-    /* When panel for that button is open, background is darker. */
-    button.selected img {
-        background-color: darken(@colorActionBackground, 20%);
-    }
-
-    button img:hover {
-        background-color: darken(@colorActionBackground, 10%);
-    }
-
-    /*
-        Label is initially hidden, but is revealed when
-        image is hovered. For some reason, 39 is the width
-        that makes button stretch properly.
-    */
-    button label {
-        display: inline-block;
-        width: 39pt;
-
-        font-size: 0;      
-        white-space: nowrap;        
-
-        transition: width 0.3s;
-    }
-
-    button:not(.selected) img:hover + label {        
-        font-size: 1.1rem;        
-        width: 120pt;
-        padding-left: 48pt; 
-        font-weight: 700;       
+.spacing-8 {
+    /* Add 8px margin to everyone except the first child. */
+    & > *:not(:first-child) {
+        margin-top: 8px;
     }
 }
 
@@ -310,59 +193,6 @@ body {
     }
 }
 
-/* Compound button is a button with two texts, typically the second text is used as description. */
-
-.compound-button {
-    display: inline-block;
-    height: 40pt;
-    
-    padding: 0;
-    font-size: 11pt;
-    font-weight: 600;
-    text-align: center;
-    background-color: @colorActionBackground;
-    border: 0;
-    border-radius: 8pt;
-    box-shadow: 0pt 1pt 3pt @colorShadow;        
-    cursor: pointer;
-    user-select: none;
-
-    transition: background-color 0.1s;
-
-    &:focus, &:hover {        
-        outline: none;
-        background-color: darken(@colorActionBackground, 10%);
-
-        span.right {
-            background-color: darken(@colorActionBackground, 20%);
-        }
-    }
-
-    span {
-        display: table-cell;
-        height: 40pt;        
-        width: 96pt;
-
-        transition: 0.3s;
-        vertical-align: middle;        
-
-        small {
-            font-size: 10pt;
-        }
-        
-        &.left {
-            width: 72pt;
-        }
-
-        &.right {
-            background-color: darken(@colorActionBackground, 10%);
-            border-top-right-radius: 8pt;
-            border-bottom-right-radius: 8pt;
-        }
-    }
-
-}
-
 /* Invisible input is an input object that looks like a normal text, but when clicked becomes editable. */
 
 .inline-input-indicator {
@@ -373,7 +203,7 @@ body {
     height: 16pt;
     margin-left: 4pt;
     
-    content: url('/asset/img/edit-16pt.svg');
+    content: url('/asset/img/edit-16px.svg');
     background-color: @colorSecondary;
     border-radius: 8pt;
     padding: 4pt;

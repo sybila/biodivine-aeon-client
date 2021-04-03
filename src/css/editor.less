@@ -1,29 +1,36 @@
 @import url("./aeon.less");
+@import url('./components/logo.less');
+@import url('./components/dock.less');
+@import url('./components/panel.less');
+@import url('./components/buttons.less');
 
 body {
 	/* Avoids unnecessary scrollbars. */
 	overflow: hidden;
 }
 
-#editor-dock {
+/* Position logo top-right. */
+#editor-aeon-logo {
 	position: fixed;
+	top: 24px;
+	right: 24px;
+}
 
-    top: 0;
-	margin-top: 8pt;	
-    margin-left: 8pt;
+#editor-aeon-dock {
+	position: fixed;
+	top: 8px;
+	left: 8px;    
 }
 
 #editor-panels {
 	position: absolute;
+	top: 8px;
+	left: 64px;
 
-	margin-left: 64pt;
-	margin-top: 8pt;	
-}
-
-#editor-panels > div {
-	/* 16 for margin, 16 for padding */
-	max-height: calc(100vh - 32pt);
-	max-width: calc(100vw - 200pt);
+	.aeon-panel {
+		max-height: calc(100vh - 16px);
+		max-width: calc(100vw - 200px);
+	}
 }
 
 #editor-cytoscape {

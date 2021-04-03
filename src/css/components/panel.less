@@ -1,0 +1,89 @@
+
+.aeon-panel {    
+    width: 480px;
+    /* If there is not 480px available, the panel can shrink up to 360px. */
+    min-width: 360px;
+
+    background-color: @colorBackground;
+    box-shadow: 0pt 2px 5px @colorShadow;
+    padding: 8px;
+    border-radius: 8px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    /* 
+        We currently don't hide the scroll bar because it 
+        is sometimes connected to the resize functionality.
+        But I'll keep this here just in case...
+    */
+    /*-ms-overflow-style: none;
+    scrollbar-width: 0;    
+    &::-webkit-scrollbar { display: none; }*/
+    
+    &.resizeable {        
+        resize: horizontal;
+    }
+
+    /* Redefine some basic HTML tags with a more "panel-appropriate" style. */
+
+    h2, h3, h4 {
+        margin: 0 auto;
+        user-select: none;
+        text-align: center;
+    }
+
+    h2 {
+        font-size: 20px;
+        font-weight: 800;
+
+        &.single-line {
+            height: 24px; /* This will align the heading with the grid. */
+        }            
+    }
+
+    h3 {
+        font-size: 16px;
+        font-weight: 700;
+
+        &.single-line {
+            height: 24px;
+        }            
+    }
+
+    h4 {
+        font-family: 'Anonymous Pro', monospace;
+        height: 16px;
+        
+        text-transform: uppercase;            
+        font-size: 12px;
+        font-weight: 600;  
+    }
+
+    /* Very basic two-column layout for use with fixed-width panels. */
+
+    .columns {
+        position: relative;
+        
+        .column {        
+            /* 480/2 - 8 for panel padding */
+            width: 232px;
+
+            padding: 8px;
+            
+            &.left {  float: left; }
+            
+            &.right { float: right; }
+        }
+
+        .column-separator {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+
+            width: 1.5px;
+            background: darken(@colorActionBackground, 10%);
+            border-radius: 2px;
+        }
+    }
+}
