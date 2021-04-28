@@ -665,10 +665,16 @@ let LiveModel = {
 		// are not checked, but we at least want to verify that we are not using any invalid variable names
 		let names = new Set();			
 		_extract_names_with_cardinalities(tokens, names);
-		let parameters = new Set();		
+		let parameters = new Set();			
 		for (let item of names) {
 			let variable = this._variableFromName(item.name);
 			if (variable === undefined) {	// item is a parameter - save it
+				for (let existing of parameters) {
+					if (existing.name == item.name && existing.cardinality != item.cardinality) {
+						let message = "Parameter '"+item.name+"' used with "+item.cardinality+" argument(s) as well as "+existing.cardinality+" argument(s).";
+						return message;
+					}
+				}
 				parameters.add(item);
 			}
 			// Check if variable is used as parameter
@@ -690,11 +696,14 @@ let LiveModel = {
 					}
 				}
 			}			
-		}
+		}		
 		// Check if parameters are used consistently with other functions
 		let function_keys = Object.keys(LiveModel._updateFunctions);
 		for (var i = 0; i < function_keys.length; i++) {
 			let key = function_keys[i];
+			// Inconsistencies with this update function are already handled when adding parameters
+			// from the partial parse of the function.
+			if (key == id) { continue; }
 			let function_data = this._updateFunctions[key];
 			for (let parameter of function_data.metadata.parameters) {
 				for (let my_parameter of parameters) {
