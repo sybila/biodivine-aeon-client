@@ -86,7 +86,21 @@
 
             .subversion {
                 color: #aaa;
-                font-size: 26px;
+                font-size: 20px;
+                font-family: 'FiraMono', monospace;
+                font-weight: 600;
+            }
+
+            a.sublink {
+                color: #3a568c;
+                font-family: 'FiraMonoBold', monospace;
+                font-weight: bold;
+                font-size: 20px;
+                text-decoration: none;            
+            }
+
+            a.sublink:hover {
+            	color: #d05d5d;
             }
 
             code {
@@ -116,12 +130,21 @@
         <h1 id='logo'>Aeon/<span id='title'>BIODIVINE</span></h1>
 
         <div class="links">
-            <small><p class="link" style="text-align: center;">If you have any issues or questions about AEON, <br>get in touch at <a href="mailto:sybila@fi.muni.cz">sybila@fi.muni.cz</a>. It is probably not your fault ;)<br>You can also get in touch on github for the <a href="https://github.com/sybila/biodivine-aeon-client">web-gui</a> and the <a href="https://github.com/sybila/biodivine-aeon-server">compute-engine</a>.</p></small>
+            <small><p class="link" style="text-align: center;">If you have any issues or questions about AEON, <br>get in touch at <a href="mailto:sybila@fi.muni.cz">sybila@fi.muni.cz</a>. It is probably not your fault ;)<br>You can also raise issues on github for the <a href="https://github.com/sybila/biodivine-aeon-client">web-gui</a> and the <a href="https://github.com/sybila/biodivine-aeon-server">compute-engine</a>. <br>If you found AEON useful in your workflow, please cite it using the following publication:</p>
 
-            <p class="link"><a class="version-number" href="v0.4.0/index.html">v0.4.0</a> <span class="subversion">[beta]</span> Explore bifurcation properties of Boolean networks in Aeon's new interactive tree editor. You can investigate the structure of attractors depending on various properties of the parameter space. These can be basic boolean parameters/constants, regulation monotonicity, or more advanced context-aware attributes (e.g. <small><code>X essential in Y when Z</code></small>). Furthermore, you can also analyse how stability of particular variables changes in different tree nodes and generate attractor state-space or witness networks for individual conditions.</p>
+            	<code style="text-align: center; display: block; width: 100%;">
+				Beneš, N., Brim, L., Kadlecaj, J., Pastva, S., & Šafránek, D. (2020, July). <br>				
+				AEON: Attractor Bifurcation Analysis of Parametrised Boolean Networks. <br>
+				In International Conference on Computer Aided Verification (pp. 569-581).
+				</code>
+            </small>
+
+            <p class="link"><a class="version-number" href="v0.4.0/index.html">AEON 2021</a> <span class="subversion">[v0.4.0]</span> Explore bifurcation properties of Boolean networks in Aeon's new interactive tree editor. You can investigate the structure of attractors depending on various properties of the parameter space. These can be basic Boolean parameters/constants, regulation monotonicity, or more advanced context-aware attributes (e.g. <small><code>X essential in Y when Z</code></small>). Furthermore, you can also analyse how stability of particular variable changes in different tree nodes and generate attractor state-space or witness networks for individual conditions. <a class="sublink" href="./v0.4.0/index.html">[tool]</a><a class="sublink" href="./manual/v0.4.0/index.html">[manual]</a></p>   
+
+            <p class="link" style="text-align: center; margin-top: 96px;">~ <i>Older versions</i> ~</p>         
             <p class="link"><a class="version-number" href="v0.3.0/index.html">v0.3.0</a> Includes a new, completely symbolic attractor detection algorithm. Without parameters, AEON now scales beyond 1000 Boolean variables. With parameters, the performance depends on the actual behaviour, but significant improvements compared to <code>0.2.0</code> are expected. Additionally, static analysis can now explain <i>why</i> an update function cannot be instantiated. Consequently, debugging large models should be much easier.<br>Other smaller improvements include: visualisation of constant variables in large attractors (where full graph cannot be shown); additional improvements to SBML compatibility; and better cancellation and progress support for long computations.</p>
             <p class="link"><a class="version-number" href="v0.2.0/index.html">v0.2.0</a> <span class="subversion">[deprecated]</span> In this version, AEON learned to visualize attractor state space (up to 1000 states) for witness networks. We also significantly improved SBML import/export compatibility with other tools.</p>
-            <p class="link"><a class="version-number" href="v0.1.0/index.html">v0.1.0</a> <span class="subversion">[deprecated]</span> Original AEON as published at CAV 2020. Includes interactive editor for parametrized Boolean networks with SBML-qual support. Uses semi-symbolic parallel attractor detection algorithm that can typically handle models with up to 20 variables and 100 Boolean parameters using common hardware.</p>
+            <p class="link"><a class="version-number" href="v0.1.0/index.html">AEON 2020</a> <span class="subversion">[v0.1.0]</span> <span class="subversion">[deprecated]</span> Original AEON as published at CAV 2020. Includes interactive editor for parametrized Boolean networks with SBML-qual support. Uses semi-symbolic parallel attractor detection algorithm that can typically handle models with up to 20 variables and 100 Boolean parameters using common hardware. <a class="sublink" href="./v0.1.0/index.html">[tool]</a><a class="sublink" href="./aeon-manual.pdf">[manual]</a></p>
         </div>
 
     </body>
