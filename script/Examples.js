@@ -81,6 +81,8 @@ let Examples = {
 		SFF -> ACE2
 		#position:SWI5:47,207
 		SFF -> SWI5
+		$CLN3: !YOX1 & f(YHP1, ACE2, SWI5)
+		$SBF: g(MBF, YOX1) & h(YHP1, CLN3) 
 
 	`,
 
