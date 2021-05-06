@@ -8,9 +8,9 @@
 
 - [Chapter 1](./chapter_1.md)
 
-# Aeon/Biodivine Developer Guide
+# Biodivine/Aeon Developer Guide
 
-- [Aeon/Biodivine Developer Guide](./dev/foreword.md)
+- [Appendix: Developer Guide](./dev/foreword.md)
   - [Aeon Project Landscape](./dev/chapter_general.md)
   - [Building Aeon/Biodivine](./dev/chapter_build.md)
   - [Developer Recommendations](./dev/guidelines/foreword.md)

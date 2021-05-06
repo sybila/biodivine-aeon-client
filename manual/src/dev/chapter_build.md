@@ -28,7 +28,7 @@ Since the main process of the desktop app is running Rust, the "main" build tool
    npm install
    ```
 
-   > This is necessary only before the first JavaScript build and if you change or update some dependencies in `package.json`.  
+   > This is necessary only before the first JavaScript build, or if you change or update some dependencies in `package.json`.  
 
 Now, the process changes based on what type of Aeon release you want to build.
 
@@ -42,7 +42,7 @@ cargo make run-online
 
 This will also automatically re-build the `aeon-wasm` module to keep it up-to-date. If everything works well, you should be able to access Aeon Online by visiting `http://localhost:1234` in your browser.
 
-Alternatively, you can also run `npm run start` to only start the development server without rebuilding `aeon-wasm`. Note that any changes to JavaScript/HTML will be reloaded dynamically by the development server, so you don't have to restart the server. Only backend changes need to be re-compiled.
+Alternatively, you can also run `npm run start` to only start the development server without rebuilding `aeon-wasm`. Any changes to JavaScript/HTML will be reloaded dynamically by the development server, so you don't have to restart it. Only backend changes need to be re-compiled.
 
 #### Build Aeon as a deployable website
 
@@ -54,10 +54,10 @@ cargo make build-online
 
 Similar to `run-online`, this builds the web assembly module, but instead of starting the development server, it will output all necessary files to `./target/aeon-online` folder. You then simply need to move the contents of this folder to your web server. By default, the bundled files use absolute paths and assume to be placed in the root of your server path (i.e. link to `page.html` becomes `/page.html`). You can change this behaviour by passing `--public-url /server/path` to the `build-online` command.
 
-For example, if I want a version of Aeon that will be running at `/aeon/edition-2020/`, I can do that like this:
+For example, if I wanted a version of Aeon that will be running at `/aeon/snapshot/`:
 
 ```bash
-cargo make build-online -- --public-url /aeon/edition-2020/
+cargo make build-online -- --public-url /aeon/snapshot/
 ```
 
 > Note that opening the `.html` files directly will not work, because the use of JavaScript modules requires for them to be served from a web server, not from a local file.
