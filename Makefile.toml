@@ -16,3 +16,7 @@ args = ["run", "start"]
 #dependencies = ["aeon-wasm"]
 command = "npm"
 args = ["run", "build", "--", "--out-dir", "target/aeon-online", "${@}"]
+
+[tasks.run-components]
+command = "npm"
+args = ["run", "components"]

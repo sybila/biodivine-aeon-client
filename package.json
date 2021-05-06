@@ -7,7 +7,8 @@
   "private": true,
   "scripts": {
     "start": "parcel editor.html",
-    "build": "parcel build editor.html"
+    "build": "parcel build editor.html",
+    "components": "parcel components.html"
   },
   "devDependencies": {
     "less": "^4.1.1",
