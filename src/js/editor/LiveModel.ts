@@ -1,4 +1,5 @@
 import { EventBus, EventCallback } from '../core/Events'; 
+import Config from '../core/Config'
 
 export type Position = {
     x: number, y: number
@@ -15,7 +16,7 @@ export type Regulation = {
     source: string,
     target: string,
     isObservable: boolean,
-    monotonicity: "activation" | "inhibition" | "unknown",
+    monotonicity: "activation" | "inhibition" | null,
 }
 
 /**
@@ -26,12 +27,12 @@ export class LiveModel extends EventBus {
     /**
      * A collection of model variables. Indices are the variable ids.
      */
-    variables: { [key: string]: Variable }
+    variables: { [key: string]: Variable } = {}
     
     /**
      * A collection of model regulations. First index level are the sources, second the targets.
      */
-    regulations: { [key: string]: { [key: string]: Regulation } }
+    regulations: { [key: string]: { [key: string]: Regulation } } = {}
 
     constructor() {
         super()    
@@ -44,6 +45,10 @@ export class LiveModel extends EventBus {
         let deleted = Object.keys(this.variables).map((id) => this.deleteVariable(id));
         await Promise.all(deleted);
         return;
+    }
+
+    isEmpty(): boolean {
+        return Object.keys(this.variables).length == 0;
     }
 
     /**
@@ -160,7 +165,7 @@ export class LiveModel extends EventBus {
     async ensureRegulation(data: {
         source: string, target: string,
         isObservable?: boolean,
-        monotonicity?: "activation" | "inhibition" | "unknown"
+        monotonicity?: null | "activation" | "inhibition"
     }): Promise<void> {
         let regulation = this.regulations[data.source][data.target];
         if (regulation !== undefined) { // Update existing
@@ -173,8 +178,9 @@ export class LiveModel extends EventBus {
         regulation = {
             source: data.source, target: data.target,
             isObservable: data.isObservable !== undefined ? data.isObservable : false,
-            monotonicity: data.monotonicity !== undefined ? data.monotonicity : "unknown",
+            monotonicity: data.monotonicity !== undefined ? data.monotonicity : null,
         }
+        this.regulations[data.source][data.target] = regulation;
         return this.emit("regulation", regulation);
     }
 
@@ -216,3 +222,7 @@ export class LiveModel extends EventBus {
 
 export let model = new LiveModel();
 export default model;
+
+if (Config.DEBUG_MODE) {
+    (window as any).model = model;
+}

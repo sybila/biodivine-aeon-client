@@ -105,9 +105,9 @@ fn network_to_json(network: &BooleanNetwork) -> JsonValue {
         .regulations()
         .map(|r| {
             object! {
-                "regulator": usize::from(r.get_regulator()).to_string(),
+                "source": usize::from(r.get_regulator()).to_string(),
                 "target": usize::from(r.get_target()).to_string(),
-                "observable": r.is_observable(),
+                "isObservable": r.is_observable(),
                 "monotonicity": r.get_monotonicity().map(|m| monotonicity_to_json(m)),
             }
         })

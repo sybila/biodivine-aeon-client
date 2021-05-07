@@ -37,6 +37,24 @@ class UiEventBus extends EventBus {
         })    
     }
 
+    /** 
+     * Send a loading event that is reverted when the given promise is resolved.
+     */
+    async load(task: Promise<any>) {
+        this.emit("loading", true);
+        await task;
+        this.emit("loading", false);
+    }
+
+    /**
+     * Invoke action when loading status changes.
+     */
+    onLoading(action: (isLoading: boolean) => void): EventCallback {
+        return this.addListener("loading", (isLoading: boolean) => {
+            action(isLoading);
+        });
+    }
+
     /**
      * Register a listener that is invoked when a `HTMLElement` with [data-clickable]
      * is clicked, and its [data-event] matched the given name.

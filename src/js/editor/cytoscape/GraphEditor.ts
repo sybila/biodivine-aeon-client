@@ -8,7 +8,7 @@ import edgehandles from 'cytoscape-edgehandles';
 import coseBilkent from 'cytoscape-cose-bilkent';
 import dagre from 'cytoscape-dagre';
 import collapse from 'cytoscape-expand-collapse';
-import { LiveModel } from '../LiveModel';
+import Model, { Position, LiveModel } from '../LiveModel';
 
 // The typescript declaration for plugin objects is messed up 
 // for some reason, but this works just fine.
@@ -34,12 +34,28 @@ let DefaultLayout: cytoscape.LayoutOptions = {
  * regulatory graph.
  */
 export class GraphEditor {
+    /**
+     * HTML element holding the cytoscape editor.
+     */
     container: HTMLElement
+    /**
+     * Reference to the cytoscape singleton.
+     */
     cytoscape: cytoscape.Core  
+    /**
+     * Reference to the edgehandles plugin singleton.
+     */
     edgehandles: cytoscape.EdgeHandlesApi
+    /**
+     * Reference to the expand-collapse plugin singleton.
+     */
     expandCollapse: any  
+    /**
+     * Used to detect double clicks.
+     */
+    lastClicked: number = 0
 
-    constructor(container: HTMLElement) {
+    constructor(container: HTMLElement, model: LiveModel) {
         this.container = container;
         this.cytoscape = cytoscape({
             container: container,
@@ -54,6 +70,7 @@ export class GraphEditor {
             (window as any).cytoscape = this;
         }
         
+        registerInternalEvents(this, model);
     }
 
     getSelectedVariables(): string[] {
@@ -72,10 +89,41 @@ export class GraphEditor {
 		return selection;
     }
 
+    renderMenus() {
+        // TODO
+    }
+
+    fitViewport() {
+        // The padding we want to apply is 10% of the larger viewport dimension.
+		let padding = 0.1 * Math.max(window.innerWidth, window.innerHeight);
+		this.cytoscape.animate({
+			fit: {
+				eles: this.cytoscape.elements(),
+				padding: padding
+			},
+			duration: 200,
+		});
+    }
+
+    /**
+     * Compute *some* position that can be used to place a node such
+     * that the node will be visible.
+     */
+    nextFreePosition(): Position {
+        let right_most: Position = { x: 0, y: 0 };
+        this.cytoscape.$('node[type = "variable"]').forEach((node) => {
+            let position = node.position();
+            if (position.x > right_most.x) {
+                right_most = position;
+            }
+        });		
+        return { x: right_most.x + 40, y: right_most.y + 40 };        
+    }
+
 }
 
 /**
- * Register basic interactions with the cytoscape graph editor.
+ * Register listeners to internal cytoscape events.
  */
 function registerInternalEvents(editor: GraphEditor, model: LiveModel) {  
     let cy = editor.cytoscape;
@@ -132,8 +180,9 @@ function registerInternalEvents(editor: GraphEditor, model: LiveModel) {
 
     {	// When an element is selected/unselected, also emit global events.
         let selection_handler = function() {
-            Events.model.variable.selection(Cytoscape.selected_node_ids());
-            Events.model.regulation.selection(Cytoscape.selected_edge_ids());
+            let variables = editor.getSelectedVariables();
+            let regulations = editor.getSelectedRegulations();
+            model.selection(variables, regulations);            
         };
 
         cy.on('select', selection_handler);
@@ -141,21 +190,22 @@ function registerInternalEvents(editor: GraphEditor, model: LiveModel) {
     }
 
     {	// When the visibility of the graph changes, trigger menu position re-calculation.
-        cy.on('zoom', function() { Cytoscape.redraw_menus(); });
-        cy.on('pan', function() { Cytoscape.redraw_menus(); });
-        cy.on('drag', function() { Cytoscape.redraw_menus(); });
-        cy.on('select', function() { Cytoscape.redraw_menus(); });
-        cy.on('unselect', function() { Cytoscape.redraw_menus(); });
+        let callback = function() { editor.renderMenus() };
+        cy.on('zoom', callback);
+        cy.on('pan', callback);
+        cy.on('drag', callback);
+        cy.on('select', callback);
+        cy.on('unselect', callback);
     }
 
     { 	// Unless anything other than a node is hovered, we want to remove edge handles.
         cy.on('mousemove', (event) => {									
             if (event.target.length === undefined || event.target.length == 0) {
-                edge_handles.hide();
+                editor.edgehandles.hide();
             } else {
                 let element = event.target[0] as cytoscape.Singular;
                 if (element.group() !== "nodes") {
-                    edge_handles.hide();
+                    editor.edgehandles.hide();                    
                 }
             }			
         });
@@ -177,11 +227,16 @@ function registerInternalEvents(editor: GraphEditor, model: LiveModel) {
             if (event.target.length === undefined || event.target.length == 0) {
                 // Only triggered when clicked into empty space.
                 let now = (new Date()).getTime();
-                if (this._last_click !== undefined && now - this._last_click < Config.DOUBLE_CLICK_DELAY) {
-                    Import.try_create_variable(undefined, undefined, event.position);
+                if (now - editor.lastClicked < Config.CONSTANTS.DOUBLE_CLICK_DELAY) {
+                    model.ensureVariable({
+                        position: editor.nextFreePosition(),
+                    });
                 }
-                this._last_click = now;
+                editor.lastClicked = now;
             }				
         });			
     }
 }
+
+let modelEditor = new GraphEditor(document.getElementById("editor-cytoscape"), Model);
+export default modelEditor;

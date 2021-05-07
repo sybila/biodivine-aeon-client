@@ -9,13 +9,16 @@ import register_keys from './Hotkeys';
 import Events, { ClickEvent, EditorEvents, ValueEvent } from './EditorEvents';
 import ModelPanel from './ModelPanel';*/
 import UiBus from '../core/UiEvents';
+import Model from './LiveModel';
 import initPanels from './gui/panels';
-import { GraphEditor } from './cytoscape/GraphEditor';
+import initImport from './gui/import';
+import graph, { GraphEditor } from './cytoscape/GraphEditor';
 
 function init() {
     UiBus.registerEvents(document);
+    initImport();
     initPanels(document.getElementById('editor-panels'));
-    let graph = new GraphEditor(document.getElementById("editor-cytoscape"));
+    console.log(graph);    
     
     /*Dock.init(document.getElementById("editor-dock"));
     Panels.init(document.getElementById("editor-panels"));
