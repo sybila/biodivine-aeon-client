@@ -10,19 +10,40 @@
             box-sizing: border-box;
         }
 
+        /* Button container: contains the button "content" and focus outline. */
         :host {
-            display: inline-block;
-        }
-
-        /* Button container that displays the focus highlight around the button. */
-        :host .ui-button {
             display: inline-block;
             position: relative;
             margin: 4em;
             
+            max-width: 100%;
             user-select: none;                      
         }
 
+        /* Highlight shadow when hovered. */
+        :host(:hover) .content {
+            box-shadow: 0.2em 1.0em 1.5em #646464;
+            border: 1em solid #ababab;
+        }
+
+        /* Play animation on focus. */
+        :host(:focus-visible) {
+            outline: none;
+            animation-name: focus-me;
+            animation-duration: 0.2s;
+        }
+
+        /* Show outline when focused. */
+        :host(:focus-visible) .outline {
+            border: 3rem solid var(--color-accent);
+            border-radius: 7em;
+        }
+    
+        /* Hide shadow when focused (outline should be visible). */
+        :host(:focus-visible) .content {
+            box-shadow: none;
+        }
+        
         /* Outline extends outside of button bounds a little. */
         :host .outline {
             position: absolute;
@@ -32,37 +53,16 @@
             right: -2em;
             bottom: -2em;
         }
-
-        /* Play animation on focus. */
-        :host .ui-button:focus-visible {
-            outline: none;            
-            animation-name: focus-me;
-            animation-duration: 0.2s;
-        }
-
-        /* Show outline when focused. */
-        :host .ui-button:focus-visible .outline {
-            border: 3rem solid var(--color-accent);
-            border-radius: 7em;
-        }
-
-        /* Hide shadow when focused (outline should be visible). */
-        :host .ui-button:focus-visible .content {
-            box-shadow: none;
-        }
-
+        
         /* Actual button content. */
-        :host .ui-button .content {
+        :host .content {
             display: inline-block;    
             max-width: 100%;        
-            padding-left: 16em;
-            padding-right: 16em;
-            padding-top: 3em;
-            padding-bottom: 2em;                  
-
+            padding: 3em 16em 2em 16em;
+            
             border-radius: 6em;            
             border: 1em solid #dedede;
-            box-shadow: 0.16em 0.8em 2.4em #ababab;
+            box-shadow: 0.16em 0.8em 1.5em #ababab;
             
             transition-property: box-shadow, border, background-color, color;
             transition-duration: 0.1s;
@@ -70,21 +70,18 @@
             background-color: var(--color-background);
             color: var(--color-text-on-background);
         }
-
-        :host .ui-button:hover .content {
-            box-shadow: 0.2em 1.0em 3.0em #646464;
-        }
-
-        /* Update button background to accent when pressed. */
-        :host .ui-button:active .content {
+    
+        /* Update button background to accent colour when pressed. */
+        :host(:active) .content, 
+        :host(.active) .content {
             border: 1em solid var(--color-accent);
             color: var(--color-text-on-accent);
             background-color: var(--color-accent);
-            box-shadow: 0 0 2.4em #ababab;
+            box-shadow: 0 0 1.5em #ababab;
         }
 
         /* The text label of a button. */
-        :host .ui-button .content .label {
+        :host .content .label {
             display: inline-block;
 
             /* 
@@ -97,16 +94,59 @@
             white-space: nowrap;
 
             font-family: var(--ui-font), sans-serif;            
-            font-weight: 400;
+            font-weight: 600;
             letter-spacing: 0.071em; /* ~1em */
             font-size: 14em;
-            line-height: 1.215em; /* ~17em */
+            line-height: 1.21em; /* ~17em */
         }
 	</style>
-	<div class="ui-button" tabindex="0">
-        <div class="content">
-            <span class="label"><slot name="label">Button</slot></span>
-        </div>	
-        <div class="outline"></div>	
-    </div>
+	<div class="content">
+        <span class="label"><slot>Button</slot></span>
+    </div>	
+    <span class="outline"></span>	
+</template>
+
+<template id="ui-link-template">
+<style>
+@keyframes focus-me {
+    0% { transform: scale(1.0, 1.0); }
+    50% { transform: scale(1.05, 1.05); }
+    100% { transform: scale(1.0, 1.0); }
+}
+
+:host {
+    display: inline-block;
+    user-select: none;    
+    padding: 0 8em 0 8em;
+}
+
+:host(:focus-visible) {
+    animation-name: focus-me;
+    animation-duration: 0.2s;
+}
+
+:host .label {
+    display: inline-block;
+
+    max-width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+
+    font-family: var(--ui-font), sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.071em;
+    font-size: 14em;
+    line-height: 1.21em;
+
+    color: var(--color-accent);
+    cursor: pointer;    
+}
+
+:host(:hover) .label {
+    text-decoration: underline;
+    text-decoration-color: var(--color-text-on-background);
+}
+</style>
+<span class="label"><slot>Link...</slot></span>
 </template>

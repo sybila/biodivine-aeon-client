@@ -3,7 +3,6 @@
 <head>
 
 <link href="/asset/font/aeon-fonts.less" rel="stylesheet">
-<link href="/src/ui-components/components.less" rel="stylesheet">
 
 <style>
 	:root {
@@ -29,10 +28,12 @@
 <body style="font-size: 1rem;">
 	<div id="templates" style="display: none;"></div>
 <div style="margin: 0 auto; width: 480px; text-align: center;" id="root">
-	<ui-button><span slot='label'>Click Me</span></ui-button>
-	<ui-button><span slot='label'>Click Me With a<br>Very Long Long Text</span></ui-button>
+	<ui-button event="button-1">Click Me</ui-button>
+	<ui-button event="button-2">Click Me With a<br>Very Long Long Text</ui-button>
 
-	<div><span>Text</span></div>
+	<br>
+
+	<ui-link event="open-as">Open as...</ui-link>
 </div>
 </body>
 </html>
