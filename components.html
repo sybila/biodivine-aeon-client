@@ -5,14 +5,34 @@
 <link href="/asset/font/aeon-fonts.less" rel="stylesheet">
 <link href="/src/ui-components/components.less" rel="stylesheet">
 
+<style>
+	:root {
+		--color-background: #ffffff;
+		--color-text-on-background: #323232;
+		--color-primary: #3A568C;
+		--color-text-on-primary: #ffffff;
+		--color-accent: #c25252;
+		--color-text-on-accent: #ffffff;
+		/* Default application UI font. */
+		--ui-font: 'Source Sans Pro';
+		/* Default application UI font size. */
+		--ui-grid-size: 1px;
+		--ui-font-size: 16px;
+
+		font-size: var(--ui-grid-size);
+	}	
+</style>
+
+<script src="/src/ui-components/main.ts"></script>
+
 </head>
-<body>
-<div>
-    <span class="ui-button">
-		<span class="content" tabindex="0">
-			<span class="label">Click Me</span>
-		</span>    	
-	</span>
+<body style="font-size: 1rem;">
+	<div id="templates" style="display: none;"></div>
+<div style="margin: 0 auto; width: 480px; text-align: center;" id="root">
+	<ui-button><span slot='label'>Click Me</span></ui-button>
+	<ui-button><span slot='label'>Click Me With a<br>Very Long Long Text</span></ui-button>
+
+	<div><span>Text</span></div>
 </div>
 </body>
 </html>
