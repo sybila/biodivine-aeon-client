@@ -1,0 +1,150 @@
+<template id="ui-button-template">
+	<style>
+        @keyframes focus-me {
+            0% { transform: scale(1.0, 1.0); }
+            50% { transform: scale(1.05, 1.05); }
+            100% { transform: scale(1.0, 1.0); }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Button container: contains the button "content" and focus outline. */
+        :host {
+            display: inline-block;
+            position: relative;
+            margin: 4em;
+            
+            font-size: 1rem;
+            max-width: 100%;
+            user-select: none;                      
+        }
+
+        /* Highlight shadow when hovered. */
+        :host(:hover) .content {
+            box-shadow: 0.2em 1.0em 1.5em #646464;
+            border: 1em solid #ababab;
+        }
+
+        /* Play animation on focus. */
+        :host(:focus-visible) {
+            outline: none;
+            animation-name: focus-me;
+            animation-duration: 0.2s;
+        }
+
+        /* Show outline when focused. */
+        :host(:focus-visible) .outline {
+            border: 2rem solid var(--color-accent);
+            border-radius: 7em;
+        }
+    
+        /* Hide shadow when focused (outline should be visible). */
+        :host(:focus-visible) .content {
+            box-shadow: none;
+        }
+        
+        /* Outline extends outside of button bounds a little. */
+        :host .outline {
+            position: absolute;
+            z-index: 999;
+            top: -1em;
+            left: -1em;
+            right: -1em;
+            bottom: -1em;
+        }
+        
+        /* Actual button content. */
+        :host .content {
+            display: inline-block;    
+            max-width: 100%;        
+            padding: 3em 16em 2em 16em;
+            
+            border-radius: 6em;            
+            border: 1em solid #dedede;
+            box-shadow: 0.16em 0.8em 1.5em #ababab;
+            
+            transition-property: box-shadow, border, background-color, color;
+            transition-duration: 0.1s;
+
+            background-color: var(--color-background);
+            color: var(--color-text-on-background);
+        }
+    
+        /* Update button background to accent colour when pressed. */
+        :host(:active) .content, 
+        :host(.active) .content {
+            border: 1em solid var(--color-accent);
+            color: var(--color-text-on-accent);
+            background-color: var(--color-accent);
+            box-shadow: 0 0 1.5em #ababab;
+        }
+
+        /* The text label of a button. */
+        :host .content .label {
+            display: inline-block;
+
+            /* 
+                Ensures the label shrinks when 
+                max-width is set to .ui-button
+             */
+            max-width: 100%;
+            text-overflow: ellipsis;
+            overflow: hidden;     
+            white-space: nowrap;
+
+            font-family: var(--ui-font), sans-serif;            
+            font-weight: 600;
+            letter-spacing: 0.08em; /* ~1em */
+            font-size: 14em;
+            line-height: 1.20em; /* ~17em */
+        }
+	</style>
+	<div class="content">
+        <span class="label"><slot>Button</slot></span>
+    </div>	
+    <span class="outline"></span>	
+</template>
+
+<template id="ui-link-template">
+<style>
+@keyframes focus-me {
+    0% { transform: scale(1.0, 1.0); }
+    50% { transform: scale(1.05, 1.05); }
+    100% { transform: scale(1.0, 1.0); }
+}
+
+:host {
+    display: inline-block;
+    user-select: none;    
+    padding: 0 4em 0 4em;
+    margin: 0 4em 0 4em;
+
+    font-size: 1rem;
+}
+
+:host(:focus-visible) {    
+    animation-name: focus-me;
+    animation-duration: 0.2s;
+}
+
+:host .label {
+    display: inline-block;
+
+    font-family: var(--ui-font), sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    font-size: 14em;
+
+    color: var(--color-accent);
+    cursor: pointer;    
+}
+
+:host(:hover) .label {
+    text-decoration: underline;
+    text-decoration-color: var(--color-text-on-background);
+}
+</style>
+<span class="label"><slot>Link...</slot></span>
+</template>

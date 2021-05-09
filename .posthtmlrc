@@ -1,0 +1,10 @@
+{
+  "plugins": {
+    "posthtml-inline-svg": {
+        "cwd": "./",
+    },
+    "posthtml-include": {
+        "root": "./",
+    }    
+  }
+}

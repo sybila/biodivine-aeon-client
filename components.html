@@ -12,6 +12,8 @@
 		--color-text-on-primary: #ffffff;
 		--color-accent: #c25252;
 		--color-text-on-accent: #ffffff;
+		--color-accent-background: #f4d7cd;
+		--color-accent-background-active: #dfb1a3;
 		/* Default application UI font. */
 		--ui-font: 'Source Sans Pro';
 		/* Default application UI font size. */
@@ -20,13 +22,20 @@
 
 		font-size: var(--ui-grid-size);
 	}	
+
+	.size-150 {
+		font-size: 1.75rem;
+	}
 </style>
 
 <script src="/src/ui-components/main.ts"></script>
 
 </head>
-<body style="font-size: 14rem;">
-	<div id="templates" style="display: none;"></div>
+<body style="font-size: 14rem;">	
+	<div id="templates" style="display: none;">
+		<include src="src/ui-components/buttons.html"></include>
+		<include src="src/ui-components/toolbar.html"></include>
+	</div>
 <div style="margin: 0 auto; width: 480px; text-align: center;" id="root">
 	<ui-button event="button-1">Click Me</ui-button>
 	<ui-button event="button-2" style="max-width: 220em;">Click Me With a Very Long Long Text</ui-button>
@@ -34,6 +43,33 @@
 	<br>
 
 	<ui-link event="witness">Witness</ui-link>|<ui-link event="attractors">Attractors</ui-link>	
+
+	<br>
+	
 </div>
+<ui-toolbar class="vertical size-150" style="float: left; position: fixed; top: 8em; left: 8em;"><ui-toolbar-button class="size-150 hint-left">
+	<icon slot="icon" src="asset/img/play_circle_filled-48px.svg"></icon>
+	<span slot="hint">Start Analysis</span>
+</ui-toolbar-button><ui-toolbar-button class="size-150 hint-left selected"">
+	<icon slot="icon" src="asset/img/engine-48px.svg"></icon>
+	<span slot="hint">Compute Engine</span>
+</ui-toolbar-button><ui-toolbar-button class="size-150 hint-left selected">
+	<icon slot="icon" src="asset/img/file_copy-48px.svg"></icon>
+	<span slot="hint">Import & Export</span>
+</ui-toolbar-button><ui-toolbar-button class="size-150 hint-left">
+	<icon slot="icon" src="asset/img/help-48px.svg"></icon>
+	<span slot="hint">Help & Info</span>
+</ui-toolbar-button></ui-toolbar>	
+
+<ui-toolbar style="position: fixed; bottom: 16em; right: 24em"><ui-toolbar-button class="hint-top">
+	<icon slot="icon" src="asset/img/location-24px.svg"></icon>
+	<span slot="hint">Fit Viewport</span>
+</ui-toolbar-button><ui-toolbar-button class="hint-top">
+	<icon slot="icon" src="asset/img/zoom-plus-24px.svg"></icon>
+	<span slot="hint">Zoom In</span>
+</ui-toolbar-button><ui-toolbar-button class="hint-top">
+	<icon slot="icon" src="asset/img/zoom-minus-24px.svg"></icon>
+	<span slot="hint">Zoom Out</span>
+</ui-toolbar-button></ui-toolbar>
 </body>
 </html>

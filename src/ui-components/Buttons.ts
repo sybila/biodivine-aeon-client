@@ -4,8 +4,6 @@ class ClickableElement extends HTMLElement {
     constructor() {
         super();
 
-        this.setAttribute("tabindex", "0");
-
         this.addEventListener("click", () => {
             this.performClick('mouse');
         });
@@ -22,7 +20,11 @@ class ClickableElement extends HTMLElement {
                 this.performClick('keyboard');
             }            
         });
-    }    
+    } 
+    
+    connectedCallback() {
+        this.setAttribute("tabindex", "0");
+    }
 
     performClick(device: 'mouse' | 'keyboard' | undefined) {        
         if (device == 'mouse') {

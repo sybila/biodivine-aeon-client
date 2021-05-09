@@ -15,6 +15,9 @@
     "less": "^4.1.1",
     "parcel-bundler": "^1.12.5",
     "parcel-plugin-webcomponents": "^1.2.4",
+    "posthtml": "^0.15.2",
+    "posthtml-include": "^1.7.1",
+    "posthtml-inline-svg": "^0.2.0",
     "typescript": "^4.2.3"
   },
   "dependencies": {
