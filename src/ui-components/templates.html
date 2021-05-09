@@ -16,6 +16,7 @@
             position: relative;
             margin: 4em;
             
+            font-size: 1rem;
             max-width: 100%;
             user-select: none;                      
         }
@@ -35,7 +36,7 @@
 
         /* Show outline when focused. */
         :host(:focus-visible) .outline {
-            border: 3rem solid var(--color-accent);
+            border: 2rem solid var(--color-accent);
             border-radius: 7em;
         }
     
@@ -48,10 +49,10 @@
         :host .outline {
             position: absolute;
             z-index: 999;
-            top: -2em;
-            left: -2em;
-            right: -2em;
-            bottom: -2em;
+            top: -1em;
+            left: -1em;
+            right: -1em;
+            bottom: -1em;
         }
         
         /* Actual button content. */
@@ -95,9 +96,9 @@
 
             font-family: var(--ui-font), sans-serif;            
             font-weight: 600;
-            letter-spacing: 0.071em; /* ~1em */
+            letter-spacing: 0.08em; /* ~1em */
             font-size: 14em;
-            line-height: 1.21em; /* ~17em */
+            line-height: 1.20em; /* ~17em */
         }
 	</style>
 	<div class="content">
@@ -117,10 +118,13 @@
 :host {
     display: inline-block;
     user-select: none;    
-    padding: 0 8em 0 8em;
+    padding: 0 4em 0 4em;
+    margin: 0 4em 0 4em;
+
+    font-size: 1rem;
 }
 
-:host(:focus-visible) {
+:host(:focus-visible) {     
     animation-name: focus-me;
     animation-duration: 0.2s;
 }
@@ -128,16 +132,10 @@
 :host .label {
     display: inline-block;
 
-    max-width: 100%;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-
     font-family: var(--ui-font), sans-serif;
     font-weight: 600;
-    letter-spacing: 0.071em;
+    letter-spacing: 0.08em;
     font-size: 14em;
-    line-height: 1.21em;
 
     color: var(--color-accent);
     cursor: pointer;    
