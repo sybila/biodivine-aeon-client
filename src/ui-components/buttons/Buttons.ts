@@ -1,5 +1,8 @@
-import bus from './UiEvents';
+import bus from '../UiEvents';
 
+/**
+ * A private class that provides the click functionality.
+ */
 class ClickableElement extends HTMLElement {
     constructor() {
         super();
@@ -33,11 +36,8 @@ class ClickableElement extends HTMLElement {
             // the focus outline...
             this.blur();
         }        
-        if (this.getAttribute("event") !== undefined) {
-            bus.emit("click", {
-                "target": this,
-                "event": this.getAttribute("event"),
-            });
+        if (this.getAttribute("event") !== null) {
+            bus.emitClick(this.getAttribute("event"), this);            
         }
     }
 

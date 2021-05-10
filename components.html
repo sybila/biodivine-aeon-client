@@ -33,8 +33,8 @@
 </head>
 <body style="font-size: 14rem;">	
 	<div id="templates" style="display: none;">
-		<include src="src/ui-components/buttons.html"></include>
-		<include src="src/ui-components/toolbar.html"></include>
+		<include src="src/ui-components/buttons/templates.html"></include>
+		<include src="src/ui-components/toolbar/templates.html"></include>
 	</div>
 <div style="margin: 0 auto; width: 480px; text-align: center;" id="root">
 	<ui-button event="button-1">Click Me</ui-button>
@@ -47,27 +47,27 @@
 	<br>
 	
 </div>
-<ui-toolbar class="vertical size-150" style="float: left; position: fixed; top: 8em; left: 8em;"><ui-toolbar-button class="size-150 hint-left">
+<ui-toolbar class="vertical size-150" style="float: left; position: fixed; top: 8em; left: 8em;"><ui-toolbar-button class="size-150 hint-right" group="dock" event="start" toggle="true">
 	<icon slot="icon" src="asset/img/play_circle_filled-48px.svg"></icon>
 	<span slot="hint">Start Analysis</span>
-</ui-toolbar-button><ui-toolbar-button class="size-150 hint-left selected"">
+</ui-toolbar-button><ui-toolbar-button class="size-150 hint-right" group="dock" event="server" toggle="true">
 	<icon slot="icon" src="asset/img/engine-48px.svg"></icon>
 	<span slot="hint">Compute Engine</span>
-</ui-toolbar-button><ui-toolbar-button class="size-150 hint-left selected">
+</ui-toolbar-button><ui-toolbar-button class="size-150 hint-right" group="import" event="import" toggle="true">
 	<icon slot="icon" src="asset/img/file_copy-48px.svg"></icon>
 	<span slot="hint">Import & Export</span>
-</ui-toolbar-button><ui-toolbar-button class="size-150 hint-left">
+</ui-toolbar-button><ui-toolbar-button class="size-150 hint-right" group="dock" event="help" toggle="true">
 	<icon slot="icon" src="asset/img/help-48px.svg"></icon>
 	<span slot="hint">Help & Info</span>
 </ui-toolbar-button></ui-toolbar>	
 
-<ui-toolbar style="position: fixed; bottom: 16em; right: 24em"><ui-toolbar-button class="hint-top">
+<ui-toolbar style="position: fixed; bottom: 16em; right: 24em"><ui-toolbar-button class="hint-top" event="fit-viewport">
 	<icon slot="icon" src="asset/img/location-24px.svg"></icon>
 	<span slot="hint">Fit Viewport</span>
-</ui-toolbar-button><ui-toolbar-button class="hint-top">
+</ui-toolbar-button><ui-toolbar-button class="hint-top" event="zoom-in">
 	<icon slot="icon" src="asset/img/zoom-plus-24px.svg"></icon>
 	<span slot="hint">Zoom In</span>
-</ui-toolbar-button><ui-toolbar-button class="hint-top">
+</ui-toolbar-button><ui-toolbar-button class="hint-top" event="zoom-out">
 	<icon slot="icon" src="asset/img/zoom-minus-24px.svg"></icon>
 	<span slot="hint">Zoom Out</span>
 </ui-toolbar-button></ui-toolbar>

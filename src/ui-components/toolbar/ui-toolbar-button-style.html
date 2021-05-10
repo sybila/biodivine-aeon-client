@@ -1,0 +1,178 @@
+<style>
+    @keyframes focus-me {
+        0% { transform: scale(1.0, 1.0); }
+        50% { transform: scale(1.05, 1.05); }
+        100% { transform: scale(1.0, 1.0); }
+    }
+    
+    /* Button styling with hover, active and focus states. */
+    
+    :host {
+        display: inline-block;
+        position: relative;
+        font-size: 1.2rem;
+        width: 24em;
+        height: 24em;    
+        margin: 3em;
+    
+        border-radius: 8em;
+        transition-property: background-color;
+        transition-duration: 0.2s;
+    }
+    
+    /* A button should not interact when it is selected and cannot be re-selected. */
+    :host(:not(.selected[reselect=false]):hover) {
+        background-color: var(--color-accent-background);
+    }
+    
+    :host(:not(.selected[reselect=false]):active),
+    :host(:not(.selected[reselect=false]).active) {
+        background-color: var(--color-accent-background-active);
+    }
+    
+    :host(:focus-visible) {
+        outline: none;
+        animation-name: focus-me;
+        animation-duration: 0.2s;
+    }
+    
+    /* Inner icon styling. */
+    
+    ::slotted(svg) {    
+        width: 16em;
+        height: 16em;
+        margin: 4em;
+        fill: #323232;
+    }
+    
+    :host(:hover) ::slotted(svg),
+    :host(.selected) ::slotted(svg),
+    :host(:focus-visible) ::slotted(svg) {
+        fill: #000000;
+    }
+    
+    /* Outline visible when element is focused. */
+    .outline {
+        position: absolute;
+        z-index: 999;
+        left: 0em;
+        top: 0em;
+        right: 0em;
+        bottom: 0em;    
+        border-radius: 8em;    
+    }
+    
+    :host(:focus-visible) .outline {
+        border: 2em solid var(--color-accent);
+    }
+    
+    /* Selected indicator styling. Different for each orientation... */
+    
+    :host .indicator {
+        display: block;
+        position: absolute;
+        background-color: var(--color-accent);
+        opacity: 0;
+
+        transition-property: opacity;
+        transition-duration: 0.2s;
+    }
+
+    :host(.selected) .indicator {
+        opacity: 1;
+    }
+    
+    :host(.selected.hint-right) .indicator {
+        width: 3em;
+        height: 14em;
+        top: 5em;
+        left: -6em;
+        border-top-left-radius: 2em;
+        border-bottom-left-radius: 2em;
+    }
+    
+    :host(.selected.hint-left) .indicator {
+        width: 3em;
+        height: 14em;
+        top: 5em;
+        right: -6em;
+        border-top-right-radius: 2em;
+        border-bottom-right-radius: 2em;
+    }
+    
+    :host(.selected.hint-top) .indicator {
+        width: 14em;
+        height: 3em;
+        bottom: -6em;
+        left: 5em;
+        border-bottom-left-radius: 2em;
+        border-bottom-right-radius: 2em;
+    }
+
+    :host(.selected.hint-bottom) .indicator {
+        width: 14em;
+        height: 3em;
+        top: -6em;
+        left: 5em;
+        border-top-left-radius: 2em;
+        border-top-right-radius: 2em;
+    }
+    
+    /* Hint text styling. */
+    
+    slot[name=hint] {
+        display: block;
+        width: max-content;
+        position: absolute;
+        opacity: 0;
+        z-index: 999;
+        pointer-events: none;
+    }
+    
+    :host(.hint-left) slot[name=hint] {
+        top: 5em;
+        right: 36em;    
+    }
+    
+    :host(.hint-right) slot[name=hint] {
+        top: 5em;
+        left: 36em;    
+    }
+    
+    :host(.hint-top) slot[name=hint] {    
+        bottom: 36em;
+        left: 50%;
+    }
+    
+    :host(.hint-bottom) slot[name=hint] {
+        top: 36em;
+        left: 50%;
+    }
+    
+    :host(.hint-top) ::slotted(span),
+    :host(.hint-bottom) ::slotted(span) {    
+        position: relative;
+        left: -50%;
+    }
+    
+    :host(:not(.selected):hover) slot[name=hint],
+    :host(:not(.selected):focus-visible) slot[name=hint] {
+        opacity: 1;
+    }
+    
+    :host ::slotted(span) {
+        font-size: 10em;
+        font-family: var(--ui-font), sans-serif;
+        font-weight: 600;  
+        letter-spacing: 0.1em;
+        color: var(--color-text-on-background); 
+        background-color: var(--color-background);
+        border-radius: 0.22em;
+        box-shadow: 0.017em 0.066em 0.166em #ababab;  
+        padding: 0.22em 0.44em 0.22em 0.44em;
+        user-select: none;
+        transition-property: opacity;
+        transition-duration: 0.1s;     
+    }
+    
+    </style>

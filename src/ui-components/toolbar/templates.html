@@ -1,0 +1,16 @@
+
+
+<template id="ui-toolbar-template">
+<include src="src/ui-components/toolbar/ui-toolbar-style.html"></include>
+<div>
+    <slot style="font-size: 14em;">Content...</slot>
+</div>
+</template>
+
+<template id="ui-toolbar-button-template">
+<include src="src/ui-components/toolbar/ui-toolbar-button-style.html"></include>
+    <slot name="icon"></slot>
+    <slot name="hint"></slot>
+    <span class="indicator"></span>
+    <span class="outline"></span>
+</template>

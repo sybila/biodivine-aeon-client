@@ -1,0 +1,12 @@
+<template id="ui-button-template">
+	<include src="src/ui-components/buttons/ui-button-style.html"></include>
+	<div class="content">
+        <span class="label"><slot>Button</slot></span>
+    </div>	
+    <span class="outline"></span>	
+</template>
+
+<template id="ui-link-template">
+    <include src="src/ui-components/buttons/ui-link-style.html"></include>
+    <span class="label"><slot>Link...</slot></span>
+</template>

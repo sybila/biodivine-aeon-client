@@ -1,0 +1,38 @@
+<style>
+    @keyframes focus-me {
+        0% { transform: scale(1.0, 1.0); }
+        50% { transform: scale(1.05, 1.05); }
+        100% { transform: scale(1.0, 1.0); }
+    }
+    
+    :host {
+        display: inline-block;
+        user-select: none;    
+        padding: 0 4em 0 4em;
+        margin: 0 4em 0 4em;
+    
+        font-size: 1rem;
+    }
+    
+    :host(:focus-visible) {    
+        animation-name: focus-me;
+        animation-duration: 0.2s;
+    }
+    
+    :host .label {
+        display: inline-block;
+    
+        font-family: var(--ui-font), sans-serif;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        font-size: 14em;
+    
+        color: var(--color-accent);
+        cursor: pointer;    
+    }
+    
+    :host(:hover) .label {
+        text-decoration: underline;
+        text-decoration-color: var(--color-text-on-background);
+    }
+    </style>

@@ -1,4 +1,4 @@
-export type EventCallback = (data: any) => void;
+export type EventCallback<T> = (data: T) => void;
 
 /**
  * A small global event bus responsible for passing and routing messages
@@ -14,7 +14,7 @@ export type EventCallback = (data: any) => void;
  */
 export class EventBus {
 	saved: { [key: string]: any | undefined } = {}
-	eventListeners: { [key: string]: EventCallback[] | undefined } = {}
+	eventListeners: { [key: string]: EventCallback<any>[] | undefined } = {}
 
 	/**
 	 * Add listener for a particular event. Keep in mind that listeners are stored
@@ -26,7 +26,7 @@ export class EventBus {
 	 * @param callback A callback to be executed when the event fires.
 	 * @returns The registered callback that can be later used to unregister it.
 	 */
-	addListener(name: string, callback: EventCallback) {
+	addListener<T>(name: string, callback: EventCallback<T>): EventCallback<T> {
 		if (Array.isArray(this.eventListeners[name])) {
 			this.eventListeners[name].push(callback);
 		} else {
@@ -41,7 +41,7 @@ export class EventBus {
 	 * @param callback A previously registered listener.
 	 * @returns The callback that was removed, or undefined if no such callback existed.
 	 */
-	removeListener(name: string, callback: EventCallback): EventCallback | undefined {		
+	removeListener<T>(name: string, callback: EventCallback<T>): EventCallback<T> | undefined {		
 		if (this.eventListeners[name]) {
 			let index = this.eventListeners[name].indexOf(callback);
 			if (index > -1) {
