@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!-- Include KaTeX for math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js"                  integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/auto-render.min.js"    integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "\\(", right: "\\)", display: false},
+                    {left: "$", right: "$", display: false},
+                    {left: "\\[", right: "\\]", display: true}
+                ]
+            });
+        });
+    </script>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+
+
+    <style type="text/css">
+
+        body {
+            font-family: 'Jost', sans-serif;
+        }
+
+        h3 {
+            font-family: 'Barlow Semi Condensed';
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        p {
+            margin-top: 8px;
+            margin-bottom: 8px;
+            text-align: justify;
+        }
+
+        .katex-html {
+            font-size: 17px;
+        }
+
+    </style>
+</head> 
+
+<body>
+
+<div style="width: 768px; margin: 0 auto;">
+
+
+<h3>Info</h3>
+<p>A fully parametric version of a smaller variant of the <em>budding yeast model</em> from GinSim. The analysis should be computable in several seconds. The model has various types of behaviour, but at most two attractors at the same time.</p>
+
+$$
+    \textit{Foo} = \bigcup_{x \in [0,1]} \mathfrak{F}_x
+$$
+
+<h3>Model description</h3>
+<p>This model is a direct transcription of the Boolean model published by Orlando et al. [1]. Synchronous simulation of this model yields a <strong>cyclic attractor</strong> $x \gets \mathbb{B}^k$ gathering most trajectories in the state transition graph, which is robust to parameter choice, as reported in [1]. However, asynchronous simulations all lead to a stable state with all variables OFF, whatever the <em>parameter set</em> proposed by the authors, indicating that the oscillations observed in the synchronous simulations may not be sustained. See [2] for more details.</p>
+
+<h3>Citation</h3>
+<p>[1] FAURÉ, Adrien; THIEFFRY, Denis. Logical modelling of cell cycle control in eukaryotes: a comparative study. Molecular BioSystems, 2009, 5.12: 1569-1581.</p>    
+
+
+SOME TEXT
+</div>
+
+</body>
+
+</html>

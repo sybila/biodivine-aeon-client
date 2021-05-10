@@ -16,6 +16,7 @@
 		--color-accent-background-active: #dfb1a3;
 		/* Default application UI font. */
 		--ui-font: 'Source Sans Pro';
+		--font-content: 'Jost';
 		/* Default application UI font size. */
 		--ui-grid-size: 1px;
 		--ui-font-size: 16px;
@@ -35,7 +36,10 @@
 	<div id="templates" style="display: none;">
 		<include src="src/ui-components/buttons/templates.html"></include>
 		<include src="src/ui-components/toolbar/templates.html"></include>
+		<include src="src/ui-components/logo/templates.html"></include>
 	</div>
+
+<ui-logo style="position: fixed; right: 16rem; top: 16rem; font-size: 2.0em;"></ui-logo>
 <div style="margin: 0 auto; width: 480px; text-align: center;" id="root">
 	<ui-button event="button-1">Click Me</ui-button>
 	<ui-button event="button-2" style="max-width: 220em;">Click Me With a Very Long Long Text</ui-button>
