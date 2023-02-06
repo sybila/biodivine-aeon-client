@@ -349,6 +349,7 @@ let UI = {
 	        	if (error !== undefined) {
 	        		alert(error);
 	        	}
+				element.value = null;
 	        };
 	        fr.readAsText(file);
 		}        
@@ -370,6 +371,7 @@ let UI = {
 		        	if (error !== undefined) {
 		        		alert(error);
 		        	}
+					element.value = null;
 	        	});        	
 	        };
 	        fr.readAsText(file);
