@@ -385,7 +385,7 @@ let LiveModel = {
 		// $var_name:function_data
 		let updateFunctionRegex = /^\s*\$\s*([a-zA-Z0-9_{}]+)\s*:\s*(.+)\s*$/;
 		// #...
-		let commentRegex = /^\s*#.?$/;
+		let commentRegex = /^\s*#.*?$/;
 
 		let modelName = "";
 		let modelDescription = "";
