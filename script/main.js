@@ -11,6 +11,27 @@ function init() {
 		);
 	}
 
+	// Warn user that there is an unsaved model.
+	window.onbeforeunload = function (e) {
+		if (LiveModel.isEmpty()) {
+			// Only warn when the model is not empty.
+			return;
+		}
+
+		e = e || window.event;
+
+		// In fact, most browsers will not display the text for security
+		// reasons, but we have to return some text anyway.
+
+		// For IE and Firefox prior to version 4
+		if (e) {
+			e.returnValue = Strings.closePrompt;
+		}
+	
+		// For Safari
+		return Strings.closePrompt;
+	};
+
 	// Update version links and label to match expected engine version:
 	let version_string = "v"+EXPECTED_ENGINE_VERSION;
 	document.getElementById("version").innerHTML = version_string;
@@ -92,6 +113,7 @@ let Strings = {
 	},
 	modelEmpty: "Cannot export an empty model.",
 	modelWillBeErased: "This operation will overwrite your current model. Do you want to continue?",
+	closePrompt: "There may be unsaved changes. Close window?",
 }
 
 /* This can be used to properly show placeholder for content editable stuff */
