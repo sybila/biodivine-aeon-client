@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Model Viewer Demo</title>
+        <meta charset="utf-8">
+
+        <!-- The CSS only contains custom fonts that are not essential but nice to have. -->
+        <link rel="stylesheet" href="style.css" type="text/css">        
+
+        <script src="js/cytoscape.min.js"></script>
+        <script src="js/LiveModel.js"></script>
+        <script src="js/CytoscapeEditor.js"></script>        
+        <script src="js/model-view.js"></script>
+    </head>
+
+    <body onload="init()">
+
+        <!-- Hosts the interactive model editor -->        
+        <div style="width: 700px; height: 500px; margin: 0 auto;">
+            <div id="model-view" style="width: 700px; height: 500px; border-radius: 20px; border: 2px solid black;"></div>
+        </div>    
+        
+        <script type="text/javascript">
+            function init() {
+                let container = document.getElementById("model-view");
+                let model_with_layout = `
+                    #position:CtrA:419,94
+                    CtrA -> CtrA
+                    GcrA -> CtrA
+                    CcrM -| CtrA
+                    SciP -| CtrA
+                    #position:GcrA:325,135
+                    CtrA -| GcrA
+                    DnaA -> GcrA
+                    #position:CcrM:462,222
+                    CtrA -> CcrM
+                    CcrM -| CcrM
+                    SciP -| CcrM
+                    #position:SciP:506,133
+                    CtrA -> SciP
+                    DnaA -| SciP
+                    #position:DnaA:374,224
+                    CtrA -> DnaA
+                    GcrA -| DnaA
+                    DnaA -| DnaA
+                    CcrM -> DnaA
+                `;
+                let model_without_layout = `                
+                    CtrA -> CtrA
+                    GcrA -> CtrA
+                    CcrM -| CtrA
+                    SciP -| CtrA
+                    CtrA -| GcrA
+                    DnaA -> GcrA
+                    CtrA -> CcrM
+                    CcrM -| CcrM
+                    SciP -| CcrM
+                    CtrA -> SciP
+                    DnaA -| SciP
+                    CtrA -> DnaA
+                    GcrA -| DnaA
+                    DnaA -| DnaA
+                    CcrM -> DnaA
+                `;
+                // A model with pre-defined layout that will be shown as it.
+                //show_model(container, model_with_layout);
+                // A model with no layout. Automatic layout will be computed before showing the model.
+                // Note that the layout is not deterministic, hence every refresh, you'll get a new layout.            
+                show_model(container, model_without_layout);
+            }
+        </script>
+
+    </body>
+</html>
