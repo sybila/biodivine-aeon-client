@@ -395,7 +395,8 @@ let LiveModel = {
 
 		// First, parse all lines into intermediate objects:
 		for (let line of lines) {
-			if (line.trim().length == 0) continue;	// skip whitespace
+			line = line.trim()
+			if (line.length == 0) continue;	// skip whitespace
 			let match = line.match(regulationRegex);
 			if (match !== null) {
 				let monotonicity = EdgeMonotonicity.unspecified;
