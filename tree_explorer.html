@@ -31,6 +31,9 @@
         <script src="script/dependencies/lodash.js"></script>
         <script src="script/dependencies/hotkeys.min.js"></script>        
 
+        <script src="script/dependencies/cytoscape-automove.js"></script>
+        <script type="module" src="script/dependencies/cytoscape-tidytree.js"></script>
+
         <script src="script/const.js"></script>
         <script src="script/ComputeEngine.js"></script>                
         <script src="script/CytoscapeTreeEditor.js"></script>                
@@ -59,13 +62,18 @@
                 <li>(↑) Select parent node.</li>
                 <li>(↓) Select positive child.</li>
                 <li>(Shift + ↓) Select negative child.</li>
-                <li>(←/→) Switch positive/negative branch.</li>                
+                <li>(←/→) Switch positive/negative branch.</li>           
+                <li>(F) Fit the screen to view the entire tree.</li>           
             </ul>
             <b>Tree actions:</b>
             <ul>
                 <li>(⌫) Remove selected node.</li>
                 <li>(S) Run stability analysis for the selected node.</li>
-                <li>(D) Compute decision attributes for the selected node.</li> 
+                <li>(D) Compute decision attributes for the selected node.</li>
+                <li>(I) Move node's subtree up.</li>
+                <li>(K) Move node's subtree down.</li>
+                <li>(J/L) Switch node's position with sibling's.</li>
+                <li>(R) Switch order of node's children.</li>
                 <li>(H) Toggle this help message.</li>
             </ul>
             <b>Units:</b>
@@ -245,6 +253,41 @@
               <span class="slider round"></span>
             </label>
         </div> 
+
+        <div id="layout-settings">
+            <div style="margin: 5px">
+                <span>Use new layout</span>
+                <label class="switch">
+                  <input id="toggle-newlayout" type="checkbox" checked>
+                  <span class="slider round"></span>
+                </label>
+            </div>
+            <div style="margin: 5px">
+                <span>Animated</span>
+                <label class="switch">
+                  <input id="toggle-animate" type="checkbox" checked>
+                  <span class="slider round"></span>
+                </label>
+            </div>
+            <div style="margin: 5px">
+                <span>Layered</span>
+                <label class="switch">
+                  <input id="toggle-layered" type="checkbox">
+                  <span class="slider round"></span>
+                </label>
+            </div>
+            <div style="margin: 5px">
+                <span>Positive on left</span>
+                <label class="switch">
+                  <input id="toggle-posonleft" type="checkbox">
+                  <span class="slider round"></span>
+                </label>
+            </div>
+            <div style="margin: 5px">
+                <button id="button-fit" class="image-button" style="padding-right: 12px">Fit</button>
+                <button id="button-resetlayout" class="image-button" style="padding-right: 12px">Reset layout</button>
+            </div>
+        </div>
 
         <div id="precision">
             <input type="range" min="5001" max="10000" value="10000" class="seekbar" id="precision-slider">

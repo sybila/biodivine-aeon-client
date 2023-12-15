@@ -888,6 +888,14 @@ div.center {
     width: 200px;
 }
 
+#layout-settings {
+    position: fixed;
+    bottom: 100px;
+    right: 24px;
+    text-align: right;
+    width: 200px;
+}
+
 /* The slider itself */
 .seekbar {
   -webkit-appearance: none;  /* Override default CSS styles */

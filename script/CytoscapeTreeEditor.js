@@ -14,6 +14,23 @@ let CytoscapeEditor = {
 	_cytoscape: undefined,
 	_totalCardinality: 0.0,
 	_showMass: false,
+
+	// settings for the tree layout, changes reflected after calling ApplyTreeLayout
+	layoutSettings: { 
+		useTidytree: true, // if false, use the old dagre layout
+		layered: false, // if the tree should be drawn in layers
+		extraVerticalSpacings: {}, // map of node ids to extra spacings between the node and its parent
+		positiveOnLeft: false, // switch order of all nodes' children
+		switchChildren: new Set(), // set of ids of nodes whose children should be switched
+		horizontalSpacing: 20,
+		verticalSpacing: 40,
+		animate: true,
+		fitPadding: 20,
+		// layer height used when layers are enabled, should be bigger than 
+		// the biggest node's outer height + horizontal spacing, else the
+		// bigger nodes will take two (or more) layers of space
+		layerHeight: 120,
+	},
 	
 	init: function() {
 		this._cytoscape = cytoscape(this.initOptions());			
@@ -50,6 +67,18 @@ let CytoscapeEditor = {
 				node.on('mouseout', (e) => {
 					node.removeClass('hover');			
 				});
+
+				// Update position of the close button when the target is moved
+				handler = (e) => {
+					const targetPos = e.target.position();
+					node.position({
+						x: targetPos.x + e.target.width() / 2 + 12,
+						y: targetPos.y - e.target.height() / 2 - 12,
+					});
+				}
+				this._scratch(e.target).removeBtnHandler = handler; // save handler to remove later
+				e.target.on('position', handler);
+
 			} else if (data.type == "unprocessed") {
 				this._showMixedPanel(data);				
 			}
@@ -57,6 +86,10 @@ let CytoscapeEditor = {
 		this._cytoscape.on('unselect', (e) => {
 			// Clear remove button
 			CytoscapeEditor._cytoscape.$(".remove-button").remove()
+			// Remove the listener upading its position
+			const scratch = this._scratch(e.target);
+			e.target.removeListener('position', scratch.removeBtnHandler);
+			scratch.removeBtnHandler = undefined;
 			// Close panels
 			let leafInfo = document.getElementById("leaf-info");
 			leafInfo.classList.add("gone");
@@ -75,7 +108,9 @@ let CytoscapeEditor = {
 			document.getElementById("mixed-stability-analysis").innerHTML = "";
 			document.getElementById("leaf-stability-analysis").innerHTML = "";
 			document.getElementById("decision-stability-analysis").innerHTML = "";
-		})
+		});
+		this._cytoscape.on("grabon", this._handleDragStart.bind(this));
+		this._cytoscape.on("dragfreeon", this._handleDragEnd.bind(this));
 	},
 
 	removeAll() {
@@ -368,7 +403,8 @@ let CytoscapeEditor = {
   					'style': {
   						'curve-style': 'taxi',
   						'taxi-direction': 'vertical',
-  						'target-arrow-shape': 'triangle',  						
+  						'target-arrow-shape': 'triangle',  		
+						'taxi-turn': '20px',
   					}
   				},
   				{
@@ -404,7 +440,7 @@ let CytoscapeEditor = {
 			return this._cytoscape.add({
 				id: data.id,
 				data: data, 
-				grabbable: false,
+				grabbable: treeData.id != 0,
 				position: { x: 0.0, y: 0.0 }
 			});
 		}
@@ -453,8 +489,8 @@ let CytoscapeEditor = {
 
 	// Pan and zoom the groph to show the whole model.
 	fit() {
-		this._cytoscape.fit();
-		this._cytoscape.zoom(this._cytoscape.zoom() * 0.8);	// zoom out a bit to have some padding
+		this._cytoscape.fit(undefined, this.layoutSettings.fitPadding);
+		//this._cytoscape.zoom(this._cytoscape.zoom() * 0.8);	// zoom out a bit to have some padding
 	},
 
 	_applyTreeData(data, treeData) {
@@ -514,8 +550,24 @@ let CytoscapeEditor = {
 		}
 	},
 
-	applyTreeLayout() {
-		this._cytoscape.layout({
+	applyTreeLayout(fit = false) {
+		const settings = this.layoutSettings;
+		const options = settings.useTidytree ? {
+			name: "tidytree",
+			animate: settings.animate,
+			horizontalSpacing: settings.horizontalSpacing,
+			verticalSpacing: settings.verticalSpacing,
+			extraVerticalSpacings: settings.extraVerticalSpacings,
+			layerHeight: settings.layered ? settings.layerHeight : undefined,
+			lineWidth: 50,
+			// comparator for the order of children, assumes one positive and one negative edge
+			edgeComparator: (e1, e2) => {
+				const order = (e1.data().positive === "true") - (e2.data().positive === "true");
+				return (settings.positiveOnLeft != settings.switchChildren.has(e1.source().id())) ? -order : order;
+			},
+			fit: fit,
+			padding: settings.fitPadding,
+		} : {
 			name: 'dagre',
 			spacingFactor: 1.0,
 			roots: [0],
@@ -523,10 +575,99 @@ let CytoscapeEditor = {
 			avoidOverlap: true,
 			nodeDimensionsIncludeLabels: true,
 			//animate: true,
-			fit: false,
-		}).start();
+			fit: fit,
+			padding: settings.fitPadding,
+		};
+		this._cytoscape.elements().difference(this._cytoscape.$('.remove-button')).layout(options).run();
 	},
 
+	_handleDragStart(e) {
+		const dragged = e.target;
+		const draggedPos = dragged.position();
+
+		// Save the position at the start of the drag to use in _handleDragEnd
+		this._scratch(dragged).dragOrigPos = { ...draggedPos };
+
+		// Update the position of children when the node is moved
+		// get descendants and their current positions relative to parent
+		const children = dragged.successors("node")
+		const relPositions = new Map();
+		let limit = 300; // the limit of descendants to move to avoid lag
+		children.forEach((child) => {
+			const childPos = child.position();
+			relPositions.set(child, {
+				x: childPos.x - draggedPos.x,
+				y: childPos.y - draggedPos.y
+			});
+			limit--;
+			if (limit < 0) {
+				return false; // stop iterating (https://js.cytoscape.org/#eles.forEach)
+			}
+		});
+
+		// apply the saved relative positions
+		const handler = (e) => {
+			const targetPos = e.target.position();
+			for (const [child, relPos] of relPositions) {
+				child.position({
+					x: targetPos.x + relPos.x,
+					y: targetPos.y + relPos.y
+				});
+			};
+		}
+		this._scratch(dragged).moveChildrenHandler = handler; // save handler to remove later
+		dragged.on('position', handler);
+	},
+
+	_handleDragEnd(e) {
+		const dragged = e.target;
+		const origPos = this._scratch(e.target).dragOrigPos;
+		const draggedPos = dragged.position();
+
+		dragged.removeListener('position', this._scratch(dragged).moveChildrenHandler);
+		this._scratch(dragged).moveChildrenHandler = undefined;
+
+		const parentId = this.getParentNode(dragged.id());
+		// Do not do anything for the parent node 
+		// (shouldn't be possible due to grabbable = false anyway)
+		if (parentId === undefined) {
+			return;
+		}
+		
+		// If node dragged past its sibling, switch their order
+		const siblingId = this.getSiblingNode(dragged.id());
+		if (siblingId !== undefined) {
+			const siblingPos = this._cytoscape.getElementById(siblingId).position();
+			if (Math.min(origPos.x, draggedPos.x) < siblingPos.x
+				&& Math.max(origPos.x, draggedPos.x) > siblingPos.x) {
+				if (!this.layoutSettings.switchChildren.delete(parentId)) {
+					this.layoutSettings.switchChildren.add(parentId);
+				}
+				this.applyTreeLayout();
+				return;
+			}
+		}
+
+		// Else, set node's extra spacing based on the drag final position
+		const parent = this._cytoscape.getElementById(parentId)
+		const newSpacing = draggedPos.y - (parent.position().y + parent.outerHeight() + this.layoutSettings.verticalSpacing);
+		if (newSpacing <= 0) {
+			delete this.layoutSettings.extraVerticalSpacings[dragged.id()];
+			this.applyTreeLayout();
+			return;
+		}
+
+		this.layoutSettings.extraVerticalSpacings[dragged.id()] = newSpacing;
+		this.applyTreeLayout();
+	},
+
+	// Get the node's scratch object for saving temporary data
+	_scratch(node) {
+		if (node.scratch("_aeon") === undefined) {
+			node.scratch("_aeon", {});
+		}
+		return node.scratch("_aeon");
+	},
 }
 
 // Modified version of the cancel-24px.svg with color explicitly set to red and an additional background element which makes sure the X is filled.
