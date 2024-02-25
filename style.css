@@ -890,10 +890,10 @@ div.center {
 
 #layout-settings {
     position: fixed;
-    bottom: 100px;
+    bottom: 90px;
     right: 24px;
     text-align: right;
-    width: 200px;
+    width: 250px;
 }
 
 /* The slider itself */

@@ -100,10 +100,10 @@ function init() {
 	}
 
 	// Set up debug layout settings panel
-	document.getElementById("toggle-newlayout").addEventListener("change", e => {
+	/*document.getElementById("toggle-newlayout").addEventListener("change", e => {
 		CytoscapeEditor.layoutSettings.useTidytree = e.target.checked;
 		CytoscapeEditor.applyTreeLayout();
-	});
+	});*/
 	document.getElementById("toggle-animate").addEventListener("change", e => {
 		CytoscapeEditor.layoutSettings.animate = e.target.checked;
 	});

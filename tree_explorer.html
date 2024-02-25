@@ -54,7 +54,7 @@
         <div id="cytoscape-editor">
         </div>
 
-        <div id="quick-help" style="top: 80%;">
+        <div id="quick-help" style="top: 40%;">
             <h3 style="display: block; margin: 0 auto; float: right;">HELP</h3>
             <b>Tree editor navigation:</b>
             <ul>
@@ -253,42 +253,42 @@
             </label>
         </div> 
 
-        <div id="layout-settings">
-            <div style="margin: 5px">
+        <div id="layout-settings" style="opacity: 0.5;">
+            <div style="margin-bottom: 15px;">
+                <button id="button-fit" class="image-button" style="padding-right: 12px; margin-right: 12px;">Fit</button>
+                <button id="button-resetlayout" class="image-button" style="padding-right: 12px">Reset layout</button>
+            </div>
+            <!--<div style="margin: 5px">
                 <span>Use new layout</span>
                 <label class="switch">
                   <input id="toggle-newlayout" type="checkbox" checked>
                   <span class="slider round"></span>
                 </label>
-            </div>
-            <div style="margin: 5px">
-                <span>Animated</span>
+            </div>-->
+            <div style="margin-top: 5px">
+                <span>Animate layout changes</span>
                 <label class="switch">
-                  <input id="toggle-animate" type="checkbox" checked>
+                  <input id="toggle-animate" type="checkbox">
                   <span class="slider round"></span>
                 </label>
             </div>
-            <div style="margin: 5px">
-                <span>Layered</span>
+            <div style="margin-top: 5px">
+                <span>Snap nodes to layers</span>
                 <label class="switch">
                   <input id="toggle-layered" type="checkbox">
                   <span class="slider round"></span>
                 </label>
             </div>
-            <div style="margin: 5px">
-                <span>Positive on left</span>
+            <div style="margin-top: 5px">
+                <span>Positive on the left</span>
                 <label class="switch">
                   <input id="toggle-posonleft" type="checkbox">
                   <span class="slider round"></span>
                 </label>
             </div>
-            <div style="margin: 5px">
-                <button id="button-fit" class="image-button" style="padding-right: 12px">Fit</button>
-                <button id="button-resetlayout" class="image-button" style="padding-right: 12px">Reset layout</button>
-            </div>
         </div>
 
-        <div id="precision">
+        <div id="precision" style="opacity: 0.5;">
             <input type="range" min="5001" max="10000" value="10000" class="seekbar" id="precision-slider">
             Precision: <span id="precision-value">100%</span>
         </div>        
