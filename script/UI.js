@@ -305,6 +305,29 @@ let UI = {
 		});
 	},
 
+	downloadBnet() {
+		let modelFile = LiveModel.exportAeon();
+		if (modelFile === undefined) {
+			alert(Strings.modelEmpty);
+			return;
+		}
+		let filename = ModelEditor.getModelName();
+        if (filename === undefined) {
+        	filename = "model";
+        }
+        this.isLoading(true);
+		ComputeEngine.aeonToBnet(modelFile, (error, result) => {
+			this.isLoading(false);
+			if (error !== undefined) {
+				alert(error);
+			}
+			if (result !== undefined) {
+				let bnet = result.model;
+				this._downloadFile(filename + ".bnet", bnet);
+			}
+		});
+	},
+
 	// TODO: Join the with the standard export SBML function - they do almost the same thing anyway.
 	downloadSBMLInstantiated() {
 		let modelFile = LiveModel.exportAeon();
@@ -363,6 +386,29 @@ let UI = {
 	        	let sbml_file = e.target.result;
 	        	this.isLoading(true);
 	        	ComputeEngine.sbmlToAeon(sbml_file, (error, result) => {        		
+	        		this.isLoading(false);
+		        	if (result !== undefined) {
+		        		let aeonModel = result.model;
+		        		error = LiveModel.importAeon(aeonModel);
+		        	}
+		        	if (error !== undefined) {
+		        		alert(error);
+		        	}
+					element.value = null;
+	        	});        	
+	        };
+	        fr.readAsText(file);
+		}        
+	},
+
+	importBnet(element) {
+		var file = element.files[0];
+		if (file) {
+			var fr = new FileReader();
+	        fr.onload = (e) => {
+	        	let bnet_file = e.target.result;
+	        	this.isLoading(true);
+	        	ComputeEngine.bnetToAeon(bnet_file, (error, result) => {        		
 	        		this.isLoading(false);
 		        	if (result !== undefined) {
 		        		let aeonModel = result.model;

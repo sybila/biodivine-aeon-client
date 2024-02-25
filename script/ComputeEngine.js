@@ -91,32 +91,40 @@ let ComputeEngine = {
 		}
 	},
 
-	sbmlToAeon(sbmlString, callback) {
-		if (!this.isConnected()) {
-			callback("Compute engine not connected.");
-			return undefined;
-		} else {
-			return this._backendRequest("/sbml_to_aeon", callback, "POST", sbmlString);
-		}
+	sbmlToAeon(_sbmlString, callback) {
+		// This function is dynamically replaced with a "native" WASM module once it is loaded.
+		// See `patch-wasm.js` for details.
+		callback("Compute engine not connected.");
+		return undefined;
 	},
 
-	aeonToSbml(aeonString, callback) {
-		if (!this.isConnected()) {
-			callback("Compute engine not connected.");
-			return undefined;
-		} else {
-			return this._backendRequest("/aeon_to_sbml", callback, "POST", aeonString);
-		}
+	aeonToSbml(_aeonString, callback) {
+		// This function is dynamically replaced with a "native" WASM module once it is loaded.
+		// See `patch-wasm.js` for details.
+		callback("Compute engine not connected.");
+		return undefined;		
 	},
 
-	aeonToSbmlInstantiated(aeonString, callback) {
-		if (!this.isConnected()) {
-			callback("Compute engine not connected.");
-			return undefined;
-		} else {
-			return this._backendRequest("/aeon_to_sbml_instantiated", callback, "POST", aeonString);
-		}
+	aeonToSbmlInstantiated(_aeonString, callback) {
+		// This function is dynamically replaced with a "native" WASM module once it is loaded.
+		// See `patch-wasm.js` for details.
+		callback("Compute engine not connected.");
+		return undefined;		
 	},
+
+	bnetToAeon(_bnetString, callback) {
+		// This function is dynamically replaced with a "native" WASM module once it is loaded.
+		// See `patch-wasm.js` for details.
+		callback("Compute engine not connected.");
+		return undefined;
+	},
+
+	aeonToBnet(_aeonString, callback) {
+		// This function is dynamically replaced with a "native" WASM module once it is loaded.
+		// See `patch-wasm.js` for details.
+		callback("Compute engine not connected.");
+		return undefined;		
+	},	
 
 	startComputation(aeonString) {		
 		if (aeonString === undefined) {

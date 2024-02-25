@@ -1,0 +1,14 @@
+{
+  "name": "aeon-wasm",
+  "version": "0.1.0",
+  "files": [
+    "aeon_wasm_bg.wasm",
+    "aeon_wasm.js",
+    "aeon_wasm.d.ts"
+  ],
+  "module": "aeon_wasm.js",
+  "types": "aeon_wasm.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

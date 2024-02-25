@@ -362,6 +362,9 @@ div.invisible-input[contenteditable]:empty:not(:focus):before {
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;    
     transition: 0.3s;
+    position: relative;
+    top: -2px;
+    left: -2px;
 }
 
 .compound-button:hover {
