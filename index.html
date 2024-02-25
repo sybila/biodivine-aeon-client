@@ -26,9 +26,11 @@
 
         <link rel="stylesheet" href="style.css" type="text/css">        
 
+        <script src="script/dependencies/dagre.js"></script>
         <script src="script/dependencies/cytoscape.min.js"></script>
         <script src="script/dependencies/lodash.js"></script>
         <script src="script/dependencies/cytoscape-edgehandles.js"></script>
+        <script src="script/dependencies/cytoscape-dagre.js"></script>
         <script src="script/dependencies/hotkeys.min.js"></script>
 
         <script src="script/const.js"></script>
@@ -330,11 +332,23 @@
                     <span class="hint invisible">Model Editor</span>
                 </div>  
 
-                <div class="button-group-fake">
-                    <img alt="Auto Layout" id="side-menu-layout" src="img/view_quilt-48px.svg" 
-                    onclick="CytoscapeEditor.layoutCose();" class="button-fake">
-                    <span class="hint invisible">Apply Layout</span>
-                </div> 
+                <div style="position: relative; height: 96px; margin-bottom: 12px;">
+                    <span class="label"><span>DAGRE</span></span>
+                    <div class="button-group-fake" style="position: relative; top: 24px">
+                        <img alt="Auto Layout" id="side-menu-layout" src="img/view_quilt-48px.svg" 
+                        onclick="CytoscapeEditor.layoutDagre();" class="button-fake">                    
+                        <span class="hint invisible">Hierarchical layout</span>
+                    </div>                     
+                </div>   
+                
+                <div style="position: relative; height: 96px; margin-bottom: 12px;">
+                    <span class="label"><span>COSE</span></span>
+                    <div class="button-group-fake" style="position: relative; top: 24px">
+                        <img alt="Auto Layout" id="side-menu-layout" src="img/view_quilt-48px.svg" 
+                        onclick="CytoscapeEditor.layoutCose();" class="button-fake">                    
+                        <span class="hint invisible">Organic layout</span>
+                    </div>                     
+                </div>   
 
                 <div class="button-group">
                     <img alt="Model" id="side-menu-results" src="img/call_split-48px.svg" class="button" tab-id="tab-results">

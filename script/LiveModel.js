@@ -496,6 +496,7 @@ let LiveModel = {
 			this._validateUpdateFunction(variable);
 		}
 
+		UI.closeContent();
 
 		return undefined;	// no error
 	},

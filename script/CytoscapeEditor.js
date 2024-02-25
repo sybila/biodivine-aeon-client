@@ -41,15 +41,27 @@ let CytoscapeEditor = {
 	layoutCose() {
 		this._cytoscape.layout({
                 name: 'cose',
-                padding: 250,
+                padding: 50,
                 animate: true,
-                nodeRepulsion: function(node) { return 100000; },
-                animate: true,
-                animationDuration: 300,
-                refresh: 20,
+                animationDuration: 3000,
+				nodeOverlap: 20,
+				gravity: 0.5,
                 fit: true,
                 nodeDimensionsIncludeLabels: true,
         }).start();
+	},
+
+	layoutDagre() {
+		this._cytoscape.layout({
+				name: 'dagre',
+				acyclicer: 'greedy',
+				ranker: 'network-simplex',
+				padding: 50,
+				animate: true,
+				animationDuration: 300,
+				fit: true,
+				nodeDimensionsIncludeLabels: true,
+		}).start();
 	},
 
 	// Return an id of the selected node, or undefined if nothing is selected.
