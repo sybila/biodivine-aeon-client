@@ -98,6 +98,31 @@ function init() {
 			setSort(this.id);
 		}
 	}
+
+	// Set up debug layout settings panel
+	document.getElementById("toggle-newlayout").addEventListener("change", e => {
+		CytoscapeEditor.layoutSettings.useTidytree = e.target.checked;
+		CytoscapeEditor.applyTreeLayout();
+	});
+	document.getElementById("toggle-animate").addEventListener("change", e => {
+		CytoscapeEditor.layoutSettings.animate = e.target.checked;
+	});
+	document.getElementById("toggle-layered").addEventListener("change", e => {
+		CytoscapeEditor.layoutSettings.layered = e.target.checked;
+		CytoscapeEditor.applyTreeLayout();
+	});
+	document.getElementById("toggle-posonleft").addEventListener("change", e => {
+		CytoscapeEditor.layoutSettings.positiveOnLeft = e.target.checked;
+		CytoscapeEditor.applyTreeLayout();
+	});
+	document.getElementById("button-fit").addEventListener("click", e => {
+		CytoscapeEditor.fit();
+	});
+	document.getElementById("button-resetlayout").addEventListener("click", e => {
+		CytoscapeEditor.layoutSettings.extraVerticalSpacings = {};
+		CytoscapeEditor.layoutSettings.switchChildren.clear();
+		CytoscapeEditor.applyTreeLayout();
+	});
 }
 
 function compareInformationGain(a, b) {
@@ -273,7 +298,7 @@ function renderAttributeTable(id, attributes, totalCardinality) {
 	}
 }
 
-function autoExpandBifurcationTree(node, depth, fit = true) {
+function autoExpandBifurcationTree(node, depth, fit = false) {
 	let loading = document.getElementById("loading-indicator");
 	loading.classList.remove("invisible");
 	ComputeEngine.autoExpandBifurcationTree(node, depth, (e, r) => {		
@@ -288,10 +313,7 @@ function autoExpandBifurcationTree(node, depth, fit = true) {
 				}
 			}
 
-			CytoscapeEditor.applyTreeLayout();
-			if (fit) {
-				CytoscapeEditor.fit();				
-			}
+			CytoscapeEditor.applyTreeLayout(fit);
 		} else {
 			alert(e);
 		}
@@ -316,10 +338,7 @@ function loadBifurcationTree(fit = true) {
 				}
 			}
 
-			CytoscapeEditor.applyTreeLayout();
-			if (fit) {
-				CytoscapeEditor.fit();				
-			}			
+			CytoscapeEditor.applyTreeLayout(fit);
 		}			
 		loading.classList.add("invisible");
 	}, true);
@@ -460,6 +479,21 @@ function getWitnessPanelForVariable(variable, behaviour, vector) {
 	return "<span class='witness-panel'><span class='inline-button' onclick='openStabilityWitness(\""+variable+"\",\""+behaviour+"\",\""+vector+"\");'>Witness</span> | <span class='inline-button' onclick='openStabilityAttractor(\""+variable+"\",\""+behaviour+"\",\""+vector+"\");'>Attractor</span></span>";
 }
 
+// move node up (positive steps) or down (negative steps)
+function moveNode(nodeId, steps) {
+	const settings = CytoscapeEditor.layoutSettings
+	const spacing = settings.extraVerticalSpacings
+	const change = (settings.layered ? settings.layerHeight : 50) * steps;
+	if (spacing[nodeId] === undefined) {
+		spacing[nodeId] = 0;
+	}
+	spacing[nodeId] += change;
+	if (spacing[nodeId] <= 0) {
+		delete spacing[nodeId];
+	}
+	CytoscapeEditor.applyTreeLayout();
+}
+
 // Keyboard shortcuts for basic navigation:
 
 hotkeys('up', function(event, handler) {	
@@ -565,6 +599,68 @@ hotkeys('d', function(event, handler) {
 		fireEvent(document.getElementById("button-add-variable"), "click");
 	}
 })
+
+// add extra spacing
+hotkeys("k", function(event, handler) {
+	event.preventDefault();
+	let selected = CytoscapeEditor.getSelectedNodeId();
+	if (selected == undefined) {
+		return false;
+	}
+	moveNode(selected, 1)
+	return false;
+});
+
+// subtract extra spacing
+hotkeys("i", function(event, handler) {
+	event.preventDefault();
+	let selected = CytoscapeEditor.getSelectedNodeId();
+	if (selected == undefined) {
+		return false;
+	}
+	moveNode(selected, -1)
+	return false;
+});
+
+// switch selected and sibling's order
+hotkeys("j, l", function(event, handler) {
+	event.preventDefault();
+	let selected = CytoscapeEditor.getSelectedNodeId();
+	if (selected == undefined) {
+		return false;
+	}
+	let parent = CytoscapeEditor.getParentNode(selected);
+	if (parent == undefined) { 
+		return false;
+	}
+	const switchedIds = CytoscapeEditor.layoutSettings.switchChildren;
+	if (!switchedIds.delete(parent)) {
+		switchedIds.add(parent);
+	}
+	CytoscapeEditor.applyTreeLayout();
+	return false;
+});
+
+// switch children's order
+hotkeys("r", function(event, handler) {
+	event.preventDefault();
+	let selected = CytoscapeEditor.getSelectedNodeId();
+	if (selected == undefined) {
+		return false;
+	}
+	const switchedIds = CytoscapeEditor.layoutSettings.switchChildren;
+	if (!switchedIds.delete(selected)) {
+		switchedIds.add(selected);
+	}
+	CytoscapeEditor.applyTreeLayout();
+	return false;
+});
+
+hotkeys("f", function(event, handler) {
+	event.preventDefault();
+	CytoscapeEditor.fit();
+	return false
+});
 
 // utility function to fire events on UI elements - we mainly need it to simulate clicks
 function fireEvent(el, etype){
