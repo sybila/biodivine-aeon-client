@@ -1,9 +1,0 @@
-AEON virtual Machine Info:
-The virtual machine contains an image of the standard Ubuntu 19.10 installation. Both username and password is set to aeon. 
-
-To reliably run the machine, we recommend to assign at least two CPUs and 4GB of RAM (although a smaller number might be sufficient
-for most small benchmarks) to the machine.
-
-The instructions for the evaluators can be found in the home folder of the virtual machine or at http://biodivine.fi.muni.cz/aeon/ARTEFACT_README.txt
-
-The image was prepared on a macOS host machine with 4 cores and 16GB of RAM.
