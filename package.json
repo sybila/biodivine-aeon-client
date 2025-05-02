@@ -1,0 +1,28 @@
+{
+  "name": "biodivine-aeon-client",
+  "version": "0.5.0",
+  "description": "Web client for the AEON Boolean network toolbox.",
+  "homepage": "https://github.com/sybila/biodivine-aeon-client#readme",
+  "bugs": {
+    "url": "https://github.com/sybila/biodivine-aeon-client/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sybila/biodivine-aeon-client.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "landing-page:format:write": "prettier --write ./landing-page",
+    "landing-page:format:check": "prettier --check ./landing-page",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.25.1",
+    "eslint": "^9.25.1",
+    "globals": "^16.0.0",
+    "prettier": "3.5.3"
+  }
+}
