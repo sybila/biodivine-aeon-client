@@ -154,7 +154,11 @@
                         <div class="model-variable-regulators full-line"></div>
                         <h4> ● Update Function</h4>
                         <div class="invisible-input full-line variable-function" contenteditable data-placeholder="(default)" spellcheck='false' autocorrect='off' style="font-size: 16px; text-align: center;"></div>
-                        <div class="variable-function-status"></div>
+                        <div class="variable-function-status"></div>                        
+                        <h4> ● Actions</h4>
+                        <div style="text-align: center;">
+                            <span class="code-button">Inline variable</span>|<span class="code-button">Simplify function</span>|<span class="code-button">Infer regulators</span>
+                        </div>
                     </div>
 
                     <div id="model-regulation-template" class="model-regulation">
@@ -216,10 +220,10 @@
                     </tr>
                     <tr>
                         <td style="padding: 4px;">
-                            <button id="import-local" class="compound-button" onclick="LiveModel.loadFromLocalStorage();" style="width: 244px;"><span class="main">Last<br>model</span><span class="desc">Browser local storage</span></button>
+                            <button id="import-local" class="compound-button" onclick="LiveModel.loadFromLocalStorage();"><span class="main">Last<br>model</span><span class="desc">Browser local storage</span></button>
                         </td>
                         <td style="padding: 4px;">
-                            <button id="export-aeon" class="compound-button" onclick="UI.downloadAeon();" style="width: 244px;"><span class="main">.AEON</span><span class="desc">Simple text format</span></button>
+                            <button id="export-aeon" class="compound-button" onclick="UI.downloadAeon();"><span class="main">.AEON</span><span class="desc">Simple text format</span></button>
                         </td>
                     </tr>
                     <tr>
@@ -250,8 +254,7 @@
                         </td>
                     </tr>
                 </table>                
-                <h3 style="display: block; margin: 0 auto; text-align: center; margin-top: 8px; margin-bottom: 8px;">Example Models</h3>  
-
+                <h3 style="display: block; margin: 0 auto; text-align: center; margin-top: 8px; margin-bottom: 8px;">Example Models</h3>
                 <table style="text-align: center; margin-left: -4px;">
                     <tr>
                         <td style="padding: 4px;">
@@ -269,7 +272,17 @@
                             <button id="example-4" class="compound-button" onclick="LiveModel.importAeon(Examples.buddingYeastIrons);"><span class="main">Irons</span><span class="desc">Budding<br>Yeast</span></button>                
                         </td>
                     </tr>
-                </table>                                        
+                </table> 
+                <h3 style="display: block; margin: 0 auto; text-align: center; margin-top: 12px; margin-bottom: 12px;">Biodivine Boolean Models</h3>                                       
+                <table id="bbm-table">
+                    <thead>
+                        <tr>
+                            <td>ID</td>
+                            <td style="width: 100%;">Name</td>
+                            <td>Var.</td>
+                        </tr>                        
+                    </thead>
+                </table>
             </div>
 
             <div id="tab-results" class="main-panel gone">
@@ -359,7 +372,7 @@
                     <div class="button-group-fake" style="position: relative; top: 24px">
                         <img alt="Auto Layout" id="side-menu-layout" src="img/view_quilt-48px.svg" 
                         onclick="CytoscapeEditor.layoutCose();" class="button-fake">                    
-                        <span class="hint invisible">Organic layout</span>
+                        <span class="hint invisible">Spring layout</span>
                     </div>                     
                 </div>   
 

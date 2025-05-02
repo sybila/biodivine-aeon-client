@@ -1029,3 +1029,43 @@ Color scheme:
     Highlighted element background: #B0BEC5;
 
 */
+
+/* A button that can be used as an "inline" element. */
+.code-button {
+    text-decoration: underline;
+    text-transform: uppercase;
+    font-family: 'FiraMono';  
+    font-size: 12px;  
+    cursor: pointer;
+    display: inline-block;
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+.code-button:hover {
+    font-family: 'FiraMonoBold';  
+}
+
+#bbm-table {
+    font-family: 'FiraMono';     
+    margin-left: 4px;
+    margin-right: 4px;
+    text-align: center;
+}
+
+#bbm-table tr {
+    cursor: pointer;
+    user-select: none;    
+}
+
+#bbm-table td {
+    padding: 2px;
+}
+
+#bbm-table tr:nth-child(even) {
+    background-color: #CFD8DC;
+}
+
+#bbm-table tbody tr:hover, #bbm-table thead tr {
+    background-color: #d0d0d0;
+}

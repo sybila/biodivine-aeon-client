@@ -214,6 +214,7 @@ let ComputeEngine = {
 		} else {
 			return this._backendRequest("/get_bifurcation_tree/", (e, r) => {
 				if (callback !== undefined) {
+					console.log("tree", r);
 					callback(e, r);
 				}
 			}, "GET");
@@ -231,6 +232,7 @@ let ComputeEngine = {
 	getDecisionAttributes(node, callback) {
 		return this._backendRequest("/get_attributes/"+node, (e, r) => {
 			if (callback !== undefined) {
+				console.log("attributes", r);
 				callback(e, r);
 			}
 		});
@@ -271,6 +273,7 @@ let ComputeEngine = {
 	getStabilityData(nodeId, behaviour, callback) {
 		return this._backendRequest("/get_stability_data/"+nodeId+"/"+behaviour, (e, r) => {
 			if (callback !== undefined) {
+				console.log("stability", r);
 				callback(e, r);
 			}
 		}, "GET");

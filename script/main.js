@@ -99,6 +99,123 @@ function init() {
             ComputeEngine._backendRequest('/get_stability_witness/' + requestedTreeWitness + '/' + encodeURI(requestedBehaviour) + '/' + encodeURI(requestedVariable) + '/' + encodeURI("["+requestedVector+"]"), witnessCallback, 'GET', null);
         }		
 	}
+
+	loadBbmData();
+}
+
+/**
+ * Populate the import model table with BBM models.
+ */
+async function loadBbmData() {
+	bbmTable = document.getElementById("bbm-table")
+	
+	try {
+		// Load the BBM dataset from github. 
+
+		// We start by obtaining the latest commit hash.
+		let commit_url = 'https://api.github.com/repos/sybila/biodivine-boolean-models/commits/main'
+		commitData = await sendGithubRequest(commit_url);
+
+		// Then, we find the `models` directory inside the repository.
+		let url = `https://api.github.com/repos/sybila/biodivine-boolean-models/git/trees/${commitData['sha']}`
+		let repo_content = await sendGithubRequest(url);
+		let models_url = null;
+		for (let item of repo_content["tree"]) {
+			if(item["path"] == "models") {
+				models_url = item["url"];
+				break;
+			}
+		}
+
+		// Dump all model names, ids and sizes.
+		let models_content = await sendGithubRequest(models_url);
+		let models = [];
+		let name_regex = /\[id-(\d+)\]__\[var-(\d+)\]__\[in-(\d+)\]__\[([A-Z0-9_-]+)\]/
+		for (let item of models_content["tree"]) {			
+			m = item["path"].match(name_regex)
+			if (m === null) {
+				continue
+			}
+			models.push([m[1], m[2], m[4], item["url"]])			
+		}
+
+		// Generate table HTML content.
+		tableContent = "<tbody>"
+		for (let model of models) {
+			tableContent += `
+				<tr data-model-id='${model[0]}' data-model-url='${model[3]}' onclick='openBbmModel(this)'>
+					<td>${model[0]}</td>
+					<td>${model[2]}</td>
+					<td>${model[1]}</td>
+				</tr>
+			`
+		}
+		tableContent += "</tbody>"
+
+		bbmTable.innerHTML = bbmTable.innerHTML + tableContent
+	} catch (e) {
+		error_row = `
+			<tr>
+				<td></td>
+				<td>${e}</td>
+				<td></td>
+			</tr>
+		`;
+		bbmTable.innerHTML = bbmTable.innerHTML + error_row;
+	}
+}
+
+/**
+ * A helper method that constructs and executes a synchronous HTTP request to the Github API.
+ * 
+ * TODO: This currently cannot catch an error if the connection is completely down. It just silently fails. 
+ */
+async function sendGithubRequest(url) {
+	return new Promise((resolve, reject) => {
+		try {
+			var request = new XMLHttpRequest();
+			request.onload = (_e) => {
+				if (request.readyState === 4) {
+					if (request.status === 200) {
+						resolve(JSON.parse(request.responseText));
+					} else {
+						reject(request.statusText);
+					}
+				}
+			};
+			request.onerror = (_e) => {
+				reject(request.statusText);
+			};
+			request.open("GET", url, true);
+			request.setRequestHeader("Accept", "application/vnd.github+json")
+			request.setRequestHeader("X-GitHub-Api-Version", "2022-11-28")
+			request.send(null);
+		} catch (e) {
+			reject(e);
+		}
+	});
+}
+
+async function openBbmModel(e) {
+	try {
+		UI.isLoading(true);
+		modelFolder = await sendGithubRequest(e.dataset.modelUrl);
+		fileUrl = null;
+		for (let file of modelFolder["tree"]) {
+			if (file["path"] == "model.aeon") {
+				fileUrl = file["url"];
+				break;
+			}
+		}
+
+		modelData = await sendGithubRequest(fileUrl);
+		aeonModel = atob(modelData["content"]);
+		LiveModel.importAeon(aeonModel);
+	} catch (e) {
+		alert(e);
+	} finally {
+		UI.isLoading(false);
+	}
 }
 
 let Strings = {
