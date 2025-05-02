@@ -1,0 +1,142 @@
+@font-face {
+  font-family: "BaileyReg";
+  src: url("font/B3.ttf");
+}
+
+@font-face {
+  font-family: "BaileyBold";
+  src: url("font/B2.ttf");
+}
+
+@font-face {
+  font-family: "FiraMono";
+  src: url("font/FiraMono-Regular.ttf");
+}
+
+@font-face {
+  font-family: "FiraMonoBold";
+  src: url("font/FiraMono-Bold.ttf");
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "FiraMono", monospace;
+  background-color: #fdfdfd;
+  color: #333;
+  line-height: 1.6;
+}
+
+header {
+  text-align: center;
+  padding: 60px 20px 30px;
+}
+
+#logo {
+  font-family: "BaileyReg", serif;
+  font-size: 3.5em;
+  color: #3a568c;
+}
+
+#title {
+  font-family: "BaileyBold", serif;
+  color: #d05d5d;
+}
+
+.top-info {
+  max-width: 900px;
+  margin: 0 auto 60px;
+  padding: 24px;
+  background-color: #f4f7fb;
+  border-left: 6px solid #3a568c;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  font-family: "FiraMono", monospace;
+  border: 1px solid #eaeff7;
+}
+
+.top-info p {
+  margin: 0 0 16px;
+  line-height: 1.6;
+  font-size: 16px;
+  color: #333;
+}
+
+.top-info a {
+  color: #3a568c;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.top-info a:hover {
+  color: #d05d5d;
+}
+
+.top-info code {
+  display: block;
+  background-color: #eaeff7;
+  padding: 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  line-height: 1.5;
+  color: #2a2a2a;
+  overflow-x: auto;
+  margin: 0 0 16px;
+}
+
+.top-info code:last-child {
+  margin-bottom: 0;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.card {
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 9px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s;
+  border: 1px solid #fdfdfd;
+}
+
+.version-number {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #3a568c;
+  text-decoration: none;
+}
+
+.version-number:hover {
+  color: #d05d5d;
+}
+
+.subversion {
+  color: #888;
+  font-size: 0.9em;
+  margin-left: 12px;
+}
+
+.sublink {
+  margin-right: 12px;
+  text-decoration: none;
+  font-weight: bold;
+  color: #3a568c;
+}
+
+.sublink:hover {
+  color: #d05d5d;
+}
+
+p {
+  text-align: justify;
+  margin: 12px 0;
+}
+
+code {
+  font-family: "FiraMono", monospace;
+}
