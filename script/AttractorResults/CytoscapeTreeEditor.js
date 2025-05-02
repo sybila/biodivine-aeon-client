@@ -1,14 +1,10 @@
-let EdgeMonotonicity = {
-	unspecified: "unspecified",
-	activation: "activation",
-	inhibition: "inhibition",
-}
+
 
 /*
 	Responsible for managing the cytoscape editor object. It has its own representation of the graph,
 	but it should never be updated directly. Instead, always use LiveModel to specify updates.
 */
-let CytoscapeEditor = {
+let CytoscapeTreeEditor = {
 	
 	// Reference to the cytoscape library "god object"
 	_cytoscape: undefined,
@@ -33,14 +29,14 @@ let CytoscapeEditor = {
 	},
 	
 	init: function() {
-		this._cytoscape = cytoscape(this.initOptions());			
+		this._cytoscape = cytoscape(this.initOptions());
 		this._cytoscape.on('select', (e) => {
-			document.getElementById("quick-help").classList.add("gone");
+			document.getElementById("quick-help-tree-explorer").classList.add("gone");
 			console.log(e.target.data());
 			let data = e.target.data();
 			if (data.action == 'remove') {
 				// This is a remove button for a specifc tree node.
-				removeNode(data.targetId);
+				TreeExplorer.removeNode(data.targetId);
 			} else if (data.type == "leaf") {
 				this._showLeafPanel(data)
 			} else if (data.type == "decision") {
@@ -60,7 +56,7 @@ let CytoscapeEditor = {
 						y: currentPosition.y - e.target.height() / 2 - 12,
 					}
 				};
-				let node = CytoscapeEditor._cytoscape.add(closeButton);
+				let node = CytoscapeTreeEditor._cytoscape.add(closeButton);
 				node.on('mouseover', (e) => {
 					node.addClass('hover');	
 				});
@@ -85,7 +81,7 @@ let CytoscapeEditor = {
 		});
 		this._cytoscape.on('unselect', (e) => {
 			// Clear remove button
-			CytoscapeEditor._cytoscape.$(".remove-button").remove()
+			CytoscapeTreeEditor._cytoscape.$(".remove-button").remove()
 			// Remove the listener upading its position
 			const scratch = this._scratch(e.target);
 			e.target.removeListener('position', scratch.removeBtnHandler);
@@ -98,7 +94,7 @@ let CytoscapeEditor = {
 			let mixedInfo = document.getElementById("mixed-info");
 			mixedInfo.classList.add("gone");
 			// Clear decision attribute list:
-			document.getElementById("button-add-variable").classList.remove("gone");
+			document.getElementById("make-decision-button").classList.remove("gone");
 			document.getElementById("mixed-attributes").classList.add("gone");
 			document.getElementById("mixed-attributes-list").innerHTML = "";
 			// Reset stability analysis buttons:
@@ -114,13 +110,16 @@ let CytoscapeEditor = {
 	},
 
 	removeAll() {
-		CytoscapeEditor._cytoscape.nodes(":selected").unselect();	// Triggers reset of other UI.
-		CytoscapeEditor._cytoscape.elements().remove();
+		document.getElementById("decision-info").classList.add("gone");
+		document.getElementById("mixed-info").classList.add("gone");
+		document.getElementById("leaf-info").classList.add("gone");
+		CytoscapeTreeEditor._cytoscape.nodes(":selected").unselect();	// Triggers reset of other UI.
+		CytoscapeTreeEditor._cytoscape.elements().remove();
 	},
 
 	// Triggers all necessary events to update UI after graph update
 	refreshSelection(targetId) {
-		let selected = CytoscapeEditor._cytoscape.$(":selected");	// node or edge that are selected
+		let selected = CytoscapeTreeEditor._cytoscape.$(":selected");	// node or edge that are selected
 		if (selected.length > 0) {
 			selected.unselect();			
 		}
@@ -129,12 +128,12 @@ let CytoscapeEditor = {
 				selected.select();
 			}
 		} else {
-			CytoscapeEditor._cytoscape.getElementById(targetId).select();
+			CytoscapeTreeEditor._cytoscape.getElementById(targetId).select();
 		}		
 	},
 
 	getParentNode(targetId) {
-		let parentEdge = CytoscapeEditor._cytoscape.edges("edge[target='"+targetId+"']");
+		let parentEdge = CytoscapeTreeEditor._cytoscape.edges("edge[target='"+targetId+"']");
 		if (parentEdge.length == 0) {
 			return undefined;
 		}
@@ -142,7 +141,7 @@ let CytoscapeEditor = {
 	},
 
 	getChildNode(sourceId, positive) {
-		let childEdge = CytoscapeEditor._cytoscape.edges("edge[source='"+sourceId+"'][positive='"+positive+"']");
+		let childEdge = CytoscapeTreeEditor._cytoscape.edges("edge[source='"+sourceId+"'][positive='"+positive+"']");
 		if (childEdge.length == 0) {
 			return undefined;
 		}
@@ -150,90 +149,97 @@ let CytoscapeEditor = {
 	},
 
 	getSiblingNode(targetId) {		
-		let parentEdge = CytoscapeEditor._cytoscape.edges("edge[target='"+targetId+"']");
+		let parentEdge = CytoscapeTreeEditor._cytoscape.edges("edge[target='"+targetId+"']");
 		if (parentEdge.length == 0) { return undefined; }
 		let sourceId = parentEdge.data().source;
 		let positive = !(parentEdge.data().positive == "true");
-		let childEdge = CytoscapeEditor._cytoscape.edges("edge[source='"+sourceId+"'][positive='"+positive+"']");
+		let childEdge = CytoscapeTreeEditor._cytoscape.edges("edge[source='"+sourceId+"'][positive='"+positive+"']");
 		if (childEdge.length == 0) { return undefined; }
 		return childEdge.data().target;	
 	},
 
 	getSelectedNodeId() {
-		node = CytoscapeEditor._cytoscape.nodes(":selected");
+		node = CytoscapeTreeEditor._cytoscape.nodes(":selected");
 		if (node.length == 0) return undefined;
 		return node.data().id;
 	},
 
 	getSelectedNodeTreeData() {
-		node = CytoscapeEditor._cytoscape.nodes(":selected");
+		node = CytoscapeTreeEditor._cytoscape.nodes(":selected");
 		if (node.length == 0) return undefined;
 		return node.data().treeData;
 	},
 
 	selectNode(nodeId) {
-		let current = CytoscapeEditor._cytoscape.nodes(":selected");
+		let current = CytoscapeTreeEditor._cytoscape.nodes(":selected");
 		current.unselect();
-		CytoscapeEditor._cytoscape.getElementById(nodeId).select();
+		CytoscapeTreeEditor._cytoscape.getElementById(nodeId).select();
 	},
 
 	getNodeType(nodeId) {
-		return CytoscapeEditor._cytoscape.getElementById(nodeId).data().type;
+		return CytoscapeTreeEditor._cytoscape.getElementById(nodeId).data().type;
 	},
 
 	_showDecisionPanel(data) {
 		document.getElementById("decision-info").classList.remove("gone");
 		document.getElementById("decision-attribute").innerHTML = data.treeData.attribute_name;
 		document.getElementById("decision-phenotype-label").innerHTML = 
-			"Phenotypes (" + data.treeData.classes.length + "):";
+			"Behavior Classes (" + data.treeData.classes.length + "):";
 		let behaviorTable = document.getElementById("decision-behavior-table");		
 		this._renderBehaviorTable(data.treeData.classes, data.treeData.cardinality, behaviorTable);
 
 		let stabilityButton = document.getElementById("decision-stability-analysis-button");
 		let stabilityDropdown = document.getElementById("decision-stability-dropdown");
 		let stabilityContainer = document.getElementById("decision-stability-analysis");
-		initStabilityButton(data.treeData.id, stabilityButton, stabilityDropdown, stabilityContainer);		
+		TreeExplorer.initStabilityButton(data.treeData.id, stabilityButton, stabilityDropdown, stabilityContainer);		
+	},
+
+	//Functionality for the make-decision-button.
+	_makeDecisionFunction(addButton, loading, data) {
+		if (!UI.testResultsAvailable()) {return;};
+	
+		if (data.treeData["attributes"] === undefined) {
+			loading.classList.remove("invisible");			
+			ComputeEngine.AttractorTree.getDecisionAttributes(data.id, (e, r) => {
+				loading.classList.add("invisible");
+				addButton.classList.add("gone");				
+				for (attr of r) {
+					// Prepare data:
+					attr.left.sort(function(a, b) { return b.cardinality - a.cardinality; });
+					attr.right.sort(function(a, b) { return b.cardinality - a.cardinality; });
+					let leftTotal = attr.left.reduce((a, b) => a + b.cardinality, 0.0);
+					let rightTotal = attr.right.reduce((a, b) => a + b.cardinality, 0.0);		
+					attr["leftTotal"] = leftTotal;
+					attr["rightTotal"] = rightTotal;
+					for (lElement of attr.left) {
+						lElement["fraction"] = lElement.cardinality / leftTotal;
+					}
+					for (rElement of attr.right) {
+						rElement["fraction"] = rElement.cardinality / rightTotal;
+					}						
+				}			
+				data.treeData["attributes"] = r;				
+				TreeExplorer.renderAttributeTable(data.id, r, data.treeData.cardinality);
+			});
+		} else {
+			TreeExplorer.renderAttributeTable(data.id, data.treeData["attributes"], data.treeData.cardinality);
+		}	
 	},
 
 	_showMixedPanel(data) {
 		document.getElementById("mixed-info").classList.remove("gone");
-		document.getElementById("mixed-type-label").innerHTML = data.treeData.classes.length + " Phenotypes";
+		document.getElementById("mixed-type-label").innerHTML = data.treeData.classes.length + " Behavior Classes";
 		let table = document.getElementById("mixed-behavior-table");
 		this._renderBehaviorTable(data.treeData.classes, data.treeData.cardinality, table);
 		let loading = document.getElementById("loading-indicator");
-		let addButton = document.getElementById("button-add-variable");
-		addButton.onclick = function() {			
-			if (data.treeData["attributes"] === undefined) {
-				loading.classList.remove("invisible");			
-				ComputeEngine.getDecisionAttributes(data.id, (e, r) => {
-					loading.classList.add("invisible");
-					addButton.classList.add("gone");				
-					for (attr of r) {
-						// Prepare data:
-						attr.left.sort(function(a, b) { return b.cardinality - a.cardinality; });
-						attr.right.sort(function(a, b) { return b.cardinality - a.cardinality; });
-						let leftTotal = attr.left.reduce((a, b) => a + b.cardinality, 0.0);
-						let rightTotal = attr.right.reduce((a, b) => a + b.cardinality, 0.0);		
-						attr["leftTotal"] = leftTotal;
-						attr["rightTotal"] = rightTotal;
-						for (lElement of attr.left) {
-							lElement["fraction"] = lElement.cardinality / leftTotal;
-						}
-						for (rElement of attr.right) {
-							rElement["fraction"] = rElement.cardinality / rightTotal;
-						}						
-					}			
-					data.treeData["attributes"] = r;				
-					renderAttributeTable(data.id, r, data.treeData.cardinality);
-				});
-			} else {
-				renderAttributeTable(data.id, data.treeData["attributes"], data.treeData.cardinality);
-			}			
-		};
+
+		let addButton = document.getElementById("make-decision-button");
+		addButton.onclick = function() { CytoscapeTreeEditor._makeDecisionFunction(addButton, loading, data); };
+
 		let stabilityButton = document.getElementById("mixed-stability-analysis-button");
 		let stabilityDropdown = document.getElementById("mixed-stability-dropdown");
 		let stabilityContainer = document.getElementById("mixed-stability-analysis");
-		initStabilityButton(data.treeData.id, stabilityButton, stabilityDropdown, stabilityContainer);		
+		TreeExplorer.initStabilityButton(data.treeData.id, stabilityButton, stabilityDropdown, stabilityContainer);		
 	},
 
 	_renderBehaviorTable(classes, totalCardinality, table) {
@@ -259,8 +265,8 @@ let CytoscapeEditor = {
 			} else {
 				witnessCount.innerHTML = cls.cardinality.toString();
 			} 	
-			let percent = Math_percent(cls.cardinality, totalCardinality);
-			let dimPercent = Math_dimPercent(cls.cardinality, totalCardinality);
+			let percent = TreeExplorer.Math_percent(cls.cardinality, totalCardinality);
+			let dimPercent = TreeExplorer.Math_dimPercent(cls.cardinality, totalCardinality);
 			distribution.innerHTML = percent + "% / " + dimPercent + "٪";
 			row.classList.remove("gone");
 			row.classList.add("behavior-table-row");
@@ -272,8 +278,8 @@ let CytoscapeEditor = {
 	_showLeafPanel(data) {
 		document.getElementById("leaf-info").classList.remove("gone");
 		document.getElementById("leaf-phenotype").innerHTML = data.label;
-		let percent = Math_percent(data.treeData.cardinality, this._totalCardinality);
-		let dimPercent = Math_dimPercent(data.treeData.cardinality, this._totalCardinality);
+		let percent = TreeExplorer.Math_percent(data.treeData.cardinality, this._totalCardinality);
+		let dimPercent = TreeExplorer.Math_dimPercent(data.treeData.cardinality, this._totalCardinality);
 		document.getElementById("leaf-witness-count").innerHTML = data.treeData.cardinality + " (" + percent + "% / " + dimPercent + "٪)";
 		let conditions = "";
 		let pathId = data.id;
@@ -291,7 +297,7 @@ let CytoscapeEditor = {
 		let stabilityButton = document.getElementById("leaf-stability-analysis-button");
 		let stabilityDropdown = document.getElementById("leaf-stability-dropdown");
 		let stabilityContainer = document.getElementById("leaf-stability-analysis");
-		initStabilityButton(data.treeData.id, stabilityButton, stabilityDropdown, stabilityContainer);		
+		TreeExplorer.initStabilityButton(data.treeData.id, stabilityButton, stabilityDropdown, stabilityContainer);		
 
 		// Show additional phenotypes if this is a leaf that was created due to precision.
 		let table = document.getElementById("leaf-behavior-table");		
@@ -305,7 +311,7 @@ let CytoscapeEditor = {
 
 	initOptions: function() {
 		return {
-			container: document.getElementById("cytoscape-editor"),			
+			container: document.getElementById("cytoscape-tree-editor"),			
 			boxSelectionEnabled: false,
   			selectionType: 'single', 
   			style: [
@@ -437,6 +443,7 @@ let CytoscapeEditor = {
 			return node;
 		} else {
 			let data = this._applyTreeData({ id: treeData.id }, treeData);
+
 			return this._cytoscape.add({
 				id: data.id,
 				data: data, 
@@ -483,7 +490,7 @@ let CytoscapeEditor = {
 		if (cardinality === undefined) {
 			return 1.0;
 		}
-		let percent = Math_dimPercent(cardinality, this._totalCardinality);
+		let percent = TreeExplorer.Math_dimPercent(cardinality, this._totalCardinality);
 		return (percent / 100.0) * (percent / 100.0);
 	},
 
@@ -527,7 +534,7 @@ let CytoscapeEditor = {
 		} else if (treeData.type == "decision") {
 			data.label = treeData.attribute_name;
 		} else if (treeData.type == "unprocessed" ) {
-			data.label = "Mixed Phenotype\n" + "(" + treeData.classes.length + " types)";
+			data.label = "Mixed Classes\n" + "(" + treeData.classes.length + " types)";
 		} else {
 			data.label = treeData.type + "(" + treeData.id + ")";
 		}

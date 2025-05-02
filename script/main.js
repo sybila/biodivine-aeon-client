@@ -4,11 +4,37 @@ function init() {
 	// Safari security alert
 	let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 	if (isSafari) {
-		alert(
-			"At the moment, security measures in Safari may prevent you from connecting to the AEON compute engine.\n\n" + 
-			"You can still use the editor to view, modify and export models. While we work on this issue, you " + 
+		Warning.displayWarning(
+			"At the moment, security measures in Safari may prevent you from connecting to the AEON compute engine.\n\n" +
+			"You can still use the editor to view, modify and export models. While we work on this issue, you " +
 			"can access full AEON functionaliy in Google Chrome."
 		);
+	}
+
+	if (window.initialTabInfo == undefined ||
+			window.modelId == undefined ||
+				window.nextModelId == undefined ||
+					window.modelCalc == undefined) {
+		window.initialTabInfo = {type:"model", data: JSON.stringify("")};
+		window.modelId = 0;
+		window.nextModelId = { "value": 1 };
+		window.modelCalc = {};
+	}
+
+	if (window.lastComputation != undefined) {
+		ComputeEngine.Computation.setLastComputation(window.lastComputation);
+	}
+
+	if (window.model != undefined) {
+		LiveModel.modelSave = window.model;
+	}
+
+	document.title = document.title + " " + window.initialTabInfo.type + " " + window.modelId;
+
+	if (window.modelCalc[window.modelId] == undefined) {
+		window.modelCalc[window.modelId] = 1;
+	} else {
+		window.modelCalc[window.modelId]++;
 	}
 
 	// Warn user that there is an unsaved model.
@@ -27,7 +53,7 @@ function init() {
 		if (e) {
 			e.returnValue = Strings.closePrompt;
 		}
-	
+
 		// For Safari
 		return Strings.closePrompt;
 	};
@@ -38,7 +64,7 @@ function init() {
 	document.getElementById("engine-link-windows").href = document
 		.getElementById("engine-link-windows")
 		.href.replace("VERSION", version_string);
-	
+
 	document.getElementById("engine-link-macos").href = document
 		.getElementById("engine-link-macos")
 		.href.replace("VERSION", version_string);
@@ -60,23 +86,30 @@ function init() {
 	const engineAddress = urlParams.get('engine');
 	if (engineAddress !== undefined && engineAddress !== null && engineAddress.length > 0) {
 		document.getElementById("engine-address").value = engineAddress;
-	}	
-	
+	}
+
 	UI.init();
 	ModelEditor.init();
-	CytoscapeEditor.init();			
-	ComputeEngine.openConnection();	// Try to automatically connect when first opened.
+	ControllableEditor.init();
+	PhenotypeEditor.init();
+	CytoscapeEditor.init();
+	Results.init();
+	ControlResults.init();
+	TabBar.init();
+	Warning.init();
+	ComputeEngine.Connection.openConnection();	// Try to automatically connect when first opened.
+	ComputeEngine.Computation.Control.resetParameters();
 
 	let witnessCallback = function(e, r) {
 		UI.isLoading(false);
 		if (e !== undefined) {
-			alert(e);
+			Warning.displayWarning(e);
 		} else {
-			let error = LiveModel.importAeon(r.model);				
+			let error = LiveModel.Import.importAeon(r.model);
 			if (error !== undefined) {
-        		alert(error);
+        		Warning.displayWarning(error);
         	}
-        	UI.ensureContentTabOpen(ContentTabs.modelEditor);
+        	UI.Visible.ensureContentTabOpen(ContentTabs.modelEditor);
 		}
 	}
 
@@ -90,7 +123,7 @@ function init() {
 	if (requestedTreeWitness !== undefined && requestedTreeWitness !== null) {
 		UI.isLoading(true);
 		const requestedVariable = urlParams.get('variable');
-        const requestedBehaviour = urlParams.get('behaviour');     
+        const requestedBehaviour = urlParams.get('behaviour');
         const requestedVector = urlParams.get('vector');
         if(requestedVariable === undefined || requestedVariable === null || requestedVector === null) {
         	ComputeEngine.getTreeWitness(requestedTreeWitness, witnessCallback, true);
@@ -138,68 +171,5 @@ function ensurePlaceholder(el) {
 	}
 */
 
-hotkeys('e', function(event, handler) {	
-	if (UI.isNodeMenuVisible()) {
-		event.preventDefault();
-		fireEvent(document.getElementById("node-menu-edit-name"), "click");
-	}	
-});
-
-hotkeys('f', function(event, handler) {	
-	if (UI.isNodeMenuVisible()) {
-		event.preventDefault();
-		fireEvent(document.getElementById("node-menu-edit-function"), "click");
-	}	
-});
-
-hotkeys('backspace', function(event, handler) {	
-	if (UI.isNodeMenuVisible()) {
-		event.preventDefault();
-		fireEvent(document.getElementById("node-menu-remove"), "click");
-	}	
-	if (UI.isEdgeMenuVisible()) {
-		event.preventDefault();
-		fireEvent(document.getElementById("edge-menu-remove"), "click");
-	}
-});
-
-hotkeys('o', function(event, handler) {	
-	if (UI.isEdgeMenuVisible()) {
-		event.preventDefault();
-		fireEvent(document.getElementById("edge-menu-observability"), "click");
-	}	
-});
-
-hotkeys('m', function(event, handler) {	
-	if (UI.isEdgeMenuVisible()) {
-		event.preventDefault();
-		fireEvent(document.getElementById("edge-menu-monotonicity"), "click");
-	}	
-});
-
-hotkeys('n,+', function(event, handler) {	
-	event.preventDefault();
-	let id = LiveModel.addVariable();
-	CytoscapeEditor.showNode(id);
-});
-
-hotkeys('h', { keyup: true }, function(event, handler) {
-	if (event.type === 'keydown') {
-		UI.setQuickHelpVisible(true);
-	}
-	if (event.type === 'keyup') {
-		UI.setQuickHelpVisible(false);
-	}	
-});
 
 
-// utility function to fire events on UI elements - we mainly need it to simulate clicks
-function fireEvent(el, etype){
-  if (el.fireEvent) {
-    el.fireEvent('on' + etype);
-  } else {
-    var evObj = document.createEvent('Events');
-    evObj.initEvent(etype, true, false);
-    el.dispatchEvent(evObj);
-  }
-}

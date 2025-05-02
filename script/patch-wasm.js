@@ -14,7 +14,7 @@ import init, { sbml_to_aeon, aeon_to_sbml, aeon_to_sbml_instantiated, aeon_to_bn
 UI.isLoading(true);
 init().then(() => {
     // Methods that provide conversions between `.aeon` and `.sbml/.bnet`.
-    ComputeEngine.sbmlToAeon = function(sbmlString, callback) {
+    ComputeEngine.Format.sbmlToAeon = function(sbmlString, callback) {
         try {
             const aeon = sbml_to_aeon(sbmlString);            
             callback(undefined, { 'model': aeon });
@@ -22,7 +22,7 @@ init().then(() => {
             callback(e, undefined);
         }
     }
-    ComputeEngine.aeonToSbml = function(aeonString, callback) {
+    ComputeEngine.Format.aeonToSbml = function(aeonString, callback) {
         try {
             const sbml = aeon_to_sbml(aeonString);            
             callback(undefined, { 'model': sbml });
@@ -30,7 +30,7 @@ init().then(() => {
             callback(e, undefined);
         }
     }
-    ComputeEngine.aeonToSbmlInstantiated = function(aeonString, callback) {
+    ComputeEngine.Format.aeonToSbmlInstantiated = function(aeonString, callback) {
         try {
             const sbml = aeon_to_sbml_instantiated(aeonString);            
             callback(undefined, { 'model': sbml });
@@ -38,7 +38,7 @@ init().then(() => {
             callback(e, undefined);
         }
     }
-    ComputeEngine.aeonToBnet = function(aeonString, callback) {
+    ComputeEngine.Format.aeonToBnet = function(aeonString, callback) {
         try {
             const bnet = aeon_to_bnet(aeonString);            
             callback(undefined, { 'model': bnet });
@@ -46,7 +46,7 @@ init().then(() => {
             callback(e, undefined);
         }
     }
-    ComputeEngine.bnetToAeon = function(bnetString, callback) {
+    ComputeEngine.Format.bnetToAeon = function(bnetString, callback) {
         try {
             const bnet = bnet_to_aeon(bnetString);            
             callback(undefined, { 'model': bnet });
