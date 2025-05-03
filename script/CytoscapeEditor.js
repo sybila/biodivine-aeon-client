@@ -17,6 +17,12 @@ let CytoscapeEditor = {
 	// Used to implement the double click feature
 	_lastClickTimestamp: undefined,
 
+	// True if show controllable button is in effect.
+	_controllableShown: undefined,
+	// True if show phenotype button is in effect.
+	_phenotypeShown: undefined,
+
+
 	init: function() {
 		this._cytoscape = cytoscape(this.initOptions());
 		this._edgehandles = this._cytoscape.edgehandles(this.edgeOptions());
@@ -32,10 +38,13 @@ let CytoscapeEditor = {
 		this._cytoscape.on('click', (e) => {
 			let now = (new Date()).getTime();
 			if (this._lastClickTimestamp && now - this._lastClickTimestamp < DOUBLE_CLICK_DELAY) {				
-				LiveModel.addVariable([e.position['x'], e.position['y']]);
+				LiveModel.Variables.addVariable(false, [e.position['x'], e.position['y']]);
 			}
 			this._lastClickTimestamp = now;
 		});
+
+		this._controllableShown = false;
+		this._phenotypeShown = false;
 	},
 
 	layoutCose() {
@@ -64,6 +73,50 @@ let CytoscapeEditor = {
 		}).start();
 	},
 
+	// Applies concentric layout to sort data by phenotype or by controllable values.
+	// If phenotype parameter is true, then sorts by phenotype, else by controllable.
+	_applyConcentricLayout(phenotype) {
+		const nodes = [];
+		const variables = {};
+		
+		LiveModel.Variables.getAllVariables().forEach(variable => {
+			nodes.push(this._cytoscape.getElementById(variable.id));
+			
+			if (phenotype == true) {
+				variables[variable.id] = variable.phenotype == null ? 0 : variable.phenotype ? 1 : 2;
+			} else {
+				variables[variable.id] = variable.controllable ? 0 : 1;
+			}
+		})
+
+		const nodesCol = this._cytoscape.collection(nodes);
+
+		nodesCol.layout({
+			name: 'concentric',
+			concentric: function(node) { return variables[node.id()]; },
+			levelWidth: function() { return 1; },
+			minNodeSpacing: 5,
+			padding: 5,
+			startAngle: 3 / 2 * Math.PI,
+			clockwise: true,
+			animate: true,
+			animationDuration: 300,
+			nodeDimensionsIncludeLabels: true,
+			fit: true,
+		  }).run();
+	},
+
+
+	layoutPhenotype() {
+		this._applyConcentricLayout(true);
+	},
+
+	layoutControllable() {
+		this._applyConcentricLayout(false);
+	},
+
+	
+
 	// Return an id of the selected node, or undefined if nothing is selected.
 	getSelectedNodeId() {
 		let node = CytoscapeEditor._cytoscape.nodes(":selected");
@@ -78,6 +131,9 @@ let CytoscapeEditor = {
 			data: { id: id, name: name },
 			position: { x: position[0], y: position[1] },
 		})
+
+		this.highlightControllable([LiveModel.Variables.variableFromId(id)]);
+
 		node.on('mouseover', (e) => {
 			node.addClass('hover');	
 			ModelEditor.hoverVariable(id, true);		
@@ -97,7 +153,7 @@ let CytoscapeEditor = {
 			ModelEditor.selectVariable(id, true);
 		})
 		node.on('unselect', (e) => {
-			UI.toggleNodeMenu();
+			UI.Visible.toggleNodeMenu();
 			ModelEditor.selectVariable(id, false);
 		})
 		node.on('click', (e) => {						
@@ -267,7 +323,7 @@ let CytoscapeEditor = {
 		let zoom = CytoscapeEditor._cytoscape.zoom();			
 		let position = node.renderedPosition();
 		let height = node.height() * zoom;			
-		UI.toggleNodeMenu([position["x"], position["y"]], zoom);
+		UI.Visible.toggleNodeMenu([position["x"], position["y"]], zoom);
 	},
 
 	// Update the edge menu to be shown exactly for the currently selected edge.
@@ -280,7 +336,68 @@ let CytoscapeEditor = {
 		let zoom = CytoscapeEditor._cytoscape.zoom();
 		let boundingBox = edge.renderedBoundingBox();
 		let position = [ (boundingBox.x1 + boundingBox.x2) / 2, (boundingBox.y1 + boundingBox.y2) / 2 ];
-		UI.toggleEdgeMenu(edge.data(), position, zoom);
+		UI.Visible.toggleEdgeMenu(edge.data(), position, zoom);
+	},
+
+	// Implements functionality of buttons responsible for highlighting of nodes in the graph.
+	highlightButton(button, highlightPhenotype) {
+		if (highlightPhenotype) {
+			button.style.backgroundColor = this._phenotypeShown ? "#ECEFF1" : '#B0BEC5';
+			this.highlightPhenotype();
+		} else {
+			button.style.backgroundColor = this._controllableShown ? "#ECEFF1" : '#B0BEC5';
+			this.highlightControllable();
+		}
+	},
+
+	// Changes borders of all nodes which are in the phenotype.
+	highlightPhenotype(inputNodes = null) {
+		var nodes = undefined;
+
+		if (inputNodes == null) {
+			nodes = LiveModel.Variables.getAllVariables();
+			this._phenotypeShown = !this._phenotypeShown;
+		} else {
+			nodes = inputNodes;
+		}
+
+		nodes.forEach(node => {
+			if (this._phenotypeShown && node.phenotype == true) {
+				this._cytoscape.getElementById(node.id).style('border-color', 'green',);
+				this._cytoscape.getElementById(node.id).style('color', 'green');
+				this._cytoscape.getElementById(node.id).style('border-width', '2px');
+			} else if (this._phenotypeShown && node.phenotype == false) {
+				this._cytoscape.getElementById(node.id).style('border-color', 'red',);
+				this._cytoscape.getElementById(node.id).style('color', 'red');
+				this._cytoscape.getElementById(node.id).style('border-width', '2px');
+			} else {
+				this._cytoscape.getElementById(node.id).style('border-color', '#bbbbbb');
+				this._cytoscape.getElementById(node.id).style('color', 'black');
+				this._cytoscape.getElementById(node.id).style('border-width', '1px');
+			}
+		});
+	},
+
+
+
+	// Changes colour of all nodes which are set as controllable.
+	highlightControllable(inputNodes = null) {
+		var nodes = undefined;
+
+		if (inputNodes == null) {
+			nodes = LiveModel.Variables.getAllVariables();
+			this._controllableShown = !this._controllableShown;
+		} else {
+			nodes = inputNodes;
+		}
+
+		nodes.forEach(node => {
+			if (this._controllableShown && node.controllable) {
+				this._cytoscape.getElementById(node.id).style('background-color', '#FFFF66');
+			} else {
+				this._cytoscape.getElementById(node.id).style('background-color', '#dddddd');
+			}
+		});
 	},
 
 	// Helper function to initialize new edge object, since edges can appear explicitly
@@ -290,7 +407,7 @@ let CytoscapeEditor = {
 			this._renderMenuForSelectedEdge(edge);
 		});
 		edge.on("unselect", (e) => {
-			UI.toggleEdgeMenu();	// hide menu
+			UI.Visible.toggleEdgeMenu();	// hide menu
 		});
 		edge.on("mouseover", (e) => {
 			edge.addClass("hover");
@@ -469,7 +586,7 @@ let CytoscapeEditor = {
 	        },
 	        // Add the edge to the live model
 	        complete: function(sourceNode, targetNode, addedEles) {	        	
-	        	if (!LiveModel.addRegulation(sourceNode.id(), targetNode.id(), true, EdgeMonotonicity.unspecified)) {
+	        	if (!LiveModel.Regulations.addRegulation(false, sourceNode.id(), targetNode.id(), true, EdgeMonotonicity.unspecified)) {
 	        		addedEles.remove();	// if we can't create the regulation, remove new edge
 	        	} else {
 	        		CytoscapeEditor._initEdge(addedEles[0]);

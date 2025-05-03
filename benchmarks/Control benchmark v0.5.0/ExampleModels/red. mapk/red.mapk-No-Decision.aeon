@@ -1,0 +1,125 @@
+#position:v_TGFBR_stimulus:682.9999999999999,-97.54871868488914
+#!control:v_TGFBR_stimulus:true,null
+#position:v_Apoptosis:834.3778573513207,-69.25129294113736
+#!control:v_Apoptosis:false,false
+$v_Apoptosis:(((((((((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & v_p53) & !v_EGFR) & !v_FGFR3) & !v_FRS2) & !v_AKT) & !v_MSK) | (((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & v_p53) & !v_EGFR) & !v_FGFR3) & v_FRS2) & !v_AKT)) | ((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & v_p53) & !v_EGFR) & v_FGFR3) & !v_AKT)) | (((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & v_p53) & v_EGFR) & !v_AKT)) | ((((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & v_p53) & !v_AKT)) | (((v_TGFBR_stimulus & !v_ERK) & v_p53) & !v_AKT))
+v_TGFBR_stimulus -> v_Apoptosis
+v_DNA_damage -> v_Apoptosis
+v_ERK -| v_Apoptosis
+v_p53 -> v_Apoptosis
+v_EGFR -> v_Apoptosis
+v_FGFR3 -> v_Apoptosis
+v_FRS2 -> v_Apoptosis
+v_AKT -| v_Apoptosis
+v_MSK -| v_Apoptosis
+#position:v_DNA_damage:965.3112962536813,11.819260141975349
+#!control:v_DNA_damage:true,null
+#position:v_ERK:1058.117030256087,134.71391314313246
+#!control:v_ERK:true,null
+$v_ERK:(((((((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & !v_FGFR3) & v_FRS2) & v_MSK) | ((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & v_FGFR3) & v_MSK)) | (((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & !v_p53) & v_EGFR) & v_MSK)) | ((((((!v_TGFBR_stimulus & !v_DNA_damage) & v_ERK) & !v_p53) & !v_EGFR) & v_FGFR3) & v_MSK)) | (((((!v_TGFBR_stimulus & !v_DNA_damage) & v_ERK) & !v_p53) & v_EGFR) & v_MSK))
+v_TGFBR_stimulus -| v_ERK
+v_DNA_damage -| v_ERK
+v_ERK -? v_ERK
+v_p53 -| v_ERK
+v_EGFR -> v_ERK
+v_FGFR3 -> v_ERK
+v_FRS2 -> v_ERK
+v_MSK -> v_ERK
+#position:v_p53:1100.2611307271877,282.83506219174654
+#!control:v_p53:true,null
+$v_p53:(((((((((((((((((((((((((((((((((((((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & !v_FGFR3) & v_FRS2) & !v_AKT) & !v_MSK) | (((((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & !v_FGFR3) & v_FRS2) & v_AKT) & !v_MSK) & v_p14)) | (((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & v_FGFR3) & !v_AKT) & !v_MSK)) | ((((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & v_FGFR3) & v_AKT) & !v_MSK) & v_p14)) | ((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & !v_p53) & v_EGFR) & !v_AKT) & !v_MSK)) | (((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & !v_p53) & v_EGFR) & v_AKT) & !v_MSK) & v_p14)) | ((((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & v_p53) & !v_EGFR) & !v_FGFR3) & !v_FRS2) & !v_MSK) & v_p14)) | (((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & v_p53) & !v_EGFR) & !v_FGFR3) & v_FRS2) & v_p14)) | ((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & v_p53) & !v_EGFR) & v_FGFR3) & v_p14)) | (((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & v_p53) & v_EGFR) & v_p14)) | (((((((!v_TGFBR_stimulus & !v_DNA_damage) & v_ERK) & !v_p53) & !v_EGFR) & v_FGFR3) & !v_AKT) & !v_MSK)) | ((((((((!v_TGFBR_stimulus & !v_DNA_damage) & v_ERK) & !v_p53) & !v_EGFR) & v_FGFR3) & v_AKT) & !v_MSK) & v_p14)) | ((((((!v_TGFBR_stimulus & !v_DNA_damage) & v_ERK) & !v_p53) & v_EGFR) & !v_AKT) & !v_MSK)) | (((((((!v_TGFBR_stimulus & !v_DNA_damage) & v_ERK) & !v_p53) & v_EGFR) & v_AKT) & !v_MSK) & v_p14)) | (((((((!v_TGFBR_stimulus & !v_DNA_damage) & v_ERK) & v_p53) & !v_EGFR) & !v_FGFR3) & !v_MSK) & v_p14)) | ((((((!v_TGFBR_stimulus & !v_DNA_damage) & v_ERK) & v_p53) & !v_EGFR) & v_FGFR3) & v_p14)) | (((((!v_TGFBR_stimulus & !v_DNA_damage) & v_ERK) & v_p53) & v_EGFR) & v_p14)) | (((((((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & !v_FGFR3) & !v_FRS2) & !v_AKT)) | ((((((((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & !v_FGFR3) & !v_FRS2) & v_AKT) & !v_MSK)) | (((((((((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & !v_FGFR3) & !v_FRS2) & v_AKT) & v_MSK) & v_p14)) | ((((((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & !v_FGFR3) & v_FRS2)) | (((((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & v_FGFR3)) | ((((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & !v_p53) & v_EGFR)) | (((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & v_p53)) | ((((((!v_TGFBR_stimulus & v_DNA_damage) & v_ERK) & !v_p53) & !v_EGFR) & !v_FGFR3) & !v_AKT)) | (((((((!v_TGFBR_stimulus & v_DNA_damage) & v_ERK) & !v_p53) & !v_EGFR) & !v_FGFR3) & v_AKT) & !v_MSK)) | ((((((((!v_TGFBR_stimulus & v_DNA_damage) & v_ERK) & !v_p53) & !v_EGFR) & !v_FGFR3) & v_AKT) & v_MSK) & v_p14)) | (((((!v_TGFBR_stimulus & v_DNA_damage) & v_ERK) & !v_p53) & !v_EGFR) & v_FGFR3)) | ((((!v_TGFBR_stimulus & v_DNA_damage) & v_ERK) & !v_p53) & v_EGFR)) | (((!v_TGFBR_stimulus & v_DNA_damage) & v_ERK) & v_p53)) | (((v_TGFBR_stimulus & !v_DNA_damage) & !v_p53) & !v_AKT)) | ((((v_TGFBR_stimulus & !v_DNA_damage) & !v_p53) & v_AKT) & v_p14)) | (((v_TGFBR_stimulus & !v_DNA_damage) & v_p53) & v_p14)) | (v_TGFBR_stimulus & v_DNA_damage))
+v_TGFBR_stimulus -> v_p53
+v_DNA_damage -> v_p53
+v_ERK -| v_p53
+v_p53 -? v_p53
+v_EGFR -> v_p53
+v_FGFR3 -> v_p53
+v_FRS2 -> v_p53
+v_AKT -| v_p53
+v_MSK -| v_p53
+v_p14 -> v_p53
+#position:v_EGFR:1086.0518033698393,436.1781253411818
+#!control:v_EGFR:true,null
+$v_EGFR:((((((!v_EGFR_stimulus & !v_TGFBR_stimulus) & v_ERK) & !v_EGFR) & !v_FGFR3) & !v_FRS2) | ((((v_EGFR_stimulus & !v_TGFBR_stimulus) & !v_EGFR) & !v_FGFR3) & !v_FRS2))
+v_EGFR_stimulus -> v_EGFR
+v_TGFBR_stimulus -| v_EGFR
+v_ERK -> v_EGFR
+v_EGFR -? v_EGFR
+v_FGFR3 -| v_EGFR
+v_FRS2 -| v_EGFR
+#position:v_FGFR3:1017.4080965802524,574.0332722098614
+#!control:v_FGFR3:true,null
+$v_FGFR3:((((v_FGFR3_stimulus & !v_TGFBR_stimulus) & !v_EGFR) & !v_FGFR3) & !v_FRS2)
+v_FGFR3_stimulus -> v_FGFR3
+v_TGFBR_stimulus -| v_FGFR3
+v_EGFR -| v_FGFR3
+v_FGFR3 -? v_FGFR3
+v_FRS2 -| v_FGFR3
+#position:v_FRS2:903.600723328271,677.7824013314312
+#!control:v_FRS2:true,null
+$v_FRS2:((((!v_TGFBR_stimulus & !v_ERK) & !v_EGFR) & v_FGFR3) & !v_FRS2)
+v_TGFBR_stimulus -| v_FRS2
+v_ERK -| v_FRS2
+v_EGFR -| v_FRS2
+v_FGFR3 -> v_FRS2
+v_FRS2 -? v_FRS2
+#position:v_AKT:759.9999999999999,733.4136179242528
+#!control:v_AKT:true,null
+$v_AKT:(v_PI3K & !v_PTEN)
+v_PI3K -> v_AKT
+v_PTEN -| v_AKT
+#position:v_MSK:606.0000000000003,733.4136179242529
+#!control:v_MSK:true,null
+$v_MSK:(((((((((((((((((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & !v_FGFR3) & v_FRS2) & !v_MSK) | ((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & v_FGFR3) & !v_MSK)) | (((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & !v_p53) & v_EGFR) & !v_MSK)) | (((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & v_p53) & !v_EGFR) & !v_FGFR3) & !v_FRS2) & !v_MSK)) | ((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & v_p53) & !v_EGFR) & !v_FGFR3) & v_FRS2)) | (((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & v_p53) & !v_EGFR) & v_FGFR3)) | ((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & v_p53) & v_EGFR)) | ((!v_TGFBR_stimulus & !v_DNA_damage) & v_ERK)) | (((((((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & !v_FGFR3) & !v_FRS2) & !v_MSK)) | ((((((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & !v_FGFR3) & v_FRS2)) | (((((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & v_FGFR3)) | ((((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & !v_p53) & v_EGFR)) | (((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & v_p53)) | ((!v_TGFBR_stimulus & v_DNA_damage) & v_ERK)) | v_TGFBR_stimulus)
+v_TGFBR_stimulus -> v_MSK
+v_DNA_damage -> v_MSK
+v_ERK -> v_MSK
+v_p53 -> v_MSK
+v_EGFR -> v_MSK
+v_FGFR3 -> v_MSK
+v_FRS2 -> v_MSK
+v_MSK -? v_MSK
+#position:v_Growth_Arrest:462.39927667172924,677.7824013314313
+#!control:v_Growth_Arrest:false,false
+$v_Growth_Arrest:(v_p53 & !v_AKT)
+v_p53 -> v_Growth_Arrest
+v_AKT -| v_Growth_Arrest
+#position:v_Proliferation:348.59190341974755,574.0332722098613
+#!control:v_Proliferation:false,false
+$v_Proliferation:(((((((((((!v_TGFBR_stimulus & !v_DNA_damage) & v_ERK) & v_PI3K) & v_AKT) & v_MSK) | ((((((((!v_TGFBR_stimulus & v_DNA_damage) & v_ERK) & !v_p53) & !v_EGFR) & !v_FGFR3) & v_PI3K) & v_AKT) & v_MSK)) | (((((((!v_TGFBR_stimulus & v_DNA_damage) & v_ERK) & !v_p53) & !v_EGFR) & v_FGFR3) & v_PI3K) & v_MSK)) | ((((((!v_TGFBR_stimulus & v_DNA_damage) & v_ERK) & !v_p53) & v_EGFR) & v_PI3K) & v_MSK)) | ((((((!v_TGFBR_stimulus & v_DNA_damage) & v_ERK) & v_p53) & v_PI3K) & v_AKT) & v_MSK)) | ((((v_TGFBR_stimulus & v_ERK) & !v_p53) & v_PI3K) & v_MSK)) | (((((v_TGFBR_stimulus & v_ERK) & v_p53) & v_PI3K) & v_AKT) & v_MSK))
+v_TGFBR_stimulus -> v_Proliferation
+v_DNA_damage -> v_Proliferation
+v_ERK -> v_Proliferation
+v_p53 -| v_Proliferation
+v_EGFR -> v_Proliferation
+v_FGFR3 -> v_Proliferation
+v_PI3K -> v_Proliferation
+v_AKT -> v_Proliferation
+v_MSK -> v_Proliferation
+#position:v_PI3K:279.94819663016085,436.17812534118207
+#!control:v_PI3K:true,null
+$v_PI3K:((((((!v_TGFBR_stimulus & !v_EGFR) & !v_FRS2) & v_PI3K) | ((!v_TGFBR_stimulus & !v_EGFR) & v_FRS2)) | (!v_TGFBR_stimulus & v_EGFR)) | v_TGFBR_stimulus)
+v_TGFBR_stimulus -> v_PI3K
+v_EGFR -> v_PI3K
+v_FRS2 -> v_PI3K
+v_PI3K -> v_PI3K
+#position:v_p14:265.7388692728122,282.83506219174717
+#!control:v_p14:true,null
+$v_p14:(((((((((((((((((((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & !v_p53) & v_AKT) & v_MSK) | ((((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & v_p53) & !v_EGFR) & !v_FGFR3) & !v_FRS2) & v_AKT) & v_MSK)) | (((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & v_p53) & !v_EGFR) & !v_FGFR3) & v_FRS2) & v_MSK)) | ((((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & v_p53) & !v_EGFR) & v_FGFR3) & v_MSK)) | (((((!v_TGFBR_stimulus & !v_DNA_damage) & !v_ERK) & v_p53) & v_EGFR) & v_MSK)) | (((((!v_TGFBR_stimulus & !v_DNA_damage) & v_ERK) & !v_p53) & v_AKT) & v_MSK)) | (((((((!v_TGFBR_stimulus & !v_DNA_damage) & v_ERK) & v_p53) & !v_EGFR) & !v_FGFR3) & v_AKT) & v_MSK)) | ((((((!v_TGFBR_stimulus & !v_DNA_damage) & v_ERK) & v_p53) & !v_EGFR) & v_FGFR3) & v_MSK)) | (((((!v_TGFBR_stimulus & !v_DNA_damage) & v_ERK) & v_p53) & v_EGFR) & v_MSK)) | ((((((((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & !v_FGFR3) & !v_FRS2) & v_AKT) & v_MSK)) | (((((((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & !v_FGFR3) & v_FRS2) & v_MSK)) | ((((((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & !v_p53) & !v_EGFR) & v_FGFR3) & v_MSK)) | (((((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & !v_p53) & v_EGFR) & v_MSK)) | ((((!v_TGFBR_stimulus & v_DNA_damage) & !v_ERK) & v_p53) & v_MSK)) | (((((((!v_TGFBR_stimulus & v_DNA_damage) & v_ERK) & !v_p53) & !v_EGFR) & !v_FGFR3) & v_AKT) & v_MSK)) | ((((((!v_TGFBR_stimulus & v_DNA_damage) & v_ERK) & !v_p53) & !v_EGFR) & v_FGFR3) & v_MSK)) | (((((!v_TGFBR_stimulus & v_DNA_damage) & v_ERK) & !v_p53) & v_EGFR) & v_MSK)) | ((((!v_TGFBR_stimulus & v_DNA_damage) & v_ERK) & v_p53) & v_MSK)) | (v_TGFBR_stimulus & v_MSK))
+v_TGFBR_stimulus -> v_p14
+v_DNA_damage -> v_p14
+v_ERK -| v_p14
+v_p53 -> v_p14
+v_EGFR -> v_p14
+v_FGFR3 -> v_p14
+v_FRS2 -> v_p14
+v_AKT -> v_p14
+v_MSK -> v_p14
+#position:v_EGFR_stimulus:307.88296974391324,134.71391314313203
+#!control:v_EGFR_stimulus:true,null
+#position:v_FGFR3_stimulus:400.6887037463185,11.81926014197552
+#!control:v_FGFR3_stimulus:true,null
+#position:v_PTEN:531.6221426486786,-69.25129294113714
+#!control:v_PTEN:true,null
+$v_PTEN:v_p53
+v_p53 -> v_PTEN

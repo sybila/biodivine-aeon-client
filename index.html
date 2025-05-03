@@ -2,7 +2,7 @@
 
 <html>
     <head>
-        <title>Biodivine/Aeon</title>
+        <title>Biodivine/Aeon:</title>
         <meta charset="utf-8">
 
         <!-- Favicon -->
@@ -20,6 +20,8 @@
         <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
         <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
         <link rel="manifest" href="manifest.json">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="msapplication-TileColor" content="#ffffff">
         <meta name="msapplication-TileImage" content="favicon/ms-icon-144x144.png">
         <meta name="theme-color" content="#ffffff">
@@ -27,20 +29,35 @@
         <link rel="stylesheet" href="style.css" type="text/css">        
 
         <script src="script/dependencies/dagre.js"></script>
-        <script src="script/dependencies/cytoscape.min.js"></script>
         <script src="script/dependencies/lodash.js"></script>
+        <script src="script/dependencies/hotkeys.min.js"></script>
+        <script src="script/dependencies/vis-network.min.js"></script>
+        <script src="script/dependencies/cytoscape.min.js"></script>
         <script src="script/dependencies/cytoscape-edgehandles.js"></script>
         <script src="script/dependencies/cytoscape-dagre.js"></script>
-        <script src="script/dependencies/hotkeys.min.js"></script>
+        <script src="script/dependencies/cytoscape-tidytree.js"></script>
 
-        <script src="script/const.js"></script>
-        <script src="script/Results.js"></script>
+        
+        <script src="script/Utils/const.js"></script>
+        <script src="script/Utils/TableWidget.js"></script>
+        <script src="script/Utils/CountWidget.js"></script>
+        <script src="script/Utils/Tab.js"></script>
+        <script src="script/Utils/TabBar.js"></script>
+        <script src="script/Utils/Warning.js"></script>
+        <script src="script/Utils/Examples.js"></script>
+        <script src="script/AttractorResults/CytoscapeTreeEditor.js"></script>
+        <script src="script/AttractorResults/TreeExplorer.js"></script>
+        <script src="script/AttractorResults/Explorer.js"></script>     
+        <script src="script/EditorTabs/ModelEditor.js"></script>
+        <script src="script/EditorTabs/ControllableEditor.js"></script>
+        <script src="script/EditorTabs/PhenotypeEditor.js"></script>
+        <script src="script/EditorTabs/Results.js"></script>
         <script src="script/ComputeEngine.js"></script>
-        <script src="script/Examples.js"></script>
+        <script src="script/initHotkeys.js"></script>
         <script src="script/LiveModel.js"></script>
         <script src="script/UI.js"></script>
-        <script src="script/CytoscapeEditor.js"></script>        
-        <script src="script/ModelEditor.js"></script>        
+        <script src="script/ControlResults.js"></script>
+        <script src="script/CytoscapeEditor.js"></script>
         <script src="script/main.js"></script>
 
         <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -55,248 +72,49 @@
     </head>
 
     <body onload="init()">
-        <script type="module" src="script/patch-wasm.js"></script>
+        <div id="model-div" class="page-div">
+            <script type="module" src="script/patch-wasm.js"></script>
 
-        <!-- Hosts the interactive model editor -->        
-        <div id="cytoscape-editor">
-        </div>
-
-        <h1 id='logo'>Aeon/<span id='title'>BIODIVINE</span></h1>
-
-        <!-- Do not change it here, this is a placeholder. Change it in const.js -->
-        <span id="version">v0.0.0</span>
-
-        <!-- A menu element that is shown for selected graph nodes in the editor. -->
-        <div id="node-menu" class="float-menu invisible">
-            <div class="button-row">                
-                <img alt="Edit name (E)" id="node-menu-edit-name" class="button" src="img/edit-24px.svg">                
-                <img alt="Edit update function (F)" id="node-menu-edit-function" class="button" src="img/functions-24px.svg">
-                <img alt="Remove (⌫)" id="node-menu-remove" class="button" src="img/delete-24px.svg">
-            </div>
-            <br>
-            <span class="hint invisible">Hint</span>
-        </div>
-
-        <!-- A menu element which is shown for selected edges in the editor. -->
-        <div id="edge-menu" class="float-menu invisible">
-            <div class="button-row">                
-                <img alt="Toggle observability (O)" id="edge-menu-observability" class="button" src="img/visibility_off-24px.svg" 
-                    src-on="img/visibility_off-24px.svg" src-off="img/visibility_on-24px.svg" 
-                    alt-on="Observability off (O)" alt-off="Observability on (O)" 
-                    state=""
-                >
-                <img alt="Toggle monotonicity (M)" id="edge-menu-monotonicity" class="button" src="img/trending_up-24px.svg"
-                    src-unspecified="img/trending_up-24px.svg" alt-unspecified="Make activating (M)"
-                    src-activation="img/trending_down-24px.svg" alt-activation="Make inhibiting (M)"
-                    src-inhibition="img/swap_vert-24px.svg" alt-inhibition="Monotonicity off (M)"
-                    state=""
-                >
-                <img alt="Remove (⌫)" id="edge-menu-remove" class="button" src="img/delete-24px.svg">
-            </div>
-            <br>
-            <span class="hint invisible">Hint</span>
-        </div>
-
-        <div id="quick-help">
-            <h3 style="display: block; margin: 0 auto; float: right;">HELP</h3>
-            <b>Network editor actions:</b>
-            <ul>
-                <li>Double click to create a new variable.</li>
-                <li>Drag from `+` to create a new regulation.</li>
-                <li>Select element (click) to show the context menu.</li>
-            </ul>
-            <b>Keyboard shortcuts:</b>
-            <ul>
-                <li>(⌫) Remove selected element.</li>
-                <li>(N) Add new variable.</li>
-                <li>(E) Edit name of the selected variable.</li>
-                <li>(F) Edit update function of the selected variable.</li>
-                <li>(O) Change observability of the selected regulation.</li>
-                <li>(M) Change monotonicity of the selected regulation.</li>
-                <li>(H) Show this help message.</li>                
-            </ul>
-            <div style="width: 100%; text-align: center; font-size: 12px;">(this message disappears when you create the first variable)</div>            
-        </div>
-
-        <div style="position: absolute;">            
-
-            <div id="tab-model-editor" class="main-panel gone" style="padding-bottom: 0px;">
-                <div class="invisible-input full-line">
-                    <input id="model-name" class="center" type="text" name="model-name" placeholder="(model name)" style="font-size: 20px;">
-                </div>
-                <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.closeContent()">                
-                <div class="invisible-input full-line" id="model-description" contenteditable data-placeholder="(model description)" style="margin-top: 4px; margin-bottom: 4px;"></div>      
-
-                <div style="height: 30px;">
-                    <h3 style="font-family: 'FiraMono'; text-transform: uppercase;"> ● Overview</h3>
-                </div>
-                <table id="model-stats">
-                    <tr class="row">    <td>Variables: </td>        <td class="value">-</td>     <td>Parameter space size: </td>  <td class="value">-</td> </tr>
-                    <tr class="row">    <td>Regulations: </td>      <td class="value">-</td>     <td>State space size: </td> <td class="value">-</td> </tr>
-                    <tr class="row">    <td>Max. in-degree: </td>   <td class="value">-</td>     <td>Max. out-degree: </td>       <td class="value">-</td> </tr>
-                    <tr class="row">    <td colspan="2">Explicit parameters: </td>  <td colspan="2">(none)</td>   </tr>
-                </table>                   
-                <div style="height: 40px;">
-                    <h3 style="float: left; font-family: 'FiraMono'; text-transform: uppercase;"> ● Variables</h3>
-                    <button id="button-add-variable" class="image-button" onclick="let id = LiveModel.addVariable(); CytoscapeEditor.showNode(id);" style="float: right;">Add variable (N) <img src="img/add_box-24px.svg"></button>
-                </div>
-                <div style="clear: both;"></div>
-                <div id="model-variables" class="full-line"></div>                       
-                <div class="templates gone">
-                    <div id="model-variable-template" class="model-variable">
-                        <div class="invisible-input">
-                            <input class="variable-name" type="text" name="variable-name" value="Variable name" placeholder="(variable name)" style="font-size: 18px;" spellcheck='false' autocorrect='off'>
-                        </div>
-                        <img alt="Remove variable" src="img/delete-24px.svg" class="model-variable-remove button">
-                        <img alt="Show variable" src="img/search-24px.svg" class="model-variable-show button">
-                        <br>
-                        <h4> ● Regulators</h4>
-                        <div class="model-variable-regulators full-line"></div>
-                        <h4> ● Update Function</h4>
-                        <div class="invisible-input full-line variable-function" contenteditable data-placeholder="(default)" spellcheck='false' autocorrect='off' style="font-size: 16px; text-align: center;"></div>
-                        <div class="variable-function-status"></div>
-                    </div>
-
-                    <div id="model-regulation-template" class="model-regulation">
-                        <span class="model-regulation-regulator">Some name</span>
-                        <span class="model-regulation-short">(->)</span>
-                        <span class="model-regulation-observable">observable</span>
-                        <span class="model-regulation-monotonicity">activation</span>
-                    </div>                    
-                </div>
+            <!-- Hosts the interactive model editor -->        
+            <div id="cytoscape-editor" style="max-height: 100vh; max-width: 100vw; overflow: hidden;">
             </div>
 
-            <div id="tab-engine" class="main-panel gone">
-                <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.closeContent()">
-                <h2 style="margin: 0 auto; font-size: 20px; text-align: center;">Compute Engine</h2>                
-                <div class="invisible-input full-line" style="margin-top: 4px; margin-bottom: 4px; font-size: 16px;">
-                    <input id="engine-address" class="center" type="text" name="engine-address" value="http://localhost:8000" placeholder="(engine address)">
+            <!-- Do not change it here, this is a placeholder. Change it in const.js -->
+            <span id="version">v0.0.0</span>
+
+            <!-- A menu element that is shown for selected graph nodes in the editor. -->
+            <div id="node-menu" class="float-menu invisible">
+                <div class="button-row">
+                    <img alt="Edit name (E)" id="node-menu-edit-name" class="button" src="img/edit-24px.svg">                
+                    <img alt="Edit update function (F)" id="node-menu-edit-function" class="button" src="img/functions-24px.svg">
+                    <img alt="Remove (⌫)" id="node-menu-remove" class="button" src="img/delete-24px.svg">
                 </div>
-                <div style="height: 40px;">
-                    <h3 id="compute-engine-status" style="float: left; font-family: 'FiraMono'; text-transform: uppercase;"> ● Disconnected</h3>
-                    <button id="button-connect" class="image-button" onclick="ComputeEngine.toggleConnection((e,r) => { if (e !== undefined) alert(e); });" style="float: right;">Connect <img src="img/cloud-24px.svg"></button>
-                </div>
-                <div style="clear: both;"></div>
-
-                <!-- Computation status -->
-                <div id="computation">
-                    Computation: <span id="computation-status">(none)</span><br>
-                    <span>Progress: <span id="computation-progress">unknown</span><br>Discovered classes: <span id="computation-classes">-</span></span>
-
-                    <div style="margin-top: 16px; text-align: center;">
-                        
-                        <button id="computation-cancel" class="image-button" onclick="ComputeEngine.cancelComputation();" style="margin-right: 4px;">Cancel job <img src="img/cancel-24px.svg"></button>
-
-                        <button id="computation-download" class="image-button" onclick="Results.download();" style="margin-left: 4px;">Show result <img src="img/cloud_download-24px.svg"></button>
-
-                    </div>                    
-                </div>
-
-                <div style="clear: both;"></div>
-                <div style="text-align: center; margin-top: 48px;">
-                    <h3 style="margin: 0 auto; font-size: 14px; text-align: center; margin-bottom: 4px;">No engine running? Download binary:</h3>                                        
-                    <a href="https://github.com/sybila/biodivine-aeon-server/releases/download/VERSION/aeon-compute-engine-windows.zip" id="engine-link-windows" target="blank"><button id="download-windows" class="image-button" style="display: inline-block; margin: 4px;">Windows <img src="img/windows-24px.svg"></button></a>
-                    <a href="https://github.com/sybila/biodivine-aeon-server/releases/download/VERSION/aeon-compute-engine-macos.zip" id="engine-link-macos" target="blank"><button id="download-mac" class="image-button" style="display: inline-block; margin: 4px;">MacOS <img src="img/macos-24px.svg"></button></a>
-                    <a href="https://github.com/sybila/biodivine-aeon-server/releases/download/VERSION/aeon-compute-engine-linux.zip" id="engine-link-linux" target="blank"><button id="download-linux" class="image-button" style="display: inline-block; margin: 4px;">Linux <img src="img/linux-24px.svg"></button></a>
-                </div>                
+                <br>
+                <span class="hint invisible">Hint</span>
             </div>
 
-            <div id="tab-import-export" class="main-panel gone">
-                <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.closeContent()">
-                <h2 style="margin: 0 auto; font-size: 20px; text-align: center; margin-bottom: 8px;">Model File</h2>
-
-                <table style="text-align: center; margin-left: -4px;">
-                    <tr>
-                        <td style="padding: 4px;">
-                            <h3 style="display: block; margin: 0 auto; text-align: center;">Import</h3>
-                        </td>
-                        <td style="padding: 4px;">
-                            <h3 style="display: block; margin: 0 auto; text-align: center;">Export</h3>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 4px;">
-                            <button id="import-local" class="compound-button" onclick="LiveModel.loadFromLocalStorage();" style="width: 244px;"><span class="main">Last<br>model</span><span class="desc">Browser local storage</span></button>
-                        </td>
-                        <td style="padding: 4px;">
-                            <button id="export-aeon" class="compound-button" onclick="UI.downloadAeon();" style="width: 244px;"><span class="main">.AEON</span><span class="desc">Simple text format</span></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 4px;">
-                            <label for="import-aeon-input" id="import-aeon" class="compound-button"><span class="main">.AEON</span><span class="desc">Simple text format</span></label>
-                            <input onchange='UI.importAeon(this)' id='import-aeon-input' style='display:none' type='file'>
-                        </td>
-                        <td style="padding: 4px;">
-                            <button id="export-sbml" class="compound-button" onclick="UI.downloadSBML();"><span class="main">.SBML<br><small>(parametrized)</small></span><span class="desc">Parametrized model</span></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 4px;">
-                            <label for="import-sbml-input" id="import-sbml" class="compound-button"><span class="main">.SBML</span><span class="desc">Standard<br>SBML L3</span></label>
-                            <input onchange='UI.importSBML(this)' id='import-sbml-input' style='display:none' type='file'>
-                        </td>
-                        <td style="padding: 4px;">
-                            <button id="export-sbml" class="compound-button" onclick="UI.downloadSBMLInstantiated();"><span class="main">.SBML<br><small>(instantiated)</small></span><span class="desc">Witness<br>model</span></button>                   
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 4px;">
-                            <label for="import-bnet-input" id="import-bnet" class="compound-button"><span class="main">.BNET</span><span class="desc">Boolnet text format</span></label>                    
-                            <input onchange='UI.importBnet(this)' id='import-bnet-input' style='display:none' type='file'>
-                        </td>
-                        <td style="padding: 4px;">
-                            <button id="export-bnet" class="compound-button" onclick="UI.downloadBnet();"><span class="main">.BNET</span><span class="desc">Boolnet text format</span></button>
-                        </td>
-                    </tr>
-                </table>                
-                <h3 style="display: block; margin: 0 auto; text-align: center; margin-top: 8px; margin-bottom: 8px;">Example Models</h3>  
-
-                <table style="text-align: center; margin-left: -4px;">
-                    <tr>
-                        <td style="padding: 4px;">
-                            <button id="example-1" class="compound-button" onclick="LiveModel.importAeon(Examples.g2a);"><span class="main">G2A</span><span class="desc">Cell<br>Division</span></button>
-                        </td>
-                        <td style="padding: 4px;">
-                            <button id="example-3" class="compound-button" onclick="LiveModel.importAeon(Examples.buddingYeastOrlando);"><span class="main">Orlando</span><span class="desc">Budding<br>Yeast</span></button>         
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 4px;">
-                            <button id="example-2" class="compound-button" onclick="LiveModel.importAeon(Examples.g2b);"><span class="main">G2B</span><span class="desc">Cell<br>Division</span></button>                
-                        </td>
-                        <td style="padding: 4px;">
-                            <button id="example-4" class="compound-button" onclick="LiveModel.importAeon(Examples.buddingYeastIrons);"><span class="main">Irons</span><span class="desc">Budding<br>Yeast</span></button>                
-                        </td>
-                    </tr>
-                </table>                                        
-            </div>
-
-            <div id="tab-results" class="main-panel gone">
-                <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.closeContent()">
-                <h2 style="margin: 0 auto; font-size: 20px; text-align: center; margin-bottom: 8px;">Bifurcation Function</h2>
-                <div style="text-align: center; padding: 12px;"><span id="results-expired" class="orange center gone">The computation has been overwritten. <br>These results are no longer available!</span></div>                
-                <div id="results">
-                    <div style="text-align: center; width: 350px; margin: 0 auto;">No results loaded. Run analysis to show bifurcation function overview for the currently loaded model.</div>
+            <!-- A menu element which is shown for selected edges in the editor. -->
+            <div id="edge-menu" class="float-menu invisible">
+                <div class="button-row">
+                    <img alt="Toggle observability (O)" id="edge-menu-observability" class="button" src="img/visibility_off-24px.svg" 
+                        src-on="img/visibility_off-24px.svg" src-off="img/visibility_on-24px.svg" 
+                        alt-on="Observability off (O)" alt-off="Observability on (O)"
+                        state=""
+                    >
+                    <img alt="Toggle monotonicity (M)" id="edge-menu-monotonicity" class="button" src="img/trending_up-24px.svg"
+                        src-unspecified="img/trending_up-24px.svg" alt-unspecified="Make activating (M)"
+                        src-activation="img/trending_down-24px.svg" alt-activation="Make inhibiting (M)"
+                        src-inhibition="img/swap_vert-24px.svg" alt-inhibition="Monotonicity off (M)"
+                        state=""
+                    >
+                    <img alt="Remove (⌫)" id="edge-menu-remove" class="button" src="img/delete-24px.svg">
                 </div>
-                <div id="open-tree-explorer" class="gone" style="text-align: center; margin: 8px;"><a class="inline-button" onclick="UI.openTreeExplorer()"> >> Explore Bifurcation Function &lt;&lt; </a></div>
-                <div id='result-legend'><span class='table-behavior'>D</span> disorder | <span class='table-behavior'>O</span> oscillation | <span class='table-behavior'>S</span> stability</div>
+                <br>
+                <span class="hint invisible">Hint</span>
             </div>
 
-            <div id="tab-help" class="main-panel gone" style="font-family: 'FiraMono';">
-                <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.closeContent()">
-                <h2 style="margin: 0 auto; font-size: 20px; text-align: center; margin-bottom: 8px;">About & Help</h2>
-                
-                <p>Aeon is a tool for analysing <b style="font-family: 'FiraMonoBold';">long-term behaviour of Boolean networks with parameters</b>. Use the editor to create a new network, or import your own from .sbml or .aeon. You can leave the update functions in the network blank (this will automatically consider all admissible instantiations of such function) or specify an exact update function. In the update function, you can use <b style="font-family: 'FiraMonoBold';">arbitrary uninterpreted functions as parameters</b> (see Budding Yeast-Irons example). Aeon will then automatically consider all admissible instantiations of such functions when analysing the model.</p>
-
-                <p>Once your network is ready, you can run the long-term behaviour analysis which will show you the behaviour classes of the model. The classes are separated based on <b style="font-family: 'FiraMonoBold';">stable, oscillating or disordered</b> behaviour. For each class, you can generate a <b style="font-family: 'FiraMonoBold';">witness network</b> that exihibits the specified behaviour.</p>
-
-                <h3>Manual</h3>
-
-                Full description of the functionality Aeon provides is available in the <a href="https://biodivine.fi.muni.cz/aeon/manual/v0.4.0/">tool manual</a>.
-
-
-                <h3>Quick Help</h3>
+            <div id="quick-help" class="quick-help">
+                <h3 style="display: block; margin: 0 auto; float: right;">HELP</h3>
                 <b>Network editor actions:</b>
                 <ul>
                     <li>Double click to create a new variable.</li>
@@ -309,73 +127,1484 @@
                     <li>(N) Add new variable.</li>
                     <li>(E) Edit name of the selected variable.</li>
                     <li>(F) Edit update function of the selected variable.</li>
+                    <li>(A,S,D) Change phenotype value of the selected variable. (A-not in, S-false, D-true)</li>
+                    <li>(C) Toggle control-enabled value of the selected variable. </li>
                     <li>(O) Change observability of the selected regulation.</li>
                     <li>(M) Change monotonicity of the selected regulation.</li>
                     <li>(H) Show this help message.</li>                
                 </ul>
-
-                <h3>Attributions</h3>
-
-                <p>Compute Engine: crossbeam, rayon, rocket, json.</p>
-
-                <p>Online client: cytoscape with edgehandles, material icons, hotkeys.</p>
-
+                <div style="width: 100%; text-align: center; font-size: 12px;">(this message disappears when you create the first variable)</div>            
             </div>
 
-            <div id="side-menu">
-                <div class="button-group-fake">
-                    <img alt="Compute Bifurcation" id="side-menu-compute" src="img/play_circle_filled-48px.svg" 
-                    onclick="ComputeEngine.startComputation(LiveModel.exportAeon());" class="button-fake">
-                    <span class="hint invisible">Start Analysis</span>
-                </div> 
+            <div id="model-module-side-menu" style="position: absolute;">
 
-                <div class="button-group">
-                    <img alt="Engine" id="side-menu-engine" src="img/engine-48px.svg" class="button" tab-id="tab-engine">
-                    <span id="engine-dot">●</span>
-                    <span class="hint invisible">Compute Engine</span>
+                <div id="tab-computation" class="main-panel gone" style="max-height: 300px; height: fit-content; resize: none;">
+                    <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.Visible.closeContent()">
+                    <h2 style="font-weight: 4000; font-size: 5px; margin: 0 auto; font-size: 20px; text-align: center;">Start Computation</h2>
+
+                    <button class="square-button-fixed-size button-hover light-grey-background" onclick="UI.Visible.showHideManual('manual-model', 'manual-model-headline', 'Start Computation', 'manual-text-computation');" onmouseenter="UI.HoverHint.displayHover(event.target, 0, -65, 'Help')" onmouseleave="UI.HoverHint.hideHover()" style="position: absolute; top: 4px; right: 4px;" ><img class="fit-into-parent" src="img/help-48px.svg" alt="H"></button>
+
+                    <div class="doubleContainer" style="height: 50px; margin-top: 20px;">
+                        <div>
+                            <h3 style="font-family: 'FiraMono'; text-transform: uppercase; margin-top: 12px; margin-bottom: 12px;"> ● Computation mode: </h3>
+                        </div>
+                        
+                        <div class="doubleContainer">
+                            <button id="button-attractor" class="centered-button" style="margin: 3px; background-color: #B0BEC5;" onclick="ComputeEngine.Computation.toggleComputationMode(false);">Attractor</button>
+                            <div style="height: 40px; margin: 3px; visibility: invisible;">
+                                <div id="compute-mode-arrow" class="arrow left" style="margin-top: 16px; margin-left: 5px; margin-right: 10px; border: solid black; border-width: 0 3px 3px 0;"></div>
+                            </div>
+                            <button id="button-control" class="centered-button" style="margin: 3px; background-color: #ECEFF1;" onclick="ComputeEngine.Computation.toggleComputationMode(true);">Control</button>
+                        </div>
+                    </div>
+
+                    <div id="control-settings" style="max-height: 118px; height: fit-content; display: none;">
+                        <div style="height: 30px;">
+                            <h3 style="margin-top: 10px; margin-bottom: 10px; font-family: 'FiraMono'; text-transform: uppercase;"> ● Control Settings</h3>
+                        </div>
+
+                        <div style="max-height: 90px; height: fit-content;">
+                            <div class="doubleContainer" style="max-height: 33%; height: fit-content;">
+                                <h4 style="max-height: 20px; height: fit-content; max-width: 50%; width: 50%; margin: 3px; font-family: 'FiraMono', monospace;">Min Robustness (%):</h4>
+                                <input id="min-robustness-input" class="filterInput" type="text" onclick="Warning.resultsAvailableWarning()" onkeyup="ComputeEngine.Computation.Control.setMinRobustness()"  onblur="ComputeEngine.Computation.Control.updateParameterInputs()" style="max-width: 46%; width: 46%; float: right;">
+                            </div>
+
+                            <div class="doubleContainer" style="max-height: 33%; height: fit-content; margin-top: 7px;">
+                                <h4 style="max-height: 20px; height: fit-content; max-width: 50%; width: 50%; margin: 3px; font-family: 'FiraMono', monospace;">Max Size:</h4>
+                                <input id="max-size-input" class="filterInput" type="text" onclick="Warning.resultsAvailableWarning()" onkeyup="ComputeEngine.Computation.Control.setMaxSize(false)"  onblur="ComputeEngine.Computation.Control.updateParameterInputs()" style="max-width: 46%; width: 46%; float: right;">
+                            </div>
+
+                            <div class="doubleContainer" style="max-height: 34%; height: fit-content; margin-top: 7px;">
+                                <h4 style="max-height: 20px; height: fit-content; max-width: 50%; width: 50%; margin: 3px; font-family: 'FiraMono', monospace;">Max Number of Results:</h4>
+                                <input id="num-results-input" class="filterInput" type="text" onclick="Warning.resultsAvailableWarning()" onkeyup="ComputeEngine.Computation.Control.setNumberResults()" onblur="ComputeEngine.Computation.Control.updateParameterInputs()" style="max-width: 46%; width: 46%; float: right;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="image-button" style="max-height: 40px; height: 40px; max-width: 500px; width: 500px; margin-top: 20px; box-shadow: 0px 0px 5px #B0BEC5;" onclick="ComputeEngine.Computation.startComputation(LiveModel.Export.exportAeon());">
+                        <img src="img/play-filled-no-circle.svg" style="left: 240px;">
+                    </button>
+                </div>    
+
+                <div id="tab-engine" class="main-panel gone" style="height: fit-content; resize: none;">
+                    <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.Visible.closeContent()">
+                    <h2 style="margin: 0 auto; font-size: 20px; text-align: center;">Compute Engine</h2>
+                    <button class="square-button-fixed-size button-hover light-grey-background" onclick="UI.Visible.showHideManual('manual-model', 'manual-model-headline', 'Compute Engine', 'manual-text-engine');" onmouseenter="UI.HoverHint.displayHover(event.target, 0, -65, 'Help')" onmouseleave="UI.HoverHint.hideHover()" style="position: absolute; top: 4px; right: 4px;"><img class="fit-into-parent" src="img/help-48px.svg" alt="H"></button>            
+                    
+                    <div class="invisible-input full-line" style="margin-top: 4px; margin-bottom: 4px; font-size: 16px;">
+                        <input id="engine-address" class="center" type="text" name="engine-address" value="http://localhost:8000" placeholder="(engine address)">
+                    </div>
+                    <div style="height: 40px;">
+                        <h3 id="compute-engine-status" style="float: left; font-family: 'FiraMono'; text-transform: uppercase;"> ● Disconnected</h3>
+                        <button id="button-connect" class="image-button" onclick="ComputeEngine.Connection.toggleConnection((e,r) => { if (e !== undefined) Warning.displayWarning(e); else LiveModel.UpdateFunctions.validateAllUpdateFunctions();});" style="float: right;">Connect <img src="img/cloud-24px.svg"></button>
+                    </div>
+                    <div style="clear: both;"></div>
+
+                    <!-- Computation status -->
+                    <div id="computation">
+                        Computation: <span id="computation-status">(none)</span><br>
+                        <span>Progress: <span id="computation-progress">unknown</span><br>Discovered classes: <span id="computation-classes">-</span></span>
+
+                        <div style="margin-top: 16px; text-align: center;">
+                            
+                            <button id="computation-cancel" class="image-button" onclick="ComputeEngine.Computation.cancelComputation();" style="margin-right: 4px;">Cancel job <img src="img/cancel-24px.svg"></button>
+
+                            <button id="computation-download" class="image-button" onclick="Results.download();" style="margin-left: 4px;">Show result <img src="img/cloud_download-24px.svg"></button>
+
+                        </div>                    
+                    </div>
+
+                    <div style="clear: both;"></div>
+                    <div style="text-align: center; margin-top: 48px;">
+                        <h3 style="margin: 0 auto; font-size: 14px; text-align: center; margin-bottom: 4px;">No engine running? Download binary:</h3>                                        
+                        <a href="https://github.com/sybila/biodivine-control-tool/raw/refs/heads/main/ComputeEngine/Windows-x86-64bit-Compute-Engine.zip" id="engine-link-windows" target="blank"><button id="download-windows" class="image-button" style="display: inline-block; margin: 4px;">Windows <img src="img/windows-24px.svg"></button></a>
+                        <a href="https://github.com/sybila/biodivine-control-tool/raw/refs/heads/main/ComputeEngine/MacOs-arm64-Compute-Engine.zip" id="engine-link-macos" target="blank"><button id="download-mac" class="image-button" style="display: inline-block; margin: 4px;">MacOS <img src="img/macos-24px.svg"></button></a>
+                        <a href="https://github.com/sybila/biodivine-control-tool/raw/refs/heads/main/ComputeEngine/Linux-x86-64bit-Compute-Engine.zip" id="engine-link-linux" target="blank"><button id="download-linux" class="image-button" style="display: inline-block; margin: 4px;">Linux <img src="img/linux-24px.svg"></button></a>
+                    </div>
+                </div>         
+
+                <div id="tab-import-export" class="main-panel gone" style="max-height: 570px; height: fit-content; resize: none;">
+                    <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.Visible.closeContent()">
+                    <h2 style="margin: 0 auto; font-size: 20px; text-align: center; margin-bottom: 8px;">Model File</h2>
+                    <button class="square-button-fixed-size button-hover light-grey-background" onclick="UI.Visible.showHideManual('manual-model', 'manual-model-headline', 'Import/Export', 'manual-text-import-export');" onmouseenter="UI.HoverHint.displayHover(event.target, 0, -65, 'Help')" onmouseleave="UI.HoverHint.hideHover()" style="position: absolute; top: 4px; right: 4px;" ><img class="fit-into-parent" src="img/help-48px.svg" alt="H"></button>
+
+                    <div style="max-width: 100%; width: 100%;">
+                        <table style="text-align: center; margin-left: -4px;">
+                            <tr>
+                                <td style="padding: 4px;">
+                                    <h3 style="display: block; margin: 0 auto; text-align: center;">Import</h3>
+                                </td>
+                                <td style="padding: 4px;">
+                                    <h3 style="display: block; margin: 0 auto; text-align: center;">Export</h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 4px;">
+                                    <button id="import-local" class="compound-button" onclick="LiveModel.Import.loadFromLocalStorage();" style="width: 244px;"><span class="main">Last<br>model</span><span class="desc">Browser local storage</span></button>
+                                </td>
+                                <td style="padding: 4px;">
+                                    <button id="export-aeon" class="compound-button" onclick="UI.DownloadFile.downloadAeon();" style="width: 244px;"><span class="main">.AEON</span><span class="desc">Simple text format</span></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 4px;">
+                                    <label for="import-aeon-input" id="import-aeon" class="compound-button"><span class="main">.AEON</span><span class="desc">Simple text format</span></label>
+                                    <input onchange='UI.ImportFile.importAeon(this)' id='import-aeon-input' style='display:none' type='file'>
+                                </td>
+                                <td style="padding: 4px;">
+                                    <button id="export-sbml" class="compound-button" onclick="UI.DownloadFile.downloadSBML();"><span class="main">.SBML<br><small>(parametrized)</small></span><span class="desc">Parametrized model</span></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 4px;">
+                                    <label for="import-sbml-input" id="import-sbml" class="compound-button"><span class="main">.SBML</span><span class="desc">Standard<br>SBML L3</span></label>
+                                    <input onchange='UI.ImportFile.importSBML(this)' id='import-sbml-input' style='display:none' type='file'>
+                                </td>
+                                <td style="padding: 4px;">
+                                    <button id="export-sbml" class="compound-button" onclick="UI.DownloadFile.downloadSBMLInstantiated();"><span class="main">.SBML<br><small>(instantiated)</small></span><span class="desc">Witness<br>model</span></button>                   
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 4px;">
+                                    <label for="import-bnet-input" id="import-bnet" class="compound-button"><span class="main">.BNET</span><span class="desc">Boolnet text format</span></label>                    
+                                    <input onchange='UI.ImportFile.importBnet(this)' id='import-bnet-input' style='display:none' type='file'>
+                                </td>
+                                <td style="padding: 4px;">
+                                    <button id="export-bnet" class="compound-button" onclick="UI.DownloadFile.downloadBnet();"><span class="main">.BNET</span><span class="desc">Boolnet text format</span></button>
+                                </td>
+                            </tr>
+                        </table>
+                                
+                        <h3 style="display: block; margin: 0 auto; text-align: center; margin-top: 8px; margin-bottom: 8px;">Example Models</h3>  
+
+                        <table style="text-align: center; margin-left: -4px;">
+                            <tr>
+                                <td style="padding: 4px;">
+                                    <button id="example-1" class="compound-button" onclick="LiveModel.Import.importAeon(Examples.g2a);"><span class="main">G2A</span><span class="desc">Cell<br>Division</span></button>
+                                </td>
+                                <td style="padding: 4px;">
+                                    <button id="example-3" class="compound-button" onclick="LiveModel.Import.importAeon(Examples.buddingYeastOrlando);"><span class="main">Orlando</span><span class="desc">Budding<br>Yeast</span></button>         
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 4px;">
+                                    <button id="example-2" class="compound-button" onclick="LiveModel.Import.importAeon(Examples.g2b);"><span class="main">G2B</span><span class="desc">Cell<br>Division</span></button>                
+                                </td>
+                                <td style="padding: 4px;">
+                                    <button id="example-4" class="compound-button" onclick="LiveModel.Import.importAeon(Examples.buddingYeastIrons);"><span class="main">Irons</span><span class="desc">Budding<br>Yeast</span></button>                
+                                </td>
+                            </tr>
+                        </table>
+                    </div> 
                 </div>
 
-                <div class="button-group">
-                    <img alt="Import/Export" id="side-menu-import-export" src="img/file_copy-48px.svg" class="button" tab-id="tab-import-export">
-                    <span class="hint invisible">Import/Export</span>
-                </div> 
+                <div id="tab-model-editor" class="main-panel gone">
+                    <div class="invisible-input full-line" style="max-width: 90%; margin-left: 5%; margin-right: 5%;">
+                        <input id="model-name" class="center" type="text" name="model-name" placeholder="(model name)" style="font-size: 20px;">
+                    </div>
+                    <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.Visible.closeContent()">                
+                    <div class="invisible-input full-line" id="model-description" style="display: none;" contenteditable data-placeholder="(model description)" style="margin-top: 4px; margin-bottom: 4px;"></div>      
+                    <button class="square-button-fixed-size button-hover light-grey-background" onclick="UI.Visible.showHideManual('manual-model', 'manual-model-headline', 'Model Editor', 'manual-text-model-editor');" onmouseenter="UI.HoverHint.displayHover(event.target, 0, -65, 'Help')" onmouseleave="UI.HoverHint.hideHover()" style="position: absolute; top: 4px; right: 4px;" ><img class="fit-into-parent" src="img/help-48px.svg" alt="H"></button>
 
-                <div class="button-group">
-                    <img alt="Model" id="side-menu-model" src="img/model-48px.svg" class="button" tab-id="tab-model-editor">
-                    <span class="hint invisible">Model Editor</span>
-                </div>  
+                    <div class="doubleContainer">
+                        <h3 style="font-family: 'FiraMono'; text-transform: uppercase; margin-top: 12px;" onclick="ModelEditor.showModelOverview()"> ● Overview</h3>
+                        <button id="button-model-description" class="centered-button" onclick="ModelEditor.toggleModelDescription()" style="float: right;">Show model description</button>
+                    </div>
+                    <table id="model-stats">
+                        <tr class="row">    <td>Variables: </td>        <td class="value">-</td>     <td>Parameter space size: </td>  <td class="value">-</td> </tr>
+                        <tr class="row">    <td>Regulations: </td>      <td class="value">-</td>     <td>State space size: </td> <td class="value">-</td> </tr>
+                        <tr class="row">    <td>Max. in-degree: </td>   <td class="value">-</td>     <td>Max. out-degree: </td>       <td class="value">-</td> </tr>
+                        <tr class="row">    <td colspan="2">Explicit parameters: </td>  <td colspan="2">(none)</td>   </tr>
+                    </table>                   
+                    <div style="height: 40px;">
+                        <h3 style="float: left; font-family: 'FiraMono'; text-transform: uppercase; margin-top: 12px;"> ● Variables</h3>
+                        <button id="button-add-variable" class="image-button" onclick="let id = LiveModel.Variables.addVariable(false); CytoscapeEditor.showNode(id);" style="float: right;">Add variable (N) <img src="img/add_box-24px.svg"></button>
+                    </div>
 
-                <div style="position: relative; height: 96px; margin-bottom: 12px;">
-                    <span class="label"><span>DAGRE</span></span>
-                    <div class="button-group-fake" style="position: relative; top: 24px">
-                        <img alt="Auto Layout" id="side-menu-layout" src="img/view_quilt-48px.svg" 
-                        onclick="CytoscapeEditor.layoutDagre();" class="button-fake">                    
-                        <span class="hint invisible">Hierarchical layout</span>
-                    </div>                     
-                </div>   
-                
-                <div style="position: relative; height: 96px; margin-bottom: 12px;">
-                    <span class="label"><span>COSE</span></span>
-                    <div class="button-group-fake" style="position: relative; top: 24px">
-                        <img alt="Auto Layout" id="side-menu-layout" src="img/view_quilt-48px.svg" 
-                        onclick="CytoscapeEditor.layoutCose();" class="button-fake">                    
-                        <span class="hint invisible">Organic layout</span>
-                    </div>                     
-                </div>   
+                    <div class="space-between-flexbox input-with-reset-box">
+                        <input type="text" id="variable-filter" class="filterInput" placeholder=" Filter Variables" onkeyup="ModelEditor.Filter.filterVariables()" style="width: 98%;">
+                        <button class="round-button button-hover light-grey-background" onclick="UI.resetInput('variable-filter', () => {ModelEditor.Filter.filterVariables()})" onmouseenter="UI.HoverHint.displayHover(event.target, 3, 29, 'Reset Filter')" onmouseleave="UI.HoverHint.hideHover()"><img class="fit-into-parent" alt="close" src="img/close-24px.svg"></button>
+                    </div>
 
-                <div class="button-group">
-                    <img alt="Model" id="side-menu-results" src="img/call_split-48px.svg" class="button" tab-id="tab-results">
-                    <span class="hint invisible">Results</span>
-                </div>  
+                    <div id="model-variables" class="scrolling-container" style="max-height: calc(100% - 270px);"></div>
+                                        
+                    <div class="templates gone">
+                        <div id="model-variable-template" class="model-variable">
+                            <div class="doubleContainer" style="max-width: 410px; max-height: 5px;">
+                                <button class="centered-button" onmouseenter="UI.HoverHint.displayHover(event.target, 34, 0, 'Variable Info')" onmouseleave="UI.HoverHint.hideHover()"  style="height: 25px; position: absolute; top: 4px; left: 1%;">
+                                    <div class="arrow down" style="position: absolute; top: 35%; left: 35%; border: solid black; border-width: 0 3px 3px 0; pointer-events: none;"></div>
+                                </button>
+                                <div class="invisible-input" style="position: absolute; top: 4px; left: 40px;">
+                                    <input class="variable-name" type="text" name="variable-name" value="Variable name" placeholder="(variable name)" style="font-size: 18px; margin-left: 0;" spellcheck='false' autocorrect='off'>
+                                </div>
 
-                <div class="button-group">
-                    <img alt="Help" id="side-menu-help" src="img/help-48px.svg" class="button" tab-id="tab-help">
-                    <span class="hint invisible">About and Help</span>
-                </div>  
+                                <div style="position: absolute; top: 4px; right: 55px;">
+                                    <button class="centered-button" onmouseenter="UI.HoverHint.displayHover(event.target, 34, 0, 'Change Variable Control-Enabled status')" onmouseleave="UI.HoverHint.hideHover()" style="height: 25px; margin-top: 0%; margin-left: 50px; margin-right: 5px; background-color: #B0BEC5;"><img style="max-width: 50px; pointer-events: none;" src="img/controller.svg" alt="controllable"></button>
+                                    <button class="centered-button" onmouseenter="UI.HoverHint.displayHover(event.target, 34, 0, 'Change Variable Phenotype Status')" onmouseleave="UI.HoverHint.hideHover()" style="height: 25px; margin-top: 0%; margin-right: 20px; background-color: #B0BEC5;"><img style="max-height: 23px; pointer-events: none;" src="img/phenotype-button-100px.svg" alt="phenotype"></button>
+                                </div>
+                            </div>
+                            
+                            <div style="position: absolute; top: -3px; right: 2px;">
+                                <img alt="Remove variable" src="img/delete-24px.svg" class="model-variable-remove button">
+                                <img alt="Show variable" src="img/search-24px.svg" class="model-variable-show button">
+                            </div>
+                            <br>
+                            <div class="scrolling-container">
+                                <h4> ● Regulators</h4>
+                                <div class="model-variable-regulators full-line"></div>
+                                <h4> ● Update Function</h4>
+                                <div class="invisible-input full-line variable-function" contenteditable data-placeholder="(default)" spellcheck='false' autocorrect='off' style="height: 20px; font-size: 16px; text-align: center;"></div>
+                                <div class="variable-function-status"></div>
+                            </div>
+                        </div>
+
+                        <div id="model-regulation-template" class="model-regulation">
+                            <span class="model-regulation-regulator">Some name</span>
+                            <span class="model-regulation-short">(->)</span>
+                            <span class="model-regulation-observable">observable</span>
+                            <span class="model-regulation-monotonicity">activation</span>
+                        </div>                    
+                    </div>
+                </div>
+
+                <div id="tab-model-controllable" class="main-panel gone">
+                    <h2 style="margin: 0 auto; font-size: 20px; text-align: center;">Control-Enabled Variables</h2> 
+                    <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.Visible.closeContent()">                
+                    <button class="square-button-fixed-size button-hover light-grey-background" onclick="UI.Visible.showHideManual('manual-model', 'manual-model-headline', 'Control-Enabled Variables', 'manual-text-controllable-editor');" onmouseenter="UI.HoverHint.displayHover(event.target, 0, -65, 'Help')" onmouseleave="UI.HoverHint.hideHover()" style="position: absolute; top: 4px; right: 4px;" ><img class="fit-into-parent" src="img/help-48px.svg" alt="H"></button>
+
+                    <div>
+                        <div style="height: 30px;">
+                            <h3 style="font-family: 'FiraMono'; text-transform: uppercase;"> ● Overview</h3>
+                        </div>
+                        <table id="model-stats">
+                            <tr class="row"><td>Control-Enabled: </td> <td id="controllable-count" class="value" style="overflow-x: auto;">-</td> 
+                                            <td>Not-Control-Enabled: </td><td id="uncontrollable-count" class="value" style="overflow-x: auto;">-</td></tr>
+                        </table>
+                    </div>
+                    
+                    <div style="max-height: 30px; height: 30px; max-width: 100%; width: 100%; margin-bottom: 5px;">
+                        <div style="max-height: 100%; height: 100%; float: left;">
+                            <button class="centered-button" onclick="ControllableEditor.setSelected(true)" onmouseenter="UI.HoverHint.displayHover(event.target, 34, 0, 'Set as Control-Enabled')" onmouseleave="UI.HoverHint.hideHover()" style="max-height: 100%; height: 100%; max-width: 30px; width: 30px; background-color: #FFFF66;">
+                                <div style="margin-left: -2px; font-weight: 400;">C</div>
+                            </button>
+                            <button class="centered-button" onclick="ControllableEditor.setSelected(false)" onmouseenter="UI.HoverHint.displayHover(event.target, 34, 0, 'Set as Not-Control-Enabled')" onmouseleave="UI.HoverHint.hideHover()" style="max-height: 100%; height: 100%; max-width: 30px; width: 30px; background-color: #B0BEC5;">
+                                <div style="margin-left: -2px; font-weight: 400;">N</div>
+                            </button>
+                        </div>
+
+                        <div style="max-height: 100%; height: 100%; float: right;">
+                            <button class="centered-button" onclick="ControllableEditor.changeSelectedAll(null)" onmouseenter="UI.HoverHint.displayHover(event.target, 34, 0, 'Toggle Selection')" onmouseleave="UI.HoverHint.hideHover()" style="max-height: 30px; height: 30px; max-width: 30px; width: 30px; position: absolute; right: 78px;"><img src="img/toggle-100px.svg" alt="T" style="max-width: 26px; position: absolute; top: 2px; left: 2px;"></button>
+                            <button class="centered-button" onclick="ControllableEditor.changeSelectedAll(false)" onmouseenter="UI.HoverHint.displayHover(event.target, 34, 0, 'Select All')" onmouseleave="UI.HoverHint.hideHover()" style="max-height: 30px; height: 30px; max-width: 30px; width: 30px; position: absolute; right: 44px;"><img src="img/selectAll-100px.svg" alt="A" style="max-width: 26px; position: absolute; top: 2px; left: auto; right: 2px;"></button>
+                            <button class="centered-button" onclick="ControllableEditor.changeSelectedAll(true)" onmouseenter="UI.HoverHint.displayHover(event.target, 34, 0, 'Deselect All')" onmouseleave="UI.HoverHint.hideHover()" style="max-height: 30px; height: 30px; max-width: 30px; width: 30px; position: absolute; right: 10px;"><img src="img/deselectAll-100px.svg" alt="D" style="max-width: 20px; position: absolute; top: 5px; left: 5px;"></button>
+                        </div>
+                    </div>
+                    
+                    <div class="space-between-flexbox input-with-reset-box">
+                        <input type="text" id="controllable-editor-filter" class="filterInput" placeholder=" Filter Variables" onkeyup="ControllableEditor.filterTable()">
+                        <button class="round-button button-hover light-grey-background" onclick="UI.resetInput('controllable-editor-filter', () => {ControllableEditor.filterTable()})" onmouseenter="UI.HoverHint.displayHover(event.target, 3, 29, 'Reset Filter')" onmouseleave="UI.HoverHint.hideHover()"><img class="fit-into-parent" alt="close" src="img/close-24px.svg"></button>
+                    </div>
+                    
+
+                    <div class="scrolling-container" style="max-height: calc(100% - 170x); height: calc(100% - 170px);">
+                        <table id="controllable-editor-table"class="table" style="height: 100%; width: 100%;">
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="tab-model-phenotype" class="main-panel gone">
+                    <h2 style="margin: 0 auto; font-size: 20px; text-align: center;">Phenotype</h2> 
+                    <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.Visible.closeContent()">                
+                    <button class="square-button-fixed-size button-hover light-grey-background" onclick="UI.Visible.showHideManual('manual-model', 'manual-model-headline', 'Phenotype Editor', 'manual-text-phenotype-editor');" onmouseenter="UI.HoverHint.displayHover(event.target, 0, -65, 'Help')" onmouseleave="UI.HoverHint.hideHover()" style="position: absolute; top: 4px; right: 4px;" ><img class="fit-into-parent" src="img/help-48px.svg" alt="H"></button>
+
+                    <div>
+                        <div style="height: 30px;">
+                            <h3 style="font-family: 'FiraMono'; text-transform: uppercase;"> ● Overview</h3>
+                        </div>
+                        <table id="model-stats">
+                            <tr class="row">    <td>True: </td>        <td id="phenotype-true-count" class="value" >-</td>
+                                                <td>False: </td>      <td id="phenotype-false-count" class="value">-</td></tr>
+                            <tr class="row">    <td>Not in phenotype: </td>      <td id="phenotype-notin-count" class="value">-</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="doubleContainer" style="height: 20px">
+                        <div class="halfContainer">
+                            <h4 style="font-family: 'FiraMono'; text-transform: uppercase; margin-top: 0%;"> ● Phenotype Oscillation</h4>
+                        </div>
+                        <div class="halfContainer" style="text-align: right;">
+                            <input id="oscillation-switch" type="button" class="centered-button" style="width: 180px; height: 20px; padding-left: 4%;" value="Allowed"></input>
+                        </div>
+                    </div>
+
+                    <div style="max-height: 30px; height: 30px; max-width: 100%; width: 100%; margin-top: 5px; margin-bottom: 5px;">
+                        <div style="max-height: 100%; height: 100%; float: left;">
+                            <button class="centered-button" onclick="PhenotypeEditor.setSelected(true)" onmouseenter="UI.HoverHint.displayHover(event.target, 34, 0, 'Set as True')" onmouseleave="UI.HoverHint.hideHover()" style="max-height: 30px; height: 30px; max-width: 30px; width: 30px; background-color: green;">
+                                <div style="margin-left: -2px; font-weight: 400;">T</div>
+                            </button>
+                            <button class="centered-button" onclick="PhenotypeEditor.setSelected(false)" onmouseenter="UI.HoverHint.displayHover(event.target, 34, 0, 'Set as False')" onmouseleave="UI.HoverHint.hideHover()" style="max-height: 30px; height: 30px; max-width: 30px; width: 30px; background-color: red;">
+                                <div style="margin-left: -1px; font-weight: 400;">F</div>
+                            </button>
+                            <button class="centered-button" onclick="PhenotypeEditor.setSelected(null)" onmouseenter="UI.HoverHint.displayHover(event.target, 34, 0, 'Remove from Phenotype')" onmouseleave="UI.HoverHint.hideHover()" style="max-height: 30px; height: 30px; max-width: 30px; width: 30px; background-color: #B0BEC5;">
+                                <div style="margin-left: -2px; font-weight: 400;">N</div>
+                            </button>
+                        </div>
+
+                        <div style="max-height: 100%; height: 100%; float: right;">
+                            <button class="centered-button" onclick="PhenotypeEditor.changeSelectedAll(null)" onmouseenter="UI.HoverHint.displayHover(event.target, 34, 0, 'Toggle Selection')" onmouseleave="UI.HoverHint.hideHover()" style="max-height: 30px; height: 30px; max-width: 30px; width: 30px; position: absolute; right: 78px;"><img src="img/toggle-100px.svg" alt="T" style="max-width: 26px; position: absolute; top: 2px; left: 2px;"></button>
+                            <button class="centered-button" onclick="PhenotypeEditor.changeSelectedAll(false)" onmouseenter="UI.HoverHint.displayHover(event.target, 34, 0, 'Select All')" onmouseleave="UI.HoverHint.hideHover()" style="max-height: 30px; height: 30px; max-width: 30px; width: 30px; position: absolute; right: 44px;"><img src="img/selectAll-100px.svg" alt="A" style="max-width: 26px; position: absolute; top: 2px; left: auto; right: 2px;"></button>
+                            <button class="centered-button" onclick="PhenotypeEditor.changeSelectedAll(true)" onmouseenter="UI.HoverHint.displayHover(event.target, 34, 0, 'Deselect All')" onmouseleave="UI.HoverHint.hideHover()" style="max-height: 30px; height: 30px; max-width: 30px; width: 30px; position: absolute; right: 10px;"><img src="img/deselectAll-100px.svg" alt="D" style="max-width: 20px; position: absolute; top: 5px; left: 5px;"></button>
+                        </div>
+                    </div>
+
+                    <div class="space-between-flexbox input-with-reset-box">
+                        <input type="text" id="phenotype-editor-filter" class="filterInput" placeholder=" Filter Variables" onkeyup="PhenotypeEditor.filterTable()">
+                        <button class="round-button button-hover light-grey-background" onclick="UI.resetInput('phenotype-editor-filter', () => {PhenotypeEditor.filterTable()})" onmouseenter="UI.HoverHint.displayHover(event.target, 3, 29, 'Reset Filter')" onmouseleave="UI.HoverHint.hideHover()"><img class="fit-into-parent" alt="close" src="img/close-24px.svg"></button>
+                    </div>
+                    <div class="scrolling-container" style="max-height: calc(100% - 218px); height: calc(100% - 218px); max-width: 100%; width: 100%;">
+                        <table id="phenotype-editor-table"class="table" style="height: 100%; width: 100%;">
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="tab-model-visual" class="main-panel gone" style="height: fit-content; resize: none;">
+                    <h2 style="margin: 0 auto; font-size: 20px; text-align: center;">Visual Options</h2> 
+                    <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.Visible.closeContent()">
+                    <button class="square-button-fixed-size button-hover light-grey-background" onclick="UI.Visible.showHideManual('manual-model', 'manual-model-headline', 'Visual Options', 'manual-text-visual-options');" onmouseenter="UI.HoverHint.displayHover(event.target, 0, -65, 'Help')" onmouseleave="UI.HoverHint.hideHover()" style="position: absolute; top: 4px; right: 4px;" ><img class="fit-into-parent" src="img/help-48px.svg" alt="H"></button>
+
+                    <div style="height: 30px;">
+                        <h3 style="font-family: 'FiraMono'; text-transform: uppercase;"> ● Layout</h3>
+                    </div>
+
+                    <div style="height: 80px;">
+                        <button id="button-organic-layout" class="centered-button" style="margin-left: 73px;" onclick="CytoscapeEditor.layoutCose();">Organic layout </button>
+                        <button id="button-hierarchical-layout" class="centered-button" style="margin-left: 30px;" onclick="CytoscapeEditor.layoutDagre();">Hierarchical layout </button>
+                        <button id="button-phenotype-layout" class="centered-button" style="margin-left: 50px;margin-top: 10px;" onclick="CytoscapeEditor.layoutPhenotype();">Phenotype layout </button>
+                        <button id="button-controllable-layout" class="centered-button" style="margin-left: 30px;margin-top: 10px;" onclick="CytoscapeEditor.layoutControllable();">Control-Enabled layout </button>
+                    </div>
+
+                    <div style="height: 30px;">
+                        <h3 style="font-family: 'FiraMono'; text-transform: uppercase;"> ● Highlight</h3>
+                    </div>
+
+                    <div style="height: 40px;">
+                        <button id="button-highlight-phenotype" class="centered-button" style="margin-left: 55px;" onclick="CytoscapeEditor.highlightButton(this, true);">Show Phenotype </button>
+                        <button id="button-highlight-controllable" class="centered-button" style="margin-left: 30px;" onclick="CytoscapeEditor.highlightButton(this, false);">Show Control-Enabled</button>
+                    </div>
+
+                    <div style="height: 30px;">
+                        <h3 style="font-family: 'FiraMono'; text-transform: uppercase;"> ● UI options</h3>
+                    </div>
+
+                    <div style="height: 40px;">
+                        <button id="Enable-Dissable-Hover-Hint" class="centered-button" style="margin-left: 55px;" onclick="UI.HoverHint.EnableDisableHover(this)">Disable Hover Hints</button>
+                    </div>
+                </div>
+
+                <div id="tab-results" class="main-panel gone" style="height: fit-content;">
+                    <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.Visible.closeContent()">
+                    <h2 style="margin: 0 auto; font-size: 20px; text-align: center;">Results</h2>
+                    <button class="square-button-fixed-size button-hover light-grey-background" onclick="UI.Visible.showHideManual('manual-model', 'manual-model-headline', 'Results', 'manual-text-results');" onmouseenter="UI.HoverHint.displayHover(event.target, 0, -65, 'Help')" onmouseleave="UI.HoverHint.hideHover()" style="position: absolute; top: 4px; right: 4px;" ><img class="fit-into-parent" src="img/help-48px.svg" alt="H"></button>
+
+                    <div class="scrolling-container" style="max-height: 50%; margin-top: 0;">
+                        <div style="text-align: center; padding: 12px; display: none;"><span id="results-expired" class="orange center gone">The computation has been overwritten. <br>These results are no longer available!</span></div>               
+
+                        <div id="empty-results">
+                            <h2 style="margin: 0 auto; font-size: 20px; text-align: center; margin-bottom: 8px;">No results available</h2>
+                            <div style="text-align: center; width: 350px; margin: 0 auto;">No results loaded. Run computation to show results for currently loaded model.</div>
+                        </div>
+
+                        <div id="attractor-results" style="display: none;">
+                            <h2 style="margin: 0 auto; font-size: 20px; text-align: center; margin-bottom: 8px;">Bifurcation Function</h2>              
+                            <div id="attractor-results-input"></div>
+                            <div id="open-tree-explorer" class="gone" style="text-align: center; margin: 8px;"><a class="inline-button" onclick="UI.Open.openTreeExplorer()"> >> Explore Bifurcation Function &lt;&lt; </a></div>
+                            <div id='result-legend'><span class='table-behavior'>D</span> disorder | <span class='table-behavior'>O</span> oscillation | <span class='table-behavior'>S</span> stability</div>
+                        </div>
+
+                        <div id="control-results" style="display: none;">
+                            <h2 style="margin: 0 auto; font-size: 20px; text-align: center; margin-bottom: 8px;">Control Results</h2>
+                            <div id="control-results-input"></div>
+                            <h4 style="margin: 0 auto; font-size: 20px; text-align: center; margin-bottom: 8px; margin-top: 5px;">Visualization options</h4>
+                            <button class="centered-button" style="width: 99%; height: 30px;" onclick="Results.openControlTab()">Table</button>
+                            <h4 style="margin: 0 auto; font-size: 20px; text-align: center; margin-bottom: 8px; margin-top: 5px;">Export options</h4>
+                            <button class="centered-button" style="width: 99%; height: 30px;" onclick="UI.DownloadFile.downloadControlResCSV();">CSV</button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="tab-help" class="main-panel gone" style="font-family: 'FiraMono';">
+                    <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.Visible.closeContent()">
+                    <h2 style="margin: 0 auto; font-size: 20px; text-align: center; margin-bottom: 8px;">About & Help</h2>
+                    
+                    <p>Aeon is a tool for analysing <b style="font-family: 'FiraMonoBold';">long-term behaviour of Boolean networks with parameters</b>. Use the editor to create a new network, or import your own from .sbml or .aeon. You can leave the update functions in the network blank (this will automatically consider all admissible instantiations of such function) or specify an exact update function. In the update function, you can use <b style="font-family: 'FiraMonoBold';">arbitrary uninterpreted functions as parameters</b> (see Budding Yeast-Irons example). Aeon will then automatically consider all admissible instantiations of such functions when analysing the model.</p>
+
+                    <p>Once your network is ready, you can run the long-term behaviour analysis which will show you the behaviour classes of the model. The classes are separated based on <b style="font-family: 'FiraMonoBold';">stable, oscillating or disordered</b> behaviour. For each class, you can generate a <b style="font-family: 'FiraMonoBold';">witness network</b> that exihibits the specified behaviour.</p>
+
+                    <h3>Manual</h3>
+
+                    Full description of the functionality Aeon provides is available in the <a href="https://biodivine.fi.muni.cz/aeon/manual/v0.4.0/">tool manual</a>.
+
+
+                    <h3>Quick Help</h3>
+                    <b>Network editor actions:</b>
+                    <ul>
+                        <li>Double click to create a new variable.</li>
+                        <li>Drag from `+` to create a new regulation.</li>
+                        <li>Select element (click) to show the context menu.</li>
+                    </ul>
+                    <b>Keyboard shortcuts:</b>
+                    <li>(⌫) Remove selected element.</li>
+                    <li>(N) Add new variable.</li>
+                    <li>(E) Edit name of the selected variable.</li>
+                    <li>(F) Edit update function of the selected variable.</li>
+                    <li>(A,S,D) Change phenotype value of the selected variable. (A-not in, S-false, D-true)</li>
+                    <li>(C) Toggle Control-Enabled status value of the selected variable. </li>
+                    <li>(O) Change observability of the selected regulation.</li>
+                    <li>(M) Change monotonicity of the selected regulation.</li>
+                    <li>(H) Show this help message.</li>  
+
+                    <h3>Attributions</h3>
+
+                    <p>Compute Engine: crossbeam, rayon, rocket, json.</p>
+
+                    <p>Online client: cytoscape with edgehandles, material icons, hotkeys.</p>
+
+                </div>
+
+                <div id="side-menu">
+                    <div class="button-group">
+                        <img alt="Start" id="side-menu-start" src="img/play_circle_filled-48px.svg" class="button" tab-id="tab-computation">
+                        <span class="hint invisible">Start Computation</span>
+                    </div>  
+
+                    <div class="button-group">
+                        <img alt="Engine" id="side-menu-engine" src="img/engine-48px.svg" class="button" tab-id="tab-engine">
+                        <span id="engine-dot" style="margin-left: -11px;">●</span>
+                        <span class="hint invisible">Compute Engine</span>
+                    </div>
+
+                    <div class="button-group">
+                        <img alt="Import/Export" id="side-menu-import-export" src="img/file_copy-48px.svg" class="button" tab-id="tab-import-export">
+                        <span class="hint invisible">Import/Export</span>
+                    </div> 
+
+                    <div class="button-group">
+                        <img alt="Model" id="side-menu-model" src="img/model-48px.svg" class="button" tab-id="tab-model-editor">
+                        <span class="hint invisible">Model Editor</span>
+                    </div>  
+
+                    <div class="button-group">
+                        <img alt="Control-Enabled" id="side-menu-controllable" src="img/controllable-48px.svg" class="button" tab-id="tab-model-controllable">
+                        <span class="hint invisible" style="line-height: 25px; margin-top: 12px;">Control-Enabled Variables</span>
+                    </div>
+
+                    <div class="button-group">
+                        <img alt="Phenotype" id="side-menu-phenotype" src="img/phenotype-48px.svg" class="button" tab-id="tab-model-phenotype">
+                        <span class="hint invisible">Phenotype</span>
+                    </div>  
+
+                    <div class="button-group">
+                        <img alt="Auto Layout" id="side-menu-layout" src="img/view_quilt-48px.svg" class="button" tab-id="tab-model-visual">
+                        <span class="hint invisible">Visual Options</span>
+                    </div>                    
+
+                    <div class="button-group">
+                        <img alt="Model" id="side-menu-results" src="img/call_split-48px.svg" class="button" tab-id="tab-results">
+                        <span class="hint invisible">Results</span>
+                    </div>  
+
+                    <div class="button-group">
+                        <img alt="Help" id="side-menu-help" src="img/help-48px.svg" class="button" tab-id="tab-help">
+                        <span class="hint invisible">About and Help</span>
+                    </div>  
+                </div>
+
+                <div id="manual-model" class="main-panel-noresize" style="max-height: 95vh; height: fit-content; max-width: 500px; width: 500px; position: absolute; top: 1px; left: 610px; z-index: 9980; display: none;">
+                    <div style="max-height: 35px; height: 35px; max-width: 100%; width: 100%;">
+                        <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.Visible.showHideManual('manual-model', null, null, '')" style="margin-top: 1px;">
+                        <div id="manual-headline-div" style="float: right;">
+                            <h2 id="manual-model-headline" class="manual-headline"></h2>
+                        </div>
+                    </div>
+        
+                    <div id="manual-text-div" style="height: fit-content; max-width: 97%; width: 97%; margin: 1%; overflow-wrap: break-word;">
+                        <div id="manual-text-computation" style="display: none">
+                            <p>This menu is used to:</p>
+                            <ul>
+                                <li>Set parameters for the computation.</li>
+                                <li>Begin the computation process.</li>
+                            </ul>
+
+                            <h2>Computation Mode Button</h2>
+                            <p>These buttons let the user switch between two modes of computation:</p>
+                            <ol>
+                                <li>
+                                    <strong>Attractor Analysis</strong>
+                                    <ul>
+                                        <li><strong>Purpose:</strong> Identifies all possible attractors of the network and groups them by their behavior classes.</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong>Control Computation</strong>
+                                    <ul>
+                                        <li><strong>Purpose:</strong> Computes perturbations (groups of variables fixed to Boolean values) that eventually guide the network into a specific attractor (referred to as a <em>phenotype</em>).</li>
+                                    </ul>
+                                </li>
+                            </ol>
+
+                            The currently active mode is indicated by a darker-colored button with an arrow.
+
+                            <h2>Control Settings (For Control Computations)</h2>
+                            <p>These settings allow users to limit the results of control computations:</p>
+                            <ul>
+                                <li><strong>Minimal Robustness:</strong> A percentage value used to filter out perturbations that work for less than the specified percentage of network interpretations.</li>
+                                <li><strong>Maximal Size:</strong> Restricts the size of computed perturbations by limiting the number of variables included.</li>
+                                <li><strong>Maximal Number of Results:</strong> Caps the total number of computed perturbations.</li>
+                            </ul>
+                        </div>
+
+                        <div id="manual-text-engine" style="display: none">
+                            <p>
+                                This menu is used for managing communication with the compute engine part of the program. Make sure that the compute engine is running on your machine and that it is operating on the correct port. 
+                                Port number is by default set to <strong>8000</strong> (address http://localhost:8000). You can change it by rewriting the number at the end of the address under the menu title 
+                                (for example, to http://localhost:5500).
+                            </p>
+                            <p>
+                                If you do not have the compute engine downloaded, you can download it using the buttons located at the bottom of the menu. Once downloaded and running, you should be able to connect the compute engine using the <strong>Connect</strong> button.
+                            </p>
+                            <p>
+                                If the compute engine is connected, you may also disconnect it using the same button. To the left of the Connect/Disconnect button is a status indicator that displays the current status of the compute engine.
+                            </p>
+
+                            <h3>Status Indicator States</h3>
+                            <ul>
+                                <li><strong>Connected:</strong> The compute engine is successfully connected.</li>
+                                <li><strong>Disconnected:</strong> The compute engine is not connected.</li>
+                                <li><strong>Running:</strong> A computation is currently in progress.</li>
+                                <li><strong>Done:</strong> Indicates the completion of the last computation, followed by a timestamp.</li>
+                                <li><strong>Error:</strong> Displays an error message when an issue occurs.</li>
+                            </ul>
+
+                            <p>
+                                When the computation is running, there is button available to cancel the computation. Additionally, for certain computations, it is possible to open partial results without canceling the computation.
+                            </p>
+                        </div>
+
+                        <div id="manual-text-import-export" style="display: none">
+                            <p>
+                                This menu is used for importing and exporting models from files. Currently, the following file formats are supported for import/export:
+                            </p>
+                            <ul>
+                                <li><strong>.aeon</strong></li>
+                                <li><strong>.sbml</strong></li>
+                                <li><strong>.bnet</strong></li>
+                            </ul>
+                            <p>
+                                Additionally, you can import a model from the <strong>Local Storage</strong> of your browser. The Local Storage should contain the last model that was used with the Aeon tool.
+                            </p>
+                            <p>
+                                Example models are also available for import to help you get started.
+                            </p>
+                        </div>
+
+                        <div id="manual-text-model-editor" style="display: none">
+                            <p>
+                                This menu is used for general modifications of the model. You can change the name of the model by clicking the text at the top of the menu. If the name hasn’t been set, the placeholder text <em>(model name)</em> will be displayed.
+                            </p>
+                            <p>
+                                Below the model name, there is a button to display or hide the model description. When the model description is open, you can modify it by clicking on the description text and editing it directly.
+                            </p>
+                            <h3>Model Information Overview</h3>
+                            <ul>
+                                <li><strong>Variables:</strong> Number of variables in the model.</li>
+                                <li><strong>Parameter space size:</strong> To Do (information pending).</li>
+                                <li><strong>Regulations:</strong> Number of regulations in the model.</li>
+                                <li><strong>State space size:</strong> Number of possible states in the model.</li>
+                                <li><strong>Max. in-degree:</strong> Maximum number of regulations going into one variable.</li>
+                                <li><strong>Max. out-degree:</strong> Maximum number of regulations going out of one variable.</li>
+                                <li><strong>Explicit parameters:</strong> Undefined parameters appearing in the update functions 
+                                    (e.g., function <code>F(CtrA)</code> has an explicit parameter <code>F(1)</code>). Parameters must be regulators of the variable, and their count can range from 0 to infinity.
+                                </li>
+                            </ul>
+
+                            <h3>Variables Section</h3>
+                            <p>
+                                The Variables section contains:
+                            </p>
+                            <ul>
+                                <li><strong>Add Variable button:</strong> Adds a new variable.</li>
+                                <li><strong>Filter Variables text bar:</strong> Filters variables by name. For filtering multiple variables, separate names with a comma (<code>,</code>). 
+                                    You can search for variables whose names start with a specific string of characters, even if the name is incomplete. Writing 
+                                    "<code>//target: </code>" followed by variable names finds all regulators of those variables (this works only for complete names).
+                                </li>
+                            </ul>
+                            <p>
+                                The largest part of the Variables section consists of widgets for all the variables in the model. Here’s a breakdown of the widget components:
+                            </p>
+                            <ul>
+                                <li><strong>Display/hide variable information button:</strong> Shows or hides details about regulators and the update function of the variable.</li>
+                                <li><strong>Variable name:</strong> Editable name of the variable, which can be changed by clicking on it.</li>
+                                <li><strong>Change Control-Enabled status button:</strong> Toggles the Control-Enabled status of the variable. If the button is yellow, the variable is Control-Enabled (may appear in computed control perturbations). Otherwise, it is Not-Control-Enabled (excluded from control perturbations).</li>
+                                <li><strong>Change Phenotype button:</strong> Toggles the phenotype of the variable:
+                                    <ul>
+                                        <li>Green: The variable is in the phenotype as <em>true</em>.</li>
+                                        <li>Red: The variable is in the phenotype as <em>false</em>.</li>
+                                        <li>Grey: The variable is not part of the phenotype.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Find node button:</strong> Locates and zooms in on the variable's node in the graphical representation of the model.</li>
+                                <li><strong>Delete variable button:</strong> Deletes the variable and all regulations connected to it.</li>
+                                <li><strong>Regulators menu:</strong> Lists all regulators of the variable. You can:
+                                    <ul>
+                                        <li>Change their <strong>observability</strong> by clicking on them (non-observable regulations are ignored).</li>
+                                        <li>Modify their <strong>monotonicity</strong> by clicking:
+                                            <ul>
+                                                <li><strong>Activation:</strong> Uses the current boolean value of the regulator.</li>
+                                                <li><strong>Inhibition:</strong> Uses the opposite boolean value of the regulator.</li>
+                                                <li><strong>Unspecified:</strong> Computes results for both activation and inhibition.</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li><strong>Update function input bar:</strong> Specifies the update function of the variable. The format is:</li>
+                                <pre>Update fn ::= true | false | Name | Uninterpreted fn | 
+              !Update fn | (Update fn Op Update fn)
+Op ::= & | | | => | <=>
+Uninterpreted fn ::= Name(Parameters)
+Parameters ::= Name | Parameters, Parameters</pre>                                                                
+                            </ul>
+                        </div>
+
+                        <div id="manual-text-controllable-editor" style="display: none">
+                            <p>
+                                This menu is used for setting the Control-Enabled status of variables. If a variable is Control-Enabled, it can be fixed to a boolean value during the control process. For simplification, this means that the variable may appear in the computed control perturbations.
+                            </p>
+
+                            <h3>Overview</h3>
+                            <p>
+                                The overview displays the number of Control-Enabled and Not-Control-Enabled variables in the model.
+                            </p>
+
+                            <h3>Control-Enabled status Buttons</h3>
+                            <ul>
+                                <li><strong>Set as Control-Enabled button:</strong> Yellow button with a "C" inside. Clicking on it sets all selected variables as Control-Enabled.</li>
+                                <li><strong>Set as Not-Control-Enabled button:</strong> Grey button with a "N" inside. Clicking on it sets all selected variables as Not-Control-Enabled.</li>
+                                <li><strong>Toggle selected button:</strong> Button with a toggle switch icon. It toggles the selection state of variables, making selected variables unselected and vice versa.</li>
+                                <li><strong>Select all button:</strong> Button with lines inside a square. Clicking it selects all variables.</li>
+                                <li><strong>Deselect all button:</strong> Button with crossed lines inside a square. Clicking it deselects all variables.</li>
+                            </ul>
+
+                            <h3>Filter Variables</h3>
+                            <p>
+                                Below the buttons, there is a <strong>Filter Variables</strong> input bar used to filter variables by name. To filter multiple variables, separate names with commas (<code>,</code>). The filter also supports searching for variables whose names start with a specific string of characters (even if incomplete).
+                            </p>
+
+                            <h3>Variables Table</h3>
+                            <p>
+                                The table lists all variables present in the model. Features of the table include:
+                            </p>
+                            <ul>
+                                <li><strong>Select/Unselect:</strong> Click on a variable to select or unselect it. You can also select or unselect multiple variables by dragging over them. Selected variables are highlighted in blue.</li>
+                                <li><strong>Add into filter button:</strong> The first circle to the right of a variable name. Clicking it adds the variable's name to the Filter Variables input bar.</li>
+                                <li><strong>Control-Enabled indicator:</strong> The second circle to the right of a variable name. Its color indicates the variable's Control-Enabled status:
+                                    <ul>
+                                        <li><strong>Yellow:</strong> The variable is Control-Enabled.</li>
+                                        <li><strong>Grey:</strong> The variable is Not-Control-Enabled.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div id="manual-text-phenotype-editor" style="display: none">
+                            <p>
+                                This menu is used for setting the phenotype of the control computation. The phenotype is the desired attractor of the control computation and is defined as a set of variables with desired boolean values.
+                            </p>
+
+                            <h3>Overview</h3>
+                            <p>
+                                The overview shows the number of variables in the phenotype as true, as false, and how many variables in the model are not present in the phenotype.
+                            </p>
+
+                            <h3>Phenotype Oscillation</h3>
+                            <p>
+                                The <strong>Phenotype Oscillation</strong> button allows you to specify if the perturbations should target an oscillating or non-oscillating phenotype. Phenotype oscillation occurs when the Boolean network cycles between being in the phenotype and not being in the phenotype state. If the phenotype is not oscillating, the Boolean network remains in the phenotype state indefinitely.
+                            </p>
+                            <p>
+                                The button has the following states:
+                            </p>
+                            <ul>
+                                <li><strong>Allowed:</strong> Computes perturbations for both oscillating and non-oscillating phenotypes.</li>
+                                <li><strong>Required:</strong> Computes perturbations only for oscillating phenotypes.</li>
+                                <li><strong>Forbidden:</strong> Computes perturbations only for non-oscillating phenotypes.</li>
+                            </ul>
+
+                            <h3>Phenotype Status Buttons</h3>
+                            <ul>
+                                <li><strong>Add as true button:</strong> Green button with a "T" inside. Clicking it adds all selected variables to the phenotype as true.</li>
+                                <li><strong>Add as false button:</strong> Red button with a "F" inside. Clicking it adds all selected variables to the phenotype as false.</li>
+                                <li><strong>Remove from phenotype button:</strong> Grey button with a "N" inside. Clicking it removes all selected variables from the phenotype.</li>
+                            </ul>
+
+                            <h3>Variable Selection Buttons</h3>
+                            <ul>
+                                <li><strong>Toggle selected button:</strong> Button with a toggle switch. It toggles the selection state of variables, making selected variables unselected and vice versa.</li>
+                                <li><strong>Select all button:</strong> Button with lines inside a square. Clicking it selects all variables.</li>
+                                <li><strong>Deselect all button:</strong> Button with crossed lines inside a square. Clicking it deselects all variables.</li>
+                            </ul>
+
+                            <h3>Filter Variables</h3>
+                            <p>
+                                Below the buttons, there is a <strong>Filter Variables</strong> input bar. It is used to filter variables by name. To filter multiple variables, separate names with commas (<code>,</code>). The filter also supports searching for variables whose names start with a specific string of characters, even if incomplete.
+                            </p>
+
+                            <h3>Variables Table</h3>
+                            <p>
+                                The table lists all variables in the model. Features of the table include:
+                            </p>
+                            <ul>
+                                <li><strong>Select/Unselect:</strong> Click on a variable to select or unselect it. You can also select/unselect multiple variables by dragging over them. Selected variables are highlighted in blue.</li>
+                                <li><strong>Add into filter button:</strong> The first circle to the right of a variable. Clicking it adds the variable's name to the <strong>Filter Variables</strong> input bar.</li>
+                                <li><strong>Phenotype status indicator:</strong> The second circle to the right of a variable. Its color indicates the variable's phenotype status:
+                                    <ul>
+                                        <li><strong>Green:</strong> The variable is in the phenotype as true.</li>
+                                        <li><strong>Red:</strong> The variable is in the phenotype as false.</li>
+                                        <li><strong>Grey:</strong> The variable is not present in the phenotype.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div id="manual-text-visual-options" style="display: none">
+                            <p>
+                                This menu is used for changing the visual aspects of the graphical representation of the model.
+                            </p>
+
+                            <h3>Layout Section</h3>
+                            <p>
+                                The <strong>Layout</strong> section allows you to change the arrangement of nodes in the model. Available layouts include:
+                            </p>
+                            <ul>
+                                <li>
+                                    <strong>Organic Layout:</strong> This layout minimizes overlapping of nodes and regulations for a more natural appearance.
+                                </li>
+                                <li>
+                                    <strong>Hierarchical Layout:</strong> Based on the network simplex algorithm, this layout organizes nodes hierarchically.
+                                </li>
+                                <li>
+                                    <strong>Phenotype Layout:</strong> A concentric layout that separates nodes into three circles based on the phenotype status of their corresponding variables:
+                                    <ul>
+                                        <li>The <strong>central circle</strong> consists of nodes for variables in the phenotype as false.</li>
+                                        <li>The <strong>middle circle</strong> consists of nodes for variables in the phenotype as true.</li>
+                                        <li>The <strong>outer circle</strong> consists of nodes for variables not present in the phenotype.</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong>Control-Enabled Layout:</strong> A concentric layout that separates nodes into two circles based on the Control-Enabled status of their corresponding variables:
+                                    <ul>
+                                        <li>The <strong>central circle</strong> consists of nodes for Not-Control-Enabled variables.</li>
+                                        <li>The <strong>outer circle</strong> consists of nodes for Control-Enabled variables.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+
+                            <h3>Highlighting Section</h3>
+                            <p>
+                                The <strong>Highlighting</strong> section enables highlighting of nodes based on specific criteria. Options include:
+                            </p>
+                            <ul>
+                                <li>
+                                    <strong>Show Phenotype:</strong> Changes the color of the borders and text of nodes based on the phenotype status of their corresponding variables:
+                                    <ul>
+                                        <li><strong>Green:</strong> Variable is in the phenotype as true.</li>
+                                        <li><strong>Red:</strong> Variable is in the phenotype as false.</li>
+                                        <li><strong>Grey:</strong> Variable is not present in the phenotype.</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong>Show Control-Enabled:</strong> Changes the color of nodes based on the Control-Enabled status of their corresponding variables:
+                                    <ul>
+                                        <li><strong>Yellow:</strong> Variable is Control-Enabled.</li>
+                                        <li><strong>Grey:</strong> Variable is Not-Control-Enabled.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div id="manual-text-results" style="display: none">
+                            <h3>Attractor Analysis Results</h3>
+                            <p>
+                                On the top of the menu, you can see information about the computation:
+                            </p>
+                            <ul>
+                                <li><strong>Elapsed:</strong> How long the computation took (in seconds).</li>
+                                <li><strong>Total Number of Classes:</strong> Number of different behavior classes found.</li>
+                            </ul>
+                            <p>
+                                The computed classes are displayed in a table with the following columns:
+                            </p>
+                            <ul>
+                                <li>
+                                    <strong>Behavior Class:</strong> Represents, with icons, how the attractors of network interpretations in the class behave. Possible behaviors:
+                                    <ul>
+                                        <li><strong>Disorder:</strong> Two arrows, indicating complex attractor behavior.</li>
+                                        <li><strong>Oscillation:</strong> Cycling arrow, indicating the states oscillate in a circular pattern.</li>
+                                        <li><strong>Stability:</strong> Circle with a dot inside, indicating the attractor stabilizes in one state.</li>
+                                        <li>Combinations of these behaviors are possible (e.g., a class can include stable and oscillating attractors).</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Witness Count:</strong> Number of network interpretations exhibiting this behavior class.</li>
+                                <li>
+                                    <strong>Witness Button:</strong> Opens one random interpretation of the network as a fully parameterized model in a new browser tab.
+                                </li>
+                                <li>
+                                    <strong>Attractor Button:</strong> Opens a new inner tab showing the attractors of the behavior class represented as a graph of states.
+                                </li>
+                            </ul>
+                            <p>
+                                Below the table, there is an <strong>Explore Bifurcation Function</strong> button that opens the Attractor Explorer for exploring the computed results using the binary decision graph.
+                            </p>
+
+                            <h3>Control Results</h3>
+                            <p>
+                                At the top of the menu, information about the computation is displayed:
+                            </p>
+                            <ul>
+                                <li><strong>Elapsed:</strong> Computation time in hours:minutes:seconds format.</li>
+                                <li><strong>Number of Interpretations:</strong> Total interpretations of the current Boolean network.</li>
+                                <li><strong>Number of Perturbations:</strong> Number of perturbations found with the current settings.</li>
+                                <li><strong>Minimal Size:</strong> Minimal number of variables in one perturbation.</li>
+                                <li>
+                                    <strong>Maximal Robustness:</strong> The maximum robustness of the perturbations (robustness is the percentage of network interpretations for which the perturbation works).
+                                </li>
+                                <li>
+                                    <strong>Oscillation:</strong> Indicates whether perturbations were computed for oscillating or non-oscillating phenotypes:
+                                    <ul>
+                                        <li><strong>Allowed:</strong> Computes perturbations for both oscillating and non-oscillating phenotypes.</li>
+                                        <li><strong>Required:</strong> Computes perturbations only for oscillating phenotypes.</li>
+                                        <li><strong>Forbidden:</strong> Computes perturbations only for non-oscillating phenotypes.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <p>
+                                Below the information section, there is a <strong>Visualization Options Menu</strong> for results computed by the control computation. It includes:
+                            </p>
+                            <ul>
+                                <li>
+                                    <strong>Table:</strong> Opens a new inner tab where computed perturbations are visualized in a table. (Note: If there are more than 1000 results, this may cause performance issues. You can export the results to a .csv file.)
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="loading-indicator" class="invisible"><img src="img/progress.gif"/><br><br>Waiting for server...</div>
             </div>
-
-            <div id="loading-indicator" class="invisible"><img src="img/progress.gif"/><br><br>Waiting for server...</div>
         </div>
 
+        <div id="control-results-div" class="page-base" style="display: none;">    
+            <div id="control-table-stats-box" class="space-around-flexbox">
+                <div class="center-flexbox half-width">
+                    <div id="control-table-stats-frame" class="rounded-block">
+                        <table class="model-stats" style="max-height: 60px; height: 60px;">
+                            <tbody style="max-height: 60px; height: 60px;">
+                                <tr style="max-height: 2px; height: 2px;" onclick="TabBar.closeTab();">
+                                    <td style="width: 20%;" onmouseenter="UI.HoverHint.displayHover(event.target, 35, 0, 'Number of interpretations of the model')" onmouseleave="UI.HoverHint.hideHover()">Number of Interpretations: </td><td class="value" id="InterNumberStat" style="width: 20%;"> -</td> 
+                                    <td style="width: 20%;" onmouseenter="UI.HoverHint.displayHover(event.target, 35, 0, 'Maximal robustness of perturbation')" onmouseleave="UI.HoverHint.hideHover()">Maximal Robustness: </td>   <td class="value" id="MaxRobStat" style="width: 5%;">-</td></tr>
+                                <tr style="max-height: 2px;">
+                                    <td style="width: 20%;" onmouseenter="UI.HoverHint.displayHover(event.target, 35, 0, 'Number of computed perturbations')" onmouseleave="UI.HoverHint.hideHover()">Number of Perturbations: </td><td class="value" id="PertNumberStat" style="width: 20%;">-</td> <td style="width: 20%;" onmouseenter="UI.HoverHint.displayHover(event.target, 35, 0, 'Oscillation status of the phenotype')" onmouseleave="UI.HoverHint.hideHover()">Oscillation: </td>   <td class="value" id="OscillationStat" style="width: 5%;">-</td> </tr>
+                                <tr style="max-height: 2px;">
+                                    <td style="width: 20%;" onmouseenter="UI.HoverHint.displayHover(event.target, 35, 0, 'Minimal size of perturbation')" onmouseleave="UI.HoverHint.hideHover()">Minimal Size: </td><td class="value" id="MinSizeStat" style="width: 20%;">-</td> </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="space-around-flexbox-column half-width">
+                    <div class="main-panel-noresize" style="grid-column: 2; grid-row: 1; max-height: 25px; max-width: 98%; width: 98%; padding-bottom: 0px; padding-top: 0;white-space: nowrap; overflow: hidden;">
+                        <div class="scrolling-container" style="overflow-y: hidden; margin-top: -0.5px;">
+                            <table class="model-stats">
+                                <tr class="row"><td>Phenotype:</td><td id="PhenotypeStat" class="value">-</td> </tr>
+                            </table>
+                        </div>
+    
+                    </div>
+                    <div class="main-panel-noresize" style="grid-column: 2; grid-row: 2; max-height: 25px; max-width: 98%; width: 98%; padding-bottom: 0px; padding-top: 0; white-space: nowrap; overflow: hidden;">
+                            <div class="scrolling-container" style="overflow-y: hidden; margin-top: -0.5px;">
+                                <table class="model-stats">
+                                    <tr class="row"><td>Control-Enabled:</td><td id="ControllableStat" class="value">-</td> </tr>
+                                </table>
+                            </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div id="control-table-button-row" class="space-between-flexbox">
+                <button id="control-table-help-button" class="square-button button-hover light-grey-background" onclick="UI.Visible.showHideManual('manual-control-results', 'manual-control-results-headline', 'Control Results', 'manual-text-control-results');" onclick="UI.Visible.showHideManual('manual-model', 'manual-model-headline', 'Compute Engine', 'manual-text-engine');" onmouseenter="UI.HoverHint.displayHover(event.target, 0, 35, 'Help')" onmouseleave="UI.HoverHint.hideHover()"><img class="fit-into-parent" src="img/help-48px.svg" alt="H"></button>
+                
+                <div class="space-between-flexbox button-box">
+                    <button id="button-filters" class="centered-button" onclick="ControlResults.toggleFilters()" style="max-height: 90%;">Filters</button>
+                    <button id="return-to-model" class="centered-button" onclick="TabBar.openModel()" style="max-height: 90%; ">Return to model</button>
+                </div>    
+            </div>
+    
+            <div id="control-res-filters" class="filters-menu rounded-block" style="display: none;">
+                <div class="flex-start-flexbox filters-menu__help-close-header">
+                    <button class="filters-menu__close-button" onclick="ControlResults.toggleFilters()" onclick="UI.Visible.showHideManual('manual-control-results', 'manual-control-results-headline', 'Control Results Filters', 'manual-text-control-results-filters');" onmouseenter="UI.HoverHint.displayHover(event.target, 1, 68, 'Close Filters')" onmouseleave="UI.HoverHint.hideHover()"><img alt="close" src="img/close-24px.svg" style="max-height: 100%; height: 20px; max-width: 100%; width: 20px;"></button>
+                    <button class="square-button-fixed-size button-hover light-grey-background" onclick="UI.Visible.showHideManual('manual-control-results', 'manual-control-results-headline', 'Control Results Filters', 'manual-text-control-results-filters');" onmouseenter="UI.HoverHint.displayHover(event.target, 2, 31, 'Help')" onmouseleave="UI.HoverHint.hideHover()" style="position: relative; " ><img class="fit-into-parent" src="img/help-48px.svg" alt="H"></button>
+                </div>
+
+                <div class="space-between-flexbox filters-menu__max-size">
+                    <h4 style="margin-top: 0px;  margin-bottom: 0;"> Max Size:</h4>
+                    <input id="controlr-size-filter" class="filters-menu__filter-number-input" type="number" onkeyup="ControlResults.filterTable.filterTable()">    
+                </div>
+
+                <div class="space-between-flexbox filters-menu__min-NoI">
+                    <h4 style="margin-top: 0; margin-bottom: 0;"> Min NoI:</h4>
+                    <input id="controlr-NoI-filter" class="filters-menu__filter-number-input" type="number" onkeyup="ControlResults.filterTable.filterTable()">    
+                </div>
+                            
+                <div class="space-between-flexbox filters-menu__min-robustness">
+                    <h4 style="margin-top: 0px;  margin-bottom: 0;"> Min Robustness (%):</h4>
+                    <input id="controlr-rob-filter"  class="filters-menu__filter-number-input" type="number" onkeyup="ControlResults.filterTable.filterTable()">    
+                </div>
+                            
+                <div class="space-between-flexbox filters-menu__sorting">
+                    <h4 style="margin-top: 1px; margin-bottom: 0px; margin-right: 3px;"> Sort:</h4>
+                                
+                    <input id="primary-sort-switch" type="button" class="centered-button" onclick="ControlResults.sortTable.switchSortMode(0)" onmouseenter="UI.HoverHint.displayHover(event.target, -25, -5, 'Primary Sort')" onmouseleave="UI.HoverHint.hideHover()" style="width: 190px; height: 20px; padding-left: 4%; margin-right: 0px; font-size: 14px;" value="ID"></input>
+                    <button class="centered-button" id="primary-order" onclick="ControlResults.sortTable.switchOrder(0)" onmouseenter="UI.HoverHint.displayHover(event.target, -25, -66, 'Primary Sort Order')" onmouseleave="UI.HoverHint.hideHover()" style="height: 20px; margin-top: 1px; margin-bottom: 1px; margin-left: 2px; margin-right: 3px;">
+                        <div id="control-res-primary-arrow" class="arrow up"></div>
+                    </button>
+            
+                    <input id="secondary-sort-switch" type="button" class="centered-button" onclick="ControlResults.sortTable.switchSortMode(1)" onmouseenter="UI.HoverHint.displayHover(event.target, -25, -16, 'Secondary Sort')" onmouseleave="UI.HoverHint.hideHover()" style="width: 190px; height: 20px; padding-left: 4%; margin-top: 2px; margin-bottom: 2px; margin-right: 0px; font-size: 14px;" value="ID"></input>
+                    <button class="centered-button" id="secondary-order" onclick="ControlResults.sortTable.switchOrder(1)" onmouseenter="UI.HoverHint.displayHover(event.target, -25, -78, 'Secondary Sort Order')" onmouseleave="UI.HoverHint.hideHover()" style="height: 20px; margin-top: 1px; margin-bottom: 1px; margin-left: 1px;">
+                        <div id="control-res-secondary-arrow" class="arrow up" style="border-color: #808080;"></div>
+                    </button>
+                </div>   
+
+                <div class="flex-start-flexbox filters-menu__table-header-box">
+                    <input type="text" id="control-pert-filter-input"  class="filterInput" placeholder=" Filter Control-Enabled Variables" onkeyup="ControlResults.filterTable.filterPertFilterTable()">
+                        
+                    <button class="round-button button-hover light-grey-background" onclick="UI.resetInput('control-pert-filter-input', () => {ControlResults.filterTable.filterPertFilterTable()})" onmouseenter="UI.HoverHint.displayHover(event.target, 3, 29, 'Reset Control-Enabled Variable Filter')" onmouseleave="UI.HoverHint.hideHover()"><img class="fit-into-parent" alt="close" src="img/close-24px.svg"></button>
+                    <button class="filters-menu__button green-background" onclick="ControlResults.filterTable.setSelected(true)" onmouseenter="UI.HoverHint.displayHover(event.target, 1, 138, 'Set as True in Phenotype')" onmouseleave="UI.HoverHint.hideHover()">T</button>
+                    <button class="filters-menu__button red-background" onclick="ControlResults.filterTable.setSelected(false)"  onmouseenter="UI.HoverHint.displayHover(event.target, 1, 103, 'Set as False in Phenotype')" onmouseleave="UI.HoverHint.hideHover()">F</button>
+                    <button class="filters-menu__button light-blue-background" onclick="ControlResults.filterTable.setSelected('present')"  onmouseenter="UI.HoverHint.displayHover(event.target, 1, 69, 'Set as Present in Phenotype')" onmouseleave="UI.HoverHint.hideHover()">C</button>
+                    <button class="filters-menu__button light-gray-background" onclick="ControlResults.filterTable.setSelected('ignore')" onmouseenter="UI.HoverHint.displayHover(event.target, 1, 34, 'Remove from Filter')" onmouseleave="UI.HoverHint.hideHover()">I</button>
+                
+                    <button class="filters-menu__button" onclick="ControlResults.filterTable.changeSelectedAll(null)" onmouseenter="UI.HoverHint.displayHover(event.target, 1, -155, 'Toggle Selection')" onmouseleave="UI.HoverHint.hideHover()"><img src="img/toggle-100px.svg" alt="T" style="max-width: 30px;"></button>
+                    <button class="filters-menu__button" onclick="ControlResults.filterTable.changeSelectedAll(false)" onmouseenter="UI.HoverHint.displayHover(event.target, 1, -135, 'Select All')" onmouseleave="UI.HoverHint.hideHover()"><img src="img/selectAll-100px.svg" alt="A" style="max-width: 21px"></button>
+                    <button class="filters-menu__button" onclick="ControlResults.filterTable.changeSelectedAll(true)" onmouseenter="UI.HoverHint.displayHover(event.target, 1, -188, 'Deselect All')" onmouseleave="UI.HoverHint.hideHover()"><img src="img/deselectAll-100px.svg" alt="D" style="max-width: 16px;"></button>
+                </div>
+
+                <div class="scrolling-container" style="grid-column: 2; grid-row-start: 2; grid-row-end: 6; max-width: 100%; width: 100%; margin-top: 0; margin-bottom: 2px; margin-left: 2px;">
+                        <table id="control-pert-filter-table" class="table" style="height: 100%; max-width: 100%; width: 100%;">
+                            <tbody>
+                            </tbody>
+                        </table>
+                </div>
+            </div>
+
+            <div style="max-height: 1px; height: 1px; max-width: 100%; width: 100%; position: absolute; top: 195px; z-index: 2; background-color: black;"></div>
+            <div id="control-table-container" class="scroll-box">
+                <table id="control-results-table" class="table borders" style="max-height: 100%; height: fit-content; max-width: 100%; width: 100%;">
+                    <thead id="control-table-head" style="max-height: 23px; height: 23px; max-width: 100%; width: 100%; position: sticky; top: 0; left: 0; z-index: 1;">
+                        <tr style="max-width: 100%; width: 100%; background-color: #ECEFF1;">
+                            <th style="max-width: 6%; width: 6%; resize: none; border: 1px solid black;">ID</th>
+                            <th style="max-width: 70%; width: 70%; resize: none;" visualMode="false" onclick="ControlResults.changeContentModeAllPerts(this)">Perturbations</th>
+                            <th style="max-width: 6%; width: 6%; resize: none;">Size</th>
+                            <th style="max-width: 13%; width: 13%; resize: none;">Interpretations</th>
+                            <th style="max-width: 5%; width: 5%; resize: none;">Rob(%)</th>
+                        </tr>
+                    </thead>
+                    <tbody style="max-width: 100%; width: 100%;">
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="manual-control-results" class="main-panel-noresize" style="max-height: calc(100% - 250px); height: fit-content; max-width: 800px; width: 800px; position: absolute; top: 235px; left: 10px; z-index: 9980; display: none;">
+                <div style="max-height: 35px; height: 35px; max-width: 100%; width: 100%;">
+                    <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.Visible.showHideManual('manual-control-results', null, null, '')" style="margin-top: 1px;">
+                    <div id="manual-headline-div" style="margin-right: 175px; float: right;">
+                        <h2 id="manual-control-results-headline" class="manual-headline"></h2>
+                    </div>
+                </div>
+
+                <div id="manual-text-div" style="height: fit-content; max-width: 99%; width: 99%; margin: 1%;">
+                    <div id="manual-text-control-results" style="display: none">
+                        <p>
+                            This page is used for displaying computed control perturbations in a tabular format. It provides comprehensive overviews and tools for analyzing perturbations generated by the tool.
+                        </p>
+
+                        <h3>Overview Section</h3>
+                        <p>
+                            At the top of the page, there are three sections that provide summary information about the computed results:
+                        </p>
+                        <ul>
+                            <li><strong>Number of Interpretations:</strong> The total number of interpretations of the model.</li>
+                            <li><strong>Number of Perturbations:</strong> The total number of computed perturbations.</li>
+                            <li><strong>Minimal Size:</strong> The smallest number of variables present in a computed perturbation.</li>
+                            <li><strong>Maximal Robustness:</strong> The highest robustness among computed perturbations, measured as the percentage of model interpretations for which the perturbation works.</li>
+                            <li><strong>Oscillation:</strong> Indicates the oscillatory nature of the phenotype. Possible values include:
+                                <ul>
+                                    <li><strong>Allowed:</strong> Computations include both oscillating and non-oscillating phenotypes.</li>
+                                    <li><strong>Required:</strong> Only perturbations for oscillating phenotypes are computed.</li>
+                                    <li><strong>Forbidden:</strong> Only perturbations for non-oscillating phenotypes are computed.</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <h3>Phenotype and Control-Enabled Variables Overviews</h3>
+                        <p>
+                            On the right-hand side, two tables provide additional details:
+                        </p>
+                        <ul>
+                            <li><strong>Phenotype Overview:</strong> Displays the variables included in the phenotype, colored by their desired boolean value:
+                                <ul>
+                                    <li><span style="color: green;">Green:</span> True</li>
+                                    <li><span style="color: red;">Red:</span> False</li>
+                                </ul>
+                            </li>
+                            <li><strong>Control-Enabled Variables Overview:</strong> Displays the variables marked as Control-Enabled, which may appear in the computed perturbations.</li>
+                        </ul>
+
+                        <h3>Action Buttons</h3>
+                        <p>
+                            Below the overviews are buttons for navigating and filtering results:
+                        </p>
+                        <ul>
+                            <li><strong>Return to Model:</strong> Switches to the tab displaying the model used for computation. If the tab is closed, it opens a new one.</li>
+                            <li><strong>Filters:</strong> Toggles the visibility of the filter menu for refining the table of perturbations.</li>
+                        </ul>
+
+                        <h3>Perturbations Table</h3>
+                        <p>
+                            The main table displays the computed perturbations with the following columns:
+                        </p>
+                        <ul>
+                            <li><strong>ID:</strong> A unique identifier for each perturbation.</li>
+                            <li><strong>Perturbations:</strong> Lists variables in the perturbation, showing the boolean values to which they should be fixed. Visualized as:
+                                <ul>
+                                    <li><span style="color: green;">Green:</span> True</li>
+                                    <li><span style="color: red;">Red:</span> False</li>
+                                </ul>
+                                You can toggle between the visual and text formats:
+                                <ul>
+                                    <li><strong>Visual Format:</strong> Variables are displayed as colored labels (green for true, red for false).</li>
+                                    <li><strong>Text Format:</strong> Variables are represented in the form of "VariableName:BooleanValue" pairs, separated by commas. For example: 
+                                        "CtrA:true, GcrA:false". 
+                                    </li>
+                                </ul>
+                                To toggle formats:
+                                <ul>
+                                    <li>Click on an individual perturbation to change its format.</li>
+                                    <li>Click on the "Perturbations" column header to change the format of all perturbations at once.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Size:</strong> The number of variables in the perturbation.</li>
+                            <li><strong>Interpretation:</strong> Indicates the number of model interpretations where the perturbation works.</li>
+                            <li><strong>Rob (%):</strong> The robustness of the perturbation, measured as the percentage of model interpretations where it is effective.</li>
+                        </ul>
+                    </div>
+
+                    <div id="manual-text-control-results-filters" style="display: none;">
+                        <p>
+                            This menu is used for refining and organizing the table displaying computed perturbations. It allows you to filter perturbations based on various criteria and sort them for better analysis.
+                        </p>
+
+                        <h3>Filtering Options</h3>
+                        <p>
+                            Several filtering options are available to narrow down the displayed perturbations:
+                        </p>
+                        <ul>
+                            <li>
+                                <strong>Max Size:</strong> Filters out all perturbations that contain more variables than the specified maximum.
+                            </li>
+                            <li>
+                                <strong>Min NoI:</strong> Sets the minimum number of interpretations (NoI) required. Perturbations that work for fewer than this number of interpretations are filtered out. (The <em>Interpretations</em> column of the table.)
+                            </li>
+                            <li>
+                                <strong>Min Robustness (%):</strong> Filters out all perturbations with robustness lower than the specified percentage. (
+                                The <em>Rob (%)</em> column of the table.)
+                            </li>
+                        </ul>
+
+                        <h4>Filter by Presence of Variables</h4>
+                        <p>
+                            On the right side of the menu, a table allows you to filter perturbations based on the presence and status of specific variables:
+                        </p>
+                        <ul>
+                            <li>
+                                <strong>Filter Control-Enabled Variables:</strong> Use the input bar to search for variables by name. For multiple variables, separate their names with commas. It supports incomplete names to search for variables starting with specific characters.
+                            </li>
+                            <li>
+                                Next to the input bar are buttons to set the filter values for the selected variables:
+                                <ul>
+                                    <li><strong>Filter variable as true:</strong> <span style="color: green;">Green button with "T" inside</span>. Filters out perturbations that do not contain the selected variables as true.</li>
+                                    <li><strong>Filter variable as false:</strong> <span style="color: red;">Red button with "F" inside</span>. Filters out perturbations that do not contain the selected variables as false.</li>
+                                    <li><strong>Filter variables if present:</strong> <span style="color: grey;">Grey button with "C" inside</span>. Keeps all perturbations containing these variables, regardless of their boolean values.</li>
+                                    <li><strong>Ignore variable:</strong> <span style="color: lightgrey;">Light grey button with "I" inside</span>. Ignores the selected variables when filtering perturbations.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                Buttons for changing the selection of variables:
+                                <ul>
+                                    <li><strong>Toggle Selected:</strong> Switches the selection state of the currently selected and unselected variables.</li>
+                                    <li><strong>Select All:</strong> Highlights all variables in the table.</li>
+                                    <li><strong>Deselect All:</strong> Clears all current selections.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Variable Table:</strong> Contains all Control-Enabled variables. You can select/unselect individual variables by clicking on them or drag-select multiple variables. Selected variables are highlighted in blue.
+                            </li>
+                            <li>
+                                Each variable has two circles on the right side:
+                                <ul>
+                                    <li><strong>Add to Filter Button:</strong> Adds the variable name to the <em>Filter Control-Enabled Variables</em> input bar.</li>
+                                    <li><strong>Filter Status Indicator:</strong> Displays the variable's filter status:
+                                        <ul>
+                                            <li><span style="color: green;">Green:</span> Variable must be true.</li>
+                                            <li><span style="color: red;">Red:</span> Variable must be false.</li>
+                                            <li><span style="color: grey;">Grey:</span> Variable must be present in the perturbation (any value).</li>
+                                            <li><span style="color: lightgrey;">Light grey:</span> Variable is ignored in filtering.</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <h3>Sorting Options</h3>
+                        <p>
+                            Sorting options are located in the bottom left section and allow you to organize perturbations based on selected parameters. The first set of buttons represents the primary sorting parameter and direction, while the second set represents the secondary sorting. (Secondary sorting is applied when primary sorting parameters have equal values.)
+                        </p>
+                        <ul>
+                            <li>
+                                <strong>Sorting Parameters:</strong> Buttons for selecting the primary and secondary parameters for sorting:
+                                <ul>
+                                    <li><strong>ID:</strong> Sort by unique identifier of the perturbation.</li>
+                                    <li><strong>Size:</strong> Sort by the number of variables in the perturbation.</li>
+                                    <li><strong>NoI:</strong> Sort by the number of interpretations. This parameter is equivalent to sorting by robustness in the <em>Rob (%)</em> column.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Sorting Order:</strong> Use the direction buttons to set ascending (arrow up) or descending (arrow down) order. The direction of secondary sorting is displayed as a grey arrow when unavailable.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="explorer-div" style="display: none;">
+            <div style="position:absolute" id="explorer-witness-panel" class="main-panel gone">
+                <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="Explorer.witnessPanelVisible(false)">
+                        <h2 style="margin: 0 auto; font-size: 20px; text-align: center; margin-bottom: 8px;">Witness update functions</h2>
+                        <ul id='explorer-update-functions' style='list-style:none'></ul>
+            </div>
+
+            <button id="return-to-model" class="centered-button" onclick="TabBar.openModel()" style="max-height: 30px; height: 30px; position: absolute; top: 65px; right: 9px;">Return to model</button>
+ 
+            <!-- A container for the graph vizualization -->
+            <div id="visjs-container"></div>
+    
+            <!-- A valuation panel -->
+            <div style="display:none" id="explorer-valuations"><div id="explorer-valuations-text"></div></div>
+    
+            <!-- A witness panel -->
+            <div id="explorer-witness-panel"><div id="explorer-witness-text"></div></div>
+    
+            <!-- engine address  -->
+            <div id="engine-address" style="display:none">http://localhost:8000/</div>
+    
+            <div style="position: absolute;">            
+                <div id="side-menu">
+                    <div class="button-group" onclick='Explorer.witnessPanelVisible()'>
+                        <img alt="Update functions" id="side-menu-functions" src="img/functions-48px.svg" class="button" tab-id="tab-functions">
+                        <span class="hint invisible">Update functions</span>
+                    </div>  
+                </div>
+    
+                <div id="loading-indicator" class="invisible"><img src="img/progress.gif"/><br><br>Waiting for server...</div>
+            </div>
+        </div>
+
+        <div id="tree-explorer-div" class="page-div" style="display: none;">
+            <div id="cytoscape-tree-editor" style="max-height: 100%; height: 100%; max-width: 100%; width: 100%; display: block;">
+            </div>
+
+            <button id="return-to-model" class="centered-button" onclick="TabBar.openModel()" style="max-height: 30px; height: 30px; position: absolute; top: 65px; right: 9px;">Return to model</button>
+    
+            <div id="quick-help-tree-explorer" class="quick-help" style="position: absolute; top: 20%;">
+                <h3 style="display: block; margin: 0 auto; float: right;">HELP</h3>
+                <b>Tree editor navigation:</b>
+                <ul>
+                    <li>(↑) Select parent node.</li>
+                    <li>(↓) Select positive child.</li>
+                    <li>(Shift + ↓) Select negative child.</li>
+                    <li>(←/→) Switch positive/negative branch.</li>           
+                    <li>(F) Fit the screen to view the entire tree.</li>           
+                </ul>
+                <b>Tree actions:</b>
+                <ul>
+                    <li>(⌫) Remove selected node.</li>
+                    <li>(S) Run stability analysis for the selected node.</li>
+                    <li>(D) Compute decision attributes for the selected node.</li>
+                    <li>(I) Move node's subtree up.</li>
+                    <li>(K) Move node's subtree down.</li>
+                    <li>(J/L) Switch node's position with sibling's.</li>
+                    <li>(R) Switch order of node's children.</li>
+                    <li>(H) Toggle this help message.</li>
+                </ul>
+                <b>Units:</b>
+                <ul>
+                    <li>Witness count: Number of fully instantiated networks.</li>
+                    <li>(%): Percentage of networks in the node, i.e. count/total*100.</li>
+                    <li>(٪): Log-percentage of networks, i.e. log(count)/log(total)*100.</li>
+                </ul>     
+    
+                <div style="width: 100%; text-align: center; font-size: 12px;">(this message disappears when you select some element)</div>
+            </div>
+        
+            <div id="decision-info" class="main-panel fira-mono gone" style="margin: 0; position: absolute; top: 3px; left: 3px;">
+                <div class="center" style="margin: 16px;">
+                    <span style="position: relative; top: -20px; font-size: 14px;">Decision</span><br>
+                    <span id="decision-attribute" style="font-size: 30px;">Lorem_Ipsum</span>
+                </div>
+    
+                <span id="decision-phenotype-label" style="font-weight: bold; margin-top: 16px; display: inline-block; margin-bottom: 8px;">Phenotypes (X):</span>
+    
+                <table id="decision-behavior-table" class="behavior-table">                
+                    <tr id="behavior-table-row-template" class="gone">
+                        <td class="cell-behavior symbols">S O</td>
+                        <td class="cell-witness-count">1234</td>
+                        <td class="cell-distribution">24% / 14٪</td>
+                    </tr>
+                    <tr class="behavior-table-header">
+                        <td class="cell-behavior">Behavior</td>
+                        <td class="cell-witness-count">Witness Count</td>
+                        <td class="cell-distribution">Distribution</td>
+                    </tr>
+                    <tr class="empty-space"><td></td></tr>
+                    
+                </table>
+        
+                <div style="text-align: right; margin-bottom: 16px; margin-right: 8px; margin-top: 16px;">
+                    <button id="decision-stability-analysis-button" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Stability analysis (S) <img src="img/stability_analysis-24px.svg"></button>
+                    <select id="decision-stability-dropdown" class="stability-dropdown" style="float: right;">
+                        <option value="total">Total</option>
+                        <option value="S">Stability</option>
+                        <option value="O">Oscillation</option>
+                        <option value="D">Disorder</option>
+                    </select>                
+                </div>            
+                <div id="decision-stability-analysis" class="stability-panel"></div>
+            </div>
+    
+            <div id="mixed-info" class="main-panel fira-mono gone" style="margin: 0; position: absolute; top: 3px; left: 3px;">
+                <div class="center" style="margin: 16px;">
+                    <span style="position: relative; top: -20px; font-size: 14px;">Mixed</span><br>
+                    <span id="mixed-type-label" style="font-size: 30px;">X types</span>
+                </div>
+    
+                <table id="mixed-behavior-table" class="behavior-table">                
+                    <tr class="behavior-table-header">
+                        <td class="cell-behavior">Behavior</td>
+                        <td class="cell-witness-count">Witness Count</td>
+                        <td class="cell-distribution">Distribution</td>
+                    </tr>
+                    <tr class="empty-space"><td></td></tr>                
+                </table>
+    
+                <div id="mixed-attributes-list-item-template" class="attribute-panel gone">                
+                    <div style="float: left;" class="information-gain">0.43 ɪɢ / 4 ᴛᴄ</div>
+                    <div style="float: right;" class="attribute-name">ATTr_Name</div>
+                    <div style="clear: both;"></div>
+                    <div class="attribute-sub-panel negative">
+                        <span class="title">Negative</span>
+                        <table class="table collapsed">
+                            <tr>
+                                <td class="distribution">99%</td>
+                                <td class="symbols phenotype">SSSSSSSSSSSSSSSSSD</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="attribute-sub-panel positive">
+                        <span class="title">Positive</span>
+                        <table class="table collapsed">
+                            <tr>                        
+                                <td class="symbols phenotype">SSSSSSSSSSSSSSSSSD</td>
+                                <td class="distribution">99%</td>                            
+                            </tr>
+                        </table>
+                    </div>                
+                    <div style="clear: both;"></div>
+                    <div class="expand-button">more...</div>
+                </div>
+            
+                <div>
+                    <button id="mixed-stability-analysis-button" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Stability analysis (S) <img src="img/stability_analysis-24px.svg"></button>
+                    <select id="mixed-stability-dropdown" class="stability-dropdown" style="float: right;">
+                        <option value="total">Total</option>
+                        <option value="S">Stability</option>
+                        <option value="O">Oscillation</option>
+                        <option value="D">Disorder</option>
+                    </select>                
+                </div>            
+    
+                <div id="auto-expand" style="clear: both; text-align: right; padding-right: 16px;">
+                    <button id="button-auto-expand" class="image-button" style="margin-bottom: 16px; margin-right: 16px;">Auto expand (1 level) <img src="img/graph-24px.svg"></button>             
+                    Depth: <input type="range" min="1" max="10" value="1" class="seekbar" id="auto-expand-slider" style="width: 100px; position: relative; top: 8px;">                
+                </div>        
+                <div style="clear: both;">
+                    <button id="make-decision-button" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Make decision (D) <img src="img/add_box-24px.svg"></button>
+                </div>
+    
+                <div id="mixed-stability-analysis" class="stability-panel"></div>                  
+                <div id="mixed-attributes" class="gone">
+                    <span id="mixed-attributes-title" style="font-weight: bold; margin-top: 16px; display: inline-block; margin-bottom: 8px;">Attributes:</span>
+    
+                    <div>
+                        <b>Sort by:</b>
+                        <label class="sort-checkbox"><input type="checkbox" name="sort-information-gain" id="sort-information-gain" checked>Information gain</label> | 
+                        <label class="sort-checkbox"><input type="checkbox" name="sort-total-classes" id="sort-total-classes">Total classes</label> | 
+                        <label class="sort-checkbox"><input type="checkbox" name="sort-positive" id="sort-positive">Positive</label> | 
+                        <label class="sort-checkbox"><input type="checkbox" name="sort-positive-majority" id="sort-positive-majority">Positive majority</label> | 
+                        <label class="sort-checkbox"><input type="checkbox" name="sort-negative" id="sort-negative">Negative</label> | 
+                        <label class="sort-checkbox"><input type="checkbox" name="sort-negative-majority" id="sort-negative-majority">Negative majority</label> | 
+                        <label class="sort-checkbox"><input type="checkbox" name="sort-alphabetical" id="sort-alphabetical">Alphabetical</label>
+                    </div>
+    
+                    <div id="mixed-attributes-list">
+    
+                    </div>                                
+    
+                    <span style="font-size: 14px; display: block; width: 100%; text-align: right;">٪ = log-percentage</span>
+                    <span style="font-size: 14px; display: block; width: 100%; text-align: right;">ɪɢ = information gain</span>
+                    <span style="font-size: 14px; display: block; width: 100%; text-align: right;">ᴛᴄ = total class count</span>
+                </div>            
+            </div>
+    
+            <div id="leaf-info" class="main-panel fira-mono gone" style="margin: 0; position: absolute; top: 3px; left: 3px;">
+                <div class="center" style="margin: 16px;">
+                    <span style="position: relative; top: -20px; font-size: 14px;">Phenotype</span><br>
+                    <span class="symbols" id="leaf-phenotype" style="font-size: 50px;">DDS</span>                            
+                </div>            
+                <div>
+                    <span style="float: left;">Witness count: <span id="leaf-witness-count">12345</span></span>
+                    <span class="inline-button" onclick="TreeExplorer.openTreeWitness();" style="float: right;">Witness</span>
+                    <div style="clear: both;"></div>
+                    <span class="inline-button" onclick="TreeExplorer.openTreeAttractor();" style="float: right;">Attractor</span>
+                </div>
+    
+                <table id="leaf-behavior-table" class="behavior-table gone" style="margin-top: 16px;">
+                    <tr><td colspan="3">All phenotypes:</td></tr>
+                    <tr class="behavior-table-header">
+                        <td class="cell-behavior">Behavior</td>
+                        <td class="cell-witness-count">Witness Count</td>
+                        <td class="cell-distribution">Distribution</td>
+                    </tr>
+                    <tr class="empty-space"><td></td></tr>                
+                </table>
+    
+                <span style="font-weight: bold; margin-top: 16px; display: inline-block; margin-bottom: 8px;">Necessary conditions:</span>
+    
+                <div id="leaf-necessary-conditions">Lorem Ipsum</div>
+            
+                <div style="text-align: right; margin-bottom: 16px; margin-right: 8px; margin-top: 16px;">
+                    <button id="leaf-stability-analysis-button" class="image-button" style="float: right; margin-bottom: 16px; margin-right: 16px;">Stability analysis (S) <img src="img/stability_analysis-24px.svg"></button>
+                    <select id="leaf-stability-dropdown" class="stability-dropdown" style="float: right;">
+                        <option value="total">Total</option>
+                        <option value="S">Stability</option>
+                        <option value="O">Oscillation</option>
+                        <option value="D">Disorder</option>
+                    </select>                
+                </div>   
+                <div id="leaf-stability-analysis" class="stability-panel"></div>     
+            </div>    
+    
+            <div id="transparency-switch" class="grey gone">
+                <span id="mass-distribution-label" style="display: table-cell; height: 22px; vertical-align: middle; padding-right: 8px;">Show mass distribution</span>
+                <label class="switch" style="display: table-cell;">
+                  <input id="mass-distribution" type="checkbox">
+                  <span class="slider round"></span>
+                </label>
+            </div> 
+    
+            <div id="layout-settings" style="opacity: 0.5;">
+                <div style="margin-bottom: 15px;">
+                    <button id="button-fit" class="image-button" style="padding-right: 12px; margin-right: 12px;">Fit</button>
+                    <button id="button-resetlayout" class="image-button" style="padding-right: 12px">Reset layout</button>
+                </div>
+                <!--<div style="margin: 5px">
+                    <span>Use new layout</span>
+                    <label class="switch">
+                      <input id="toggle-newlayout" type="checkbox" checked>
+                      <span class="slider round"></span>
+                    </label>
+                </div>-->
+                <div style="margin-top: 5px">
+                    <span>Animate layout changes</span>
+                    <label class="switch">
+                      <input id="toggle-animate" type="checkbox">
+                      <span class="slider round"></span>
+                    </label>
+                </div>
+                <div style="margin-top: 5px">
+                    <span>Snap nodes to layers</span>
+                    <label class="switch">
+                      <input id="toggle-layered" type="checkbox">
+                      <span class="slider round"></span>
+                    </label>
+                </div>
+                <div style="margin-top: 5px">
+                    <span>Positive on the left</span>
+                    <label class="switch">
+                      <input id="toggle-posonleft" type="checkbox">
+                      <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+    
+            <div id="precision" style="opacity: 0.5;">
+                <input type="range" min="5001" max="10000" value="10000" class="seekbar" id="precision-slider">
+                Precision: <span id="precision-value">100%</span>
+            </div>        
+    
+            <div id="loading-indicator" class="invisible"><img src="img/progress.gif"/><br><br>Waiting for server...</div>           
+        </div>
+
+        <div id="tab-menu" style="max-height: 30px; height: 30px; max-width: 270px; width: 270px; position: absolute; top: 0; right: 0; z-index: 200; overflow: hidden;">
+            <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="TabBar.closeTab();" onmouseenter="UI.HoverHint.displayHover(event.target, -30, -125, 'Close Inner Tab')" onmouseleave="UI.HoverHint.hideHover()" style="max-height: 18px; top: 3px; left: auto; right: 10px;" onclick="TabBar.closeTab()"> 
+    
+            <button class="centered-button" style="height: 25px; position: absolute; right: 58px; top: 3px;" onclick="document.getElementById('tab-bar').style.display == 'none' ? 
+                                                        document.getElementById('tab-bar').style.display = '' : 
+                                                        document.getElementById('tab-bar').style.display = 'none'">Tabs</button>
+        
+            <button class="centered-button" style="position: absolute; right: 140px; top: 3px; height: 25px;" onclick="UI.Open.openBrowserTab()">Open in tab</button>
+        </div>
+
+        <h3 id="status-bar" style="position: absolute; right: 280px; top: 7px; margin: 0; font-family: 'FiraMono'; text-transform: uppercase; font-size: 15px; pointer-events: none;"> ● Disconnected</h3>
+
+        <h1 id='logo' style="z-index: 1;">Aeon/<span id='title'>BIODIVINE</span></h1>
+
+        <div id="tab-bar" class="model-tab-panel" style="display: none; z-index: 10;">
+            <table id="tab-table" class="tab-table">
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="hover-hint" class="rounded-block" style="max-height: 60px; height: fit-content; position: absolute; z-index: 200; background-color: #B0BAC5; border: 1px solid rgb(120, 145, 155); box-shadow: 0px 0px 5px rgb(176, 191, 197); display: none; text-align: center; vertical-align: middle; line-height: 30px; pointer-events: none;">
+        </div>
+
+        <div id="warning" class="blocking-div" style="display: none;">
+            <div class="main-panel-noresize" style="max-height: 550px; height: fit-content; max-width: 550px; width: fit-content; margin: auto; font-family: 'FiraMono'; ">
+                <div id="warning-text" style="text-align: center;"></div>
+                
+                <div id="warning-buttons" class="doubleContainer" style="margin-top: 5px;"></div>
+            </div>
+        </div>
     </body>
 </html>

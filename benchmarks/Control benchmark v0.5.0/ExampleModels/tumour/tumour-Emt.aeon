@@ -1,0 +1,250 @@
+#position:v_SNAI2:291.2929550903532,114.6728643301858
+#!control:v_SNAI2:true,null
+$v_SNAI2:(((v_CTNNB1 & !((v_miR200 | v_miR203) | v_p53)) | (v_NICD & !((v_miR200 | v_miR203) | v_p53))) | (v_TWIST1 & !((v_miR200 | v_miR203) | v_p53)))
+v_CTNNB1 -> v_SNAI2
+v_NICD -> v_SNAI2
+v_miR203 -| v_SNAI2
+v_miR200 -| v_SNAI2
+v_TWIST1 -> v_SNAI2
+v_p53 -| v_SNAI2
+#position:v_ZEB1:111.37995602906221,187.58057061876912
+#!control:v_ZEB1:true,null
+$v_ZEB1:(((((v_TWIST1 & v_SNAI1) & !v_miR200) | (v_SNAI2 & !v_miR200)) | (v_CTNNB1 & !v_miR200)) | (v_NICD & !v_miR200))
+v_SNAI2 -> v_ZEB1
+v_CTNNB1 -> v_ZEB1
+v_NICD -> v_ZEB1
+v_SNAI1 -> v_ZEB1
+v_miR200 -| v_ZEB1
+v_TWIST1 -> v_ZEB1
+#position:v_CTNNB1:199.65454448772107,374.23020714313816
+#!control:v_CTNNB1:true,null
+$v_CTNNB1:!(((((((v_miR34 | v_DKK1) | v_miR200) | v_CDH1) | v_p53) | v_CDH2) | v_p63) | v_AKT1)
+v_miR34 -| v_CTNNB1
+v_miR200 -| v_CTNNB1
+v_p63 -| v_CTNNB1
+v_CDH2 -| v_CTNNB1
+v_AKT1 -| v_CTNNB1
+v_DKK1 -| v_CTNNB1
+v_CDH1 -| v_CTNNB1
+v_p53 -| v_CTNNB1
+#position:v_NICD:199.34958196197385,421.12433445512556
+#!control:v_NICD:true,null
+$v_NICD:(v_ECM & !((((v_miR200 | v_p73) | v_miR34) | v_p53) | v_p63))
+v_miR34 -| v_NICD
+v_miR200 -| v_NICD
+v_p63 -| v_NICD
+v_ECM -> v_NICD
+v_p73 -| v_NICD
+v_p53 -| v_NICD
+#position:v_SNAI1:110.68524237495876,266.48573842781605
+#!control:v_SNAI1:true,null
+$v_SNAI1:((v_TWIST1 & !(((v_miR203 | v_miR34) | v_p53) | v_CTNNB1)) | (v_NICD & !(((v_miR203 | v_miR34) | v_p53) | v_CTNNB1)))
+v_CTNNB1 -| v_SNAI1
+v_NICD -> v_SNAI1
+v_miR203 -| v_SNAI1
+v_miR34 -| v_SNAI1
+v_TWIST1 -> v_SNAI1
+v_p53 -| v_SNAI1
+#position:v_miR200:291.1320164473914,289.2322084069667
+#!control:v_miR200:true,null
+$v_miR200:(((v_p53 & !((((v_SNAI1 | v_AKT2) | v_ZEB1) | v_SNAI2) | v_ZEB2)) | (v_p63 & !((((v_SNAI1 | v_AKT2) | v_ZEB1) | v_SNAI2) | v_ZEB2))) | (v_p73 & !((((v_SNAI1 | v_AKT2) | v_ZEB1) | v_SNAI2) | v_ZEB2)))
+v_SNAI2 -| v_miR200
+v_SNAI1 -| v_miR200
+v_AKT2 -| v_miR200
+v_ZEB2 -| v_miR200
+v_p63 -> v_miR200
+v_p73 -> v_miR200
+v_ZEB1 -| v_miR200
+v_p53 -> v_miR200
+#position:v_TWIST1:201.73717775913065,114.20422366266257
+#!control:v_TWIST1:true,null
+$v_TWIST1:((v_NICD | v_CTNNB1) | v_SNAI1)
+v_CTNNB1 -> v_TWIST1
+v_NICD -> v_TWIST1
+v_SNAI1 -> v_TWIST1
+#position:v_miR34:201.49931896945373,312.4475299344351
+#!control:v_miR34:true,null
+$v_miR34:(((v_AKT2 & ((!v_SNAI1 & !v_ZEB2) & !v_ZEB1)) & (v_p73 | v_p53)) & !(v_p63 | v_AKT1))
+v_SNAI1 -| v_miR34
+v_AKT2 -> v_miR34
+v_ZEB2 -| v_miR34
+v_p63 -| v_miR34
+v_p73 -> v_miR34
+v_AKT1 -| v_miR34
+v_ZEB1 -| v_miR34
+v_p53 -> v_miR34
+#position:v_p63:289.15502169927913,420.30916069002615
+#!control:v_p63:true,null
+$v_p63:(v_DNAdamage & !((((v_AKT1 | v_NICD) | v_AKT2) | v_miR203) | v_p53))
+v_NICD -| v_p63
+v_miR203 -| v_p63
+v_AKT2 -| v_p63
+v_DNAdamage -> v_p63
+v_AKT1 -| v_p63
+v_p53 -| v_p63
+#position:v_ECM:110.50683362521067,654.2979568925243
+#!control:v_ECM:true,null
+#position:v_p73:199.18281431700734,498.4172195430126
+#!control:v_p73:true,null
+$v_p73:(v_DNAdamage & !(((v_AKT1 | v_AKT2) | v_ZEB1) | v_p53))
+v_AKT2 -| v_p73
+v_DNAdamage -> v_p73
+v_AKT1 -| v_p73
+v_ZEB1 -| v_p73
+v_p53 -| v_p73
+#position:v_p53:290.2564719971924,358.9660658335298
+#!control:v_p53:true,null
+$v_p53:((((v_CTNNB1 & !(((v_AKT2 | v_AKT1) | v_p73) | v_SNAI2)) | (v_NICD & !(((v_AKT2 | v_AKT1) | v_p73) | v_SNAI2))) | (v_miR34 & !(((v_AKT2 | v_AKT1) | v_p73) | v_SNAI2))) | (v_DNAdamage & !(((v_AKT2 | v_AKT1) | v_p73) | v_SNAI2)))
+v_CTNNB1 -> v_p53
+v_SNAI2 -| v_p53
+v_NICD -> v_p53
+v_miR34 -> v_p53
+v_AKT2 -| v_p53
+v_DNAdamage -> v_p53
+v_p73 -| v_p53
+v_AKT1 -| v_p53
+#position:v_miR203:291.4534222539787,209.33991301382866
+#!control:v_miR203:true,null
+$v_miR203:(v_p53 & !((v_ZEB1 | v_SNAI1) | v_ZEB2))
+v_SNAI1 -| v_miR203
+v_ZEB2 -| v_miR203
+v_ZEB1 -| v_miR203
+v_p53 -> v_miR203
+#position:v_AKT2:380.6069176542296,408.64538418831853
+#!control:v_AKT2:true,null
+$v_AKT2:((v_TWIST1 & ((v_TGFbeta | v_GF) | v_CDH2)) & ((!v_miR34 & !v_miR203) & !v_p53))
+v_TGFbeta -> v_AKT2
+v_miR34 -| v_AKT2
+v_miR203 -| v_AKT2
+v_GF -> v_AKT2
+v_TWIST1 -> v_AKT2
+v_CDH2 -> v_AKT2
+v_p53 -| v_AKT2
+#position:v_DNAdamage:470.04128007545387,512.8797791958727
+#!control:v_DNAdamage:true,null
+#position:v_AKT1:289.221159671672,457.5859569620227
+#!control:v_AKT1:true,null
+$v_AKT1:((v_CTNNB1 & (((v_NICD | v_CDH2) | v_TGFbeta) | v_GF)) & !((v_miR34 | v_p53) | v_CDH1))
+v_CTNNB1 -> v_AKT1
+v_NICD -> v_AKT1
+v_TGFbeta -> v_AKT1
+v_miR34 -| v_AKT1
+v_GF -> v_AKT1
+v_CDH2 -> v_AKT1
+v_p53 -| v_AKT1
+v_CDH1 -| v_AKT1
+#position:v_ZEB2:202.75701742207548,160.90462393590803
+#!control:v_ZEB2:true,null
+$v_ZEB2:(((v_NICD & !(v_miR203 | v_miR200)) | ((v_SNAI2 & v_TWIST1) & !(v_miR203 | v_miR200))) | (v_SNAI1 & !(v_miR203 | v_miR200)))
+v_SNAI2 -> v_ZEB2
+v_NICD -> v_ZEB2
+v_miR203 -| v_ZEB2
+v_SNAI1 -> v_ZEB2
+v_miR200 -| v_ZEB2
+v_TWIST1 -> v_ZEB2
+#position:v_Migration:380.9882032911373,597.4574780710757
+#!control:v_Migration:false,false
+$v_Migration:((v_VIM & (((v_Invasion & v_EMT) & v_ERK) & v_AKT2)) & !((v_miR200 | v_p63) | v_AKT1))
+v_Invasion -> v_Migration
+v_EMT -> v_Migration
+v_ERK -> v_Migration
+v_AKT2 -> v_Migration
+v_miR200 -| v_Migration
+v_VIM -> v_Migration
+v_p63 -| v_Migration
+v_AKT1 -| v_Migration
+#position:v_Metastasis:406.86949338083605,832.341919070346
+#!control:v_Metastasis:false,false
+$v_Metastasis:v_Migration
+v_Migration -? v_Metastasis
+#position:v_TGFbeta:290.2822476908341,684.902848028466
+#!control:v_TGFbeta:true,null
+$v_TGFbeta:((v_NICD & !v_CTNNB1) | (v_ECM & !v_CTNNB1))
+v_CTNNB1 -| v_TGFbeta
+v_NICD -> v_TGFbeta
+v_ECM -> v_TGFbeta
+#position:v_SMAD:380.84136526125167,504.58598811577144
+#!control:v_SMAD:true,null
+$v_SMAD:(v_TGFbeta & !(v_miR200 | v_miR203))
+v_TGFbeta -> v_SMAD
+v_miR203 -| v_SMAD
+v_miR200 -| v_SMAD
+#position:v_GF:199.93925721660526,560.3889537224686
+#!control:v_GF:true,null
+$v_GF:((v_CDH2 & !v_CDH1) | (v_GF & !v_CDH1))
+v_GF -> v_GF
+v_CDH2 -> v_GF
+v_CDH1 -| v_GF
+#position:v_CDH2:289.0400229091538,509.47657954010197
+#!control:v_CDH2:true,null
+$v_CDH2:v_TWIST1
+v_TWIST1 -> v_CDH2
+#position:v_CDH1:202.63051991375414,267.33290200915974
+#!control:v_CDH1:true,null
+$v_CDH1:!(((((v_ZEB1 | v_AKT2) | v_TWIST1) | v_ZEB2) | v_SNAI2) | v_SNAI1)
+v_SNAI2 -| v_CDH1
+v_SNAI1 -| v_CDH1
+v_AKT2 -| v_CDH1
+v_ZEB2 -| v_CDH1
+v_TWIST1 -| v_CDH1
+v_ZEB1 -| v_CDH1
+#position:v_EMT:470.75143331228037,331.63336894622887
+#!control:v_EMT:false,true
+$v_EMT:(v_CDH2 & !v_CDH1)
+v_CDH2 -> v_EMT
+v_CDH1 -| v_EMT
+#position:v_p21:381.2515232558344,358.61963378257497
+#!control:v_p21:true,null
+$v_p21:(((((v_p63 & !(v_AKT1 | v_ERK)) | (v_p53 & !(v_AKT1 | v_ERK))) | (v_p73 & !(v_AKT1 | v_ERK))) | (v_AKT2 & !(v_AKT1 | v_ERK))) | ((v_SMAD & v_NICD) & !(v_AKT1 | v_ERK)))
+v_SMAD -> v_p21
+v_NICD -> v_p21
+v_ERK -| v_p21
+v_AKT2 -> v_p21
+v_p63 -> v_p21
+v_p73 -> v_p21
+v_AKT1 -| v_p21
+v_p53 -> v_p21
+#position:v_ERK:289.4132854223312,601.96962724383
+#!control:v_ERK:true,null
+$v_ERK:((((v_GF & !v_AKT1) | (v_SMAD & !v_AKT1)) | (v_CDH2 & !v_AKT1)) | (v_NICD & !v_AKT1))
+v_SMAD -> v_ERK
+v_NICD -> v_ERK
+v_GF -> v_ERK
+v_CDH2 -> v_ERK
+v_AKT1 -| v_ERK
+#position:v_CellCycleArrest:381.6752901695663,78
+#!control:v_CellCycleArrest:false,true
+$v_CellCycleArrest:(((((v_miR34 & !v_AKT1) | (v_ZEB2 & !v_AKT1)) | (v_miR203 & !v_AKT1)) | (v_miR200 & !v_AKT1)) | (v_p21 & !v_AKT1))
+v_miR34 -> v_CellCycleArrest
+v_miR203 -> v_CellCycleArrest
+v_p21 -> v_CellCycleArrest
+v_ZEB2 -> v_CellCycleArrest
+v_miR200 -> v_CellCycleArrest
+v_AKT1 -| v_CellCycleArrest
+#position:v_Invasion:200.69380740322185,727.2082200170939
+#!control:v_Invasion:false,false
+$v_Invasion:(v_CTNNB1 | (v_SMAD & v_CDH2))
+v_SMAD -> v_Invasion
+v_CTNNB1 -> v_Invasion
+v_CDH2 -> v_Invasion
+#position:v_VIM:382.6259438122397,262.8458282396838
+#!control:v_VIM:true,null
+$v_VIM:(v_CTNNB1 | v_ZEB2)
+v_CTNNB1 -> v_VIM
+v_ZEB2 -> v_VIM
+#position:v_DKK1:22.5,320.29135647446117
+#!control:v_DKK1:true,null
+$v_DKK1:(v_NICD | v_CTNNB1)
+v_CTNNB1 -> v_DKK1
+v_NICD -> v_DKK1
+#position:v_Apoptosis:107.78670552602716,463.8300150730058
+#!control:v_Apoptosis:false,false
+$v_Apoptosis:(((((v_miR200 & !((v_ZEB2 | v_AKT1) | v_ERK)) | (v_p53 & !((v_ZEB2 | v_AKT1) | v_ERK))) | (v_p73 & !((v_ZEB2 | v_AKT1) | v_ERK))) | (v_p63 & !((v_ZEB2 | v_AKT1) | v_ERK))) | (v_miR34 & !((v_ZEB2 | v_AKT1) | v_ERK)))
+v_miR34 -> v_Apoptosis
+v_ERK -| v_Apoptosis
+v_miR200 -> v_Apoptosis
+v_ZEB2 -| v_Apoptosis
+v_p63 -> v_Apoptosis
+v_p73 -> v_Apoptosis
+v_AKT1 -| v_Apoptosis
+v_p53 -> v_Apoptosis

@@ -1,0 +1,107 @@
+#position:v_IGF1R:179.826260966596,137.34321442799677
+#!control:v_IGF1R:true,null
+$v_IGF1R:(((!v_ERalpha & v_AKT1) & !v_ERBB2_3) | (v_ERalpha & !v_ERBB2_3))
+v_ERalpha -> v_IGF1R
+v_AKT1 -> v_IGF1R
+v_ERBB2_3 -| v_IGF1R
+#position:v_MEK1:202.87806033388574,298.8052916725002
+#!control:v_MEK1:true,null
+$v_MEK1:((((((((!v_IGF1R & !v_ERBB1) & !v_ERBB2_3) & !v_ERBB1_2) & v_ERBB1_3) | (((!v_IGF1R & !v_ERBB1) & !v_ERBB2_3) & v_ERBB1_2)) | ((!v_IGF1R & !v_ERBB1) & v_ERBB2_3)) | (!v_IGF1R & v_ERBB1)) | v_IGF1R)
+v_IGF1R -> v_MEK1
+v_ERBB1 -> v_MEK1
+v_ERBB2_3 -> v_MEK1
+v_ERBB1_2 -> v_MEK1
+v_ERBB1_3 -> v_MEK1
+#position:v_ERBB1:111.90489607377151,243.29908076056972
+#!control:v_ERBB1:true,null
+$v_ERBB1:v_EGF
+v_EGF -> v_ERBB1
+#position:v_ERBB2_3:111.95978428366152,395.7955414252133
+#!control:v_ERBB2_3:true,null
+$v_ERBB2_3:(v_ERBB2 & v_ERBB3)
+v_ERBB2 -> v_ERBB2_3
+v_ERBB3 -> v_ERBB2_3
+#position:v_ERBB1_2:203.35456662813272,490.9191671700489
+#!control:v_ERBB1_2:true,null
+$v_ERBB1_2:(v_ERBB1 & v_ERBB2)
+v_ERBB1 -> v_ERBB1_2
+v_ERBB2 -> v_ERBB1_2
+#position:v_ERBB1_3:90.51555770267737,62.44440812930395
+#!control:v_ERBB1_3:true,null
+$v_ERBB1_3:(v_ERBB1 & v_ERBB3)
+v_ERBB1 -> v_ERBB1_3
+v_ERBB3 -> v_ERBB1_3
+#position:v_p21:291.9344283848176,380.73961878723185
+#!control:v_p21:true,null
+$v_p21:((!v_CDK4 & !v_AKT1) & !v_MYC)
+v_CDK4 -| v_p21
+v_AKT1 -| v_p21
+v_MYC -| v_p21
+#position:v_CDK4:292.84901715393187,527.5976462089477
+#!control:v_CDK4:true,null
+$v_CDK4:((!v_p21 & v_CyclinD1) & !v_p27)
+v_p21 -| v_CDK4
+v_CyclinD1 -> v_CDK4
+v_p27 -| v_CDK4
+#position:v_CyclinD1:376.33883021026134,264.48906799660574
+#!control:v_CyclinD1:true,null
+$v_CyclinD1:((((!v_MEK1 & v_ERalpha) & v_AKT1) & v_MYC) | ((v_MEK1 & v_ERalpha) & v_MYC))
+v_MEK1 -> v_CyclinD1
+v_ERalpha -> v_CyclinD1
+v_AKT1 -> v_CyclinD1
+v_MYC -> v_CyclinD1
+#position:v_p27:383.50289940283744,436.929774691768
+#!control:v_p27:true,null
+$v_p27:(((!v_CDK4 & !v_CDK2) & !v_AKT1) & !v_MYC)
+v_CDK4 -| v_p27
+v_CDK2 -| v_p27
+v_AKT1 -| v_p27
+v_MYC -| v_p27
+#position:v_AKT1:271.02895720406707,235.1993779883657
+#!control:v_AKT1:true,null
+$v_AKT1:((((((((!v_IGF1R & !v_ERBB1) & !v_ERBB2_3) & !v_ERBB1_2) & v_ERBB1_3) | (((!v_IGF1R & !v_ERBB1) & !v_ERBB2_3) & v_ERBB1_2)) | ((!v_IGF1R & !v_ERBB1) & v_ERBB2_3)) | (!v_IGF1R & v_ERBB1)) | v_IGF1R)
+v_IGF1R -> v_AKT1
+v_ERBB1 -> v_AKT1
+v_ERBB2_3 -> v_AKT1
+v_ERBB1_2 -> v_AKT1
+v_ERBB1_3 -> v_AKT1
+#position:v_MYC:359.51600184703,153.19886023346186
+#!control:v_MYC:true,null
+$v_MYC:((((!v_MEK1 & !v_ERalpha) & v_AKT1) | (!v_MEK1 & v_ERalpha)) | v_MEK1)
+v_MEK1 -> v_MYC
+v_ERalpha -> v_MYC
+v_AKT1 -> v_MYC
+#position:v_ERalpha:270.1329557128537,49
+#!control:v_ERalpha:true,null
+$v_ERalpha:((!v_MEK1 & v_AKT1) | v_MEK1)
+v_MEK1 -> v_ERalpha
+v_AKT1 -> v_ERalpha
+#position:v_CDK2:466.1879358202294,289.32599615475226
+#!control:v_CDK2:true,null
+$v_CDK2:((!v_p21 & !v_p27) & v_CyclinE1)
+v_p21 -| v_CDK2
+v_p27 -| v_CDK2
+v_CyclinE1 -> v_CDK2
+#position:v_CyclinE1:466.9689798025604,105.72481750968188
+#!control:v_CyclinE1:true,null
+$v_CyclinE1:v_MYC
+v_MYC -> v_CyclinE1
+#position:v_pRB1:383.97835665511855,592.3874583595501
+#!control:v_pRB1:false,false
+$v_pRB1:(v_CDK4 & v_CDK6)
+v_CDK4 -> v_pRB1
+v_CDK6 -> v_pRB1
+#position:v_CDK6:473.49178530394033,443.0274134191119
+#!control:v_CDK6:true,null
+$v_CDK6:v_CyclinD1
+v_CyclinD1 -> v_CDK6
+#position:v_EGF:22.5,402.46308041676446
+#!control:v_EGF:true,null
+#position:v_ERBB2:83.99378203519552,578.9994827327971
+#!control:v_ERBB2:true,null
+$v_ERBB2:v_EGF
+v_EGF -> v_ERBB2
+#position:v_ERBB3:22.50047413861637,248.75774153568204
+#!control:v_ERBB3:true,null
+$v_ERBB3:v_EGF
+v_EGF -> v_ERBB3

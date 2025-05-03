@@ -1,0 +1,80 @@
+#position:v_canWnt:151.75,212.5
+#!control:v_canWnt:true,null
+$v_canWnt:v_exogen_canWnt_II
+v_exogen_canWnt_II -> v_canWnt
+#position:v_Mesp1:784.5,402.5
+#!control:v_Mesp1:true,null
+$v_Mesp1:(v_canWnt & !v_exogen_BMP2_II)
+v_canWnt -> v_Mesp1
+v_exogen_BMP2_II -| v_Mesp1
+#position:v_exogen_BMP2_II:521.25,307.5
+#!control:v_exogen_BMP2_II:true,null
+$v_exogen_BMP2_II:v_exogen_BMP2_I
+v_exogen_BMP2_I -> v_exogen_BMP2_II
+#position:v_Isl1:463,592.5
+#!control:v_Isl1:true,null
+$v_Isl1:(((v_Mesp1 | v_Tbx1) | v_Fgf8) | (v_canWnt & v_exogen_canWnt_II))
+v_canWnt -> v_Isl1
+v_Fgf8 -> v_Isl1
+v_Tbx1 -> v_Isl1
+v_exogen_canWnt_II -> v_Isl1
+v_Mesp1 -> v_Isl1
+#position:v_Fgf8:185.5,497.5
+#!control:v_Fgf8:true,null
+$v_Fgf8:((v_Tbx1 & !v_Mesp1) | (v_Foxc1_2 & !v_Mesp1))
+v_Tbx1 -> v_Fgf8
+v_Mesp1 -| v_Fgf8
+v_Foxc1_2 -> v_Fgf8
+#position:v_Tbx1:474.25,402.5
+#!control:v_Tbx1:false,null
+$v_Tbx1:v_Foxc1_2
+v_Foxc1_2 -> v_Tbx1
+#position:v_exogen_canWnt_II:350.75,117.5
+#!control:v_exogen_canWnt_II:true,null
+$v_exogen_canWnt_II:v_exogen_CanWnt_I
+v_exogen_CanWnt_I -> v_exogen_canWnt_II
+#position:v_Bmp2:38.5,402.5
+#!control:v_Bmp2:true,null
+$v_Bmp2:(v_exogen_BMP2_II & !v_canWnt)
+v_canWnt -| v_Bmp2
+v_exogen_BMP2_II -> v_Bmp2
+#position:v_Nkx2_5:681.25,687.5
+#!control:v_Nkx2_5:true,null
+$v_Nkx2_5:((((v_Tbx5 | v_Tbx1) | (v_Mesp1 & v_Dkk1)) | (v_Bmp2 & v_GATAs)) | (v_Isl1 & v_GATAs))
+v_Bmp2 -> v_Nkx2_5
+v_Isl1 -> v_Nkx2_5
+v_Tbx1 -> v_Nkx2_5
+v_Dkk1 -> v_Nkx2_5
+v_Tbx5 -> v_Nkx2_5
+v_GATAs -> v_Nkx2_5
+v_Mesp1 -> v_Nkx2_5
+#position:v_Dkk1:390.75,497.5
+#!control:v_Dkk1:true,null
+$v_Dkk1:(v_Mesp1 | (v_canWnt & !v_exogen_BMP2_II))
+v_canWnt -> v_Dkk1
+v_exogen_BMP2_II -| v_Dkk1
+v_Mesp1 -> v_Dkk1
+#position:v_Tbx5:404,782.5
+#!control:v_Tbx5:false,null
+$v_Tbx5:(((v_Tbx5 & !((v_canWnt | (v_Dkk1 & (!v_Tbx5 & !v_Mesp1))) | v_Tbx1)) | (v_Nkx2_5 & !((v_canWnt | (v_Dkk1 & (!v_Tbx5 & !v_Mesp1))) | v_Tbx1))) | (v_Mesp1 & !((v_canWnt | (v_Dkk1 & (!v_Tbx5 & !v_Mesp1))) | v_Tbx1)))
+v_Nkx2_5 -> v_Tbx5
+v_canWnt -| v_Tbx5
+v_Dkk1 -| v_Tbx5
+v_Tbx1 -| v_Tbx5
+v_Tbx5 -? v_Tbx5
+v_Mesp1 -? v_Tbx5
+#position:v_GATAs:450.75,877.5
+#!control:v_GATAs:true,null
+$v_GATAs:((v_Nkx2_5 | v_Tbx5) | v_Mesp1)
+v_Nkx2_5 -> v_GATAs
+v_Tbx5 -> v_GATAs
+v_Mesp1 -> v_GATAs
+#position:v_Foxc1_2:347.75,307.5
+#!control:v_Foxc1_2:true,null
+$v_Foxc1_2:(v_canWnt & v_exogen_canWnt_II)
+v_canWnt -> v_Foxc1_2
+v_exogen_canWnt_II -> v_Foxc1_2
+#position:v_exogen_CanWnt_I:350.75,22.5
+#!control:v_exogen_CanWnt_I:true,null
+#position:v_exogen_BMP2_I:521.25,212.5
+#!control:v_exogen_BMP2_I:true,null

@@ -1,0 +1,149 @@
+#position:v_TNF:383.380067442657,852.7226014652747
+#!control:v_TNF:true,null
+$v_TNF:((!v_TNF & v_NFKB1) | v_TNF)
+v_TNF -? v_TNF
+v_NFKB1 -> v_TNF
+#position:v_NFKB1:294.8392831323302,662.5279207664161
+#!control:v_NFKB1:true,null
+$v_NFKB1:(v_IKK & !v_CASP3)
+v_IKK -> v_NFKB1
+v_CASP3 -| v_NFKB1
+#position:v_TNFR:203.1520249327528,979.3560423164165
+#!control:v_TNFR:true,null
+$v_TNFR:v_TNF
+v_TNF -> v_TNFR
+#position:v_DISC_TNF:22.5,907.4694585743792
+#!control:v_DISC_TNF:true,null
+$v_DISC_TNF:(v_TNFR & v_FADD)
+v_TNFR -> v_DISC_TNF
+v_FADD -> v_DISC_TNF
+#position:v_FADD:43.37716768393943,1089.8662181777272
+#!control:v_FADD:true,null
+#position:v_FASL:204.50036274615883,1299.3518781029902
+#!control:v_FASL:true,null
+#position:v_DISC_FAS:134.9057684424081,1116.1900214200411
+#!control:v_DISC_FAS:true,null
+$v_DISC_FAS:(v_FASL & v_FADD)
+v_FASL -> v_DISC_FAS
+v_FADD -> v_DISC_FAS
+#position:v_RIP1:291.8589583400737,1083.4419107304468
+#!control:v_RIP1:true,null
+$v_RIP1:(((!v_TNFR & v_DISC_FAS) & !v_CASP8) | (v_TNFR & !v_CASP8))
+v_TNFR -> v_RIP1
+v_DISC_FAS -> v_RIP1
+v_CASP8 -| v_RIP1
+#position:v_CASP8:203.08429407510556,818.6015058644313
+#!control:v_CASP8:true,null
+$v_CASP8:(((((!v_DISC_TNF & !v_DISC_FAS) & v_CASP3) & !v_cFLIP) | ((!v_DISC_TNF & v_DISC_FAS) & !v_cFLIP)) | (v_DISC_TNF & !v_cFLIP))
+v_DISC_TNF -> v_CASP8
+v_DISC_FAS -> v_CASP8
+v_CASP3 -> v_CASP8
+v_cFLIP -| v_CASP8
+#position:v_RIP1ub:474.0914976885735,1025.1857353682062
+#!control:v_RIP1ub:true,null
+$v_RIP1ub:(v_RIP1 & v_cIAP)
+v_RIP1 -> v_RIP1ub
+v_cIAP -> v_RIP1ub
+#position:v_cIAP:383.4303515651998,999.2760528500075
+#!control:v_cIAP:true,null
+$v_cIAP:(!v_SMAC & v_mcIAP)
+v_SMAC -| v_cIAP
+v_mcIAP -> v_cIAP
+#position:v_RIP1K:113.32077673473862,927.9248193818105
+#!control:v_RIP1K:true,null
+$v_RIP1K:v_RIP1
+v_RIP1 -> v_RIP1K
+#position:v_IKK:473.89738357940047,697.8546949017698
+#!control:v_IKK:true,null
+$v_IKK:v_RIP1ub
+v_RIP1ub -> v_IKK
+#position:v_CASP3:218.8142865350357,495.32435892161214
+#!control:v_CASP3:true,null
+$v_CASP3:(!v_XIAP & v_apoptosome)
+v_XIAP -| v_CASP3
+v_apoptosome -> v_CASP3
+#position:v_cFLIP:293.5228496095055,921.478348792365
+#!control:v_cFLIP:true,null
+$v_cFLIP:v_NFKB1
+v_NFKB1 -> v_cFLIP
+#position:v_BAX:383.39612405551014,713.9267102691928
+#!control:v_BAX:true,null
+$v_BAX:(v_CASP8 & !v_BCL2)
+v_CASP8 -> v_BAX
+v_BCL2 -| v_BAX
+#position:v_BCL2:309.7638797318088,555.4741739975815
+#!control:v_BCL2:true,null
+$v_BCL2:v_NFKB1
+v_NFKB1 -> v_BCL2
+#position:v_ROS:23.168670473082727,732.8854562709633
+#!control:v_ROS:true,null
+$v_ROS:(((!v_RIP1K & v_MPT) & v_mROS) | (v_RIP1K & v_mROS))
+v_RIP1K -> v_ROS
+v_MPT -> v_ROS
+v_mROS -> v_ROS
+#position:v_MPT:113.96456099476762,619.9181052303608
+#!control:v_MPT:true,null
+$v_MPT:(!v_BCL2 & v_ROS)
+v_BCL2 -| v_MPT
+v_ROS -> v_MPT
+#position:v_mROS:114.35599937545334,766.2946466836659
+#!control:v_mROS:true,null
+$v_mROS:!v_NFKB1
+v_NFKB1 -| v_mROS
+#position:v_ATP:162.77148311707566,362.6305680258949
+#!control:v_ATP:true,null
+$v_ATP:!v_MPT
+v_MPT -| v_ATP
+#position:v_MOMP:203.03475388753196,656.5689230216602
+#!control:v_MOMP:true,null
+$v_MOMP:((!v_BAX & v_MPT) | v_BAX)
+v_BAX -> v_MOMP
+v_MPT -> v_MOMP
+#position:v_SMAC:293.4132493192897,761.2567244662172
+#!control:v_SMAC:true,null
+$v_SMAC:v_MOMP
+v_MOMP -> v_SMAC
+#position:v_mcIAP:474.7726024738036,850.6181111548069
+#!control:v_mcIAP:true,null
+$v_mcIAP:v_NFKB1
+v_NFKB1 -> v_mcIAP
+#position:v_Cyt_c:23.791679436983145,518.9863048006612
+#!control:v_Cyt_c:true,null
+$v_Cyt_c:v_MOMP
+v_MOMP -> v_Cyt_c
+#position:v_XIAP:130.54779462878923,509.74410531540184
+#!control:v_XIAP:true,null
+$v_XIAP:(!v_SMAC & v_mXIAP)
+v_SMAC -| v_XIAP
+v_mXIAP -? v_XIAP
+#position:v_mXIAP:309.5821969865262,392.9407499172368
+#!control:v_mXIAP:true,null
+$v_mXIAP:v_NFKB1
+v_NFKB1 -> v_mXIAP
+#position:v_apoptosome:73.26200196285811,315.7357052867149
+#!control:v_apoptosome:true,null
+$v_apoptosome:((v_ATP & v_Cyt_c) & !v_XIAP)
+v_ATP -> v_apoptosome
+v_Cyt_c -> v_apoptosome
+v_XIAP -| v_apoptosome
+#position:v_NonACD:253.76419407567772,218.45181253092755
+#!control:v_NonACD:false,false
+$v_NonACD:!v_ATP
+v_ATP -| v_NonACD
+#position:v_Apoptosis:162.13755838573383,180.00205810055297
+#!control:v_Apoptosis:false,false
+$v_Apoptosis:v_CASP3
+v_CASP3 -> v_Apoptosis
+#position:v_Survival:399.51180295942873,533.4849820800199
+#!control:v_Survival:false,true
+$v_Survival:v_NFKB1
+v_NFKB1 -> v_Survival
+#position:v_DIVISION:490.13893703393666,350.152526626041
+#!control:v_DIVISION:false,null
+$v_DIVISION:v_Survival
+v_Survival -> v_DIVISION
+#position:v_DEATH:253.3698846954049,42
+#!control:v_DEATH:false,null
+$v_DEATH:((!v_NonACD & v_Apoptosis) | v_NonACD)
+v_NonACD -> v_DEATH
+v_Apoptosis -> v_DEATH
