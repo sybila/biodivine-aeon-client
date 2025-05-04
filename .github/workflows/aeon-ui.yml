@@ -1,4 +1,4 @@
-name: AEON UI Code Checking
+name: AEON UI CI
 
 on:
     push:

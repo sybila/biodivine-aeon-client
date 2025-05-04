@@ -19,7 +19,11 @@
     "landing-page:format:check": "prettier --check ./aeon-landing-page",
     "ui:format:write": "prettier --write ./aeon-ui",
     "ui:format:check": "prettier --check ./aeon-ui",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "wasm:format:check": "cargo fmt --manifest-path ./aeon-wasm/Cargo.toml --check",
+    "wasm:format:write": "cargo fmt --manifest-path ./aeon-wasm/Cargo.toml --check",
+    "wasm:build:check": "cargo clippy --manifest-path ./aeon-wasm/Cargo.toml",
+    "wasm:build:test": "cargo test --manifest-path ./aeon-wasm/Cargo.toml",
+    "wasm:build:install": "cd ./aeon-wasm && wasm-pack build --target web"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.1",
