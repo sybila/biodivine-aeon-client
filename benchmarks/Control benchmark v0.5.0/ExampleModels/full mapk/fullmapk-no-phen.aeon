@@ -1,0 +1,259 @@
+#position:v_MYC:428.95217427799116,419.0230767599945
+#!control:v_MYC:true,null
+$v_MYC:((v_MSK & v_AKT) | (v_MSK & v_MAX))
+v_MAX -> v_MYC
+v_AKT -> v_MYC
+v_MSK -> v_MYC
+#position:v_p14:338.27469476276883,368.2153393229232
+#!control:v_p14:true,null
+$v_p14:v_MYC
+v_MYC -> v_p14
+#position:v_JNK:385.04834111361515,954.2438491256137
+#!control:v_JNK:true,null
+$v_JNK:((((((((((v_TAOK & v_MAP3K1_3) | (v_TAK1 & !v_DUSP1)) | (v_MAP3K1_3 & v_MTK1)) | (v_TAK1 & v_MAP3K1_3)) | (v_MAP3K1_3 & !v_DUSP1)) | (v_TAK1 & v_MTK1)) | (v_TAK1 & v_TAOK)) | (v_TAOK & v_MTK1)) | (v_MTK1 & !v_DUSP1)) | (v_TAOK & !v_DUSP1))
+v_MAP3K1_3 -> v_JNK
+v_MTK1 -> v_JNK
+v_TAOK -> v_JNK
+v_DUSP1 -| v_JNK
+v_TAK1 -> v_JNK
+#position:v_JUN:204.0548347173651,1021.0582415391592
+#!control:v_JUN:true,null
+$v_JUN:v_JNK
+v_JNK -> v_JUN
+#position:v_MAX:566.2131293046673,673.4971008155804
+#!control:v_MAX:true,null
+$v_MAX:v_p38
+v_p38 -> v_MAX
+#position:v_AKT:385.90955279054265,505.2884307530954
+#!control:v_AKT:true,null
+$v_AKT:(v_PDK1 & !v_PTEN)
+v_PTEN -| v_AKT
+v_PDK1 -> v_AKT
+#position:v_MSK:386.631359020392,643.8644051927678
+#!control:v_MSK:true,null
+$v_MSK:(v_p38 | v_ERK)
+v_ERK -> v_MSK
+v_p38 -> v_MSK
+#position:v_CREB:475.85715454289743,899.4814892655282
+#!control:v_CREB:true,null
+$v_CREB:v_MSK
+v_MSK -> v_CREB
+#position:v_TGFBR:407.52026121440804,1273.9251211677115
+#!control:v_TGFBR:true,null
+$v_TGFBR:v_TGFBR_stimulus
+v_TGFBR_stimulus -> v_TGFBR
+#position:v_TAK1:475.0377534841989,1066.6422904775168
+#!control:v_TAK1:true,null
+$v_TAK1:v_TGFBR
+v_TGFBR -> v_TAK1
+#position:v_MAP3K1_3:204.5181526958056,873.1592569854174
+#!control:v_MAP3K1_3:true,null
+$v_MAP3K1_3:v_RAS
+v_RAS -> v_MAP3K1_3
+#position:v_MEK1_2:205.99768545906159,595.4970968736467
+#!control:v_MEK1_2:true,null
+$v_MEK1_2:((v_RAF & !(v_PPP2CA | v_AP1)) | (v_MAP3K1_3 & !(v_PPP2CA | v_AP1)))
+v_MAP3K1_3 -> v_MEK1_2
+v_RAF -> v_MEK1_2
+v_PPP2CA -| v_MEK1_2
+v_AP1 -| v_MEK1_2
+#position:v_RAF:204.46754106579738,754.8659290271088
+#!control:v_RAF:true,null
+$v_RAF:((v_PKC & !(v_ERK | v_AKT)) | (v_RAS & !(v_ERK | v_AKT)))
+v_ERK -| v_RAF
+v_RAS -> v_RAF
+v_AKT -| v_RAF
+v_PKC -> v_RAF
+#position:v_PPP2CA:295.690593353831,549.4374669723336
+#!control:v_PPP2CA:true,null
+$v_PPP2CA:v_p38
+v_p38 -> v_PPP2CA
+#position:v_AP1:115.50670744132913,808.9602804963303
+#!control:v_AP1:true,null
+$v_AP1:(v_JUN & (v_ATF2 | v_FOS))
+v_ATF2 -> v_AP1
+v_FOS -> v_AP1
+v_JUN -> v_AP1
+#position:v_p53:565.7964459847096,535.4177933275741
+#!control:v_p53:true,null
+$v_p53:(((v_p38 & !v_MDM2) | (v_ATM & !v_MDM2)) | (v_ATM & v_p38))
+v_ATM -> v_p53
+v_p38 -> v_p53
+v_MDM2 -| v_p53
+#position:v_p21:429.19836288668716,280.68897454933494
+#!control:v_p21:true,null
+$v_p21:(v_p53 & !v_AKT)
+v_p53 -> v_p21
+v_AKT -| v_p21
+#position:v_GRB2:203.29877750349283,1165.6831334309923
+#!control:v_GRB2:true,null
+$v_GRB2:((v_EGFR | v_TGFBR) | v_FRS2)
+v_EGFR -> v_GRB2
+v_FRS2 -> v_GRB2
+v_TGFBR -> v_GRB2
+#position:v_GAB1:23.707743342902177,983.8523254286807
+#!control:v_GAB1:true,null
+$v_GAB1:(v_PI3K | v_GRB2)
+v_GRB2 -> v_GAB1
+v_PI3K -> v_GAB1
+#position:v_PI3K:25.032438206135566,712.9149485579723
+#!control:v_PI3K:true,null
+$v_PI3K:(v_GAB1 | (v_RAS & v_SOS))
+v_RAS -> v_PI3K
+v_SOS -> v_PI3K
+v_GAB1 -> v_PI3K
+#position:v_MTK1:564.8097138534652,973.6557706947303
+#!control:v_MTK1:true,null
+$v_MTK1:v_GADD45
+v_GADD45 -> v_MTK1
+#position:v_TAOK:563.9053831926942,818.8031258066196
+#!control:v_TAOK:true,null
+$v_TAOK:v_ATM
+v_ATM -> v_TAOK
+#position:v_DUSP1:384.73290969411664,1107.0074170094983
+#!control:v_DUSP1:true,null
+$v_DUSP1:v_CREB
+v_CREB -> v_DUSP1
+#position:v_p38:386.39843023961953,816.4642027217213
+#!control:v_p38:true,null
+$v_p38:((((((((((v_MAP3K1_3 & v_MTK1) | (v_TAK1 & !v_DUSP1)) | (v_TAOK & v_MAP3K1_3)) | (v_MAP3K1_3 & !v_DUSP1)) | (v_TAK1 & v_MAP3K1_3)) | (v_TAOK & !v_DUSP1)) | (v_TAK1 & v_MTK1)) | (v_TAK1 & v_TAOK)) | (v_MTK1 & !v_DUSP1)) | (v_TAOK & v_MTK1))
+v_MAP3K1_3 -> v_p38
+v_MTK1 -> v_p38
+v_DUSP1 -| v_p38
+v_TAOK -> v_p38
+v_TAK1 -> v_p38
+#position:v_PLCG:22.5,1138.7862271407132
+#!control:v_PLCG:true,null
+$v_PLCG:(v_EGFR | v_FGFR3)
+v_EGFR -> v_PLCG
+v_FGFR3 -> v_PLCG
+#position:v_RAS:24.294376226602026,858.180067590891
+#!control:v_RAS:true,null
+$v_RAS:(v_SOS | v_PLCG)
+v_PLCG -> v_RAS
+v_SOS -> v_RAS
+#position:v_SOS:114.8004095978506,940.2822100682337
+#!control:v_SOS:true,null
+$v_SOS:(v_GRB2 & !v_RSK)
+v_RSK -| v_SOS
+v_GRB2 -> v_SOS
+#position:v_ERK:294.8596735079127,708.0635820892337
+#!control:v_ERK:true,null
+$v_ERK:v_MEK1_2
+v_MEK1_2 -> v_ERK
+#position:v_p70:248.38211634726986,403.45636496217367
+#!control:v_p70:true,null
+$v_p70:(v_PDK1 & v_ERK)
+v_ERK -> v_p70
+v_PDK1 -> v_p70
+#position:v_PDK1:157.05346938191747,456.85579597127685
+#!control:v_PDK1:true,null
+$v_PDK1:v_PI3K
+v_PI3K -> v_PDK1
+#position:v_FOS:295.556198685033,790.6881061032933
+#!control:v_FOS:true,null
+$v_FOS:((v_ERK & v_RSK) & (v_CREB | v_ELK1))
+v_ERK -> v_FOS
+v_RSK -> v_FOS
+v_CREB -> v_FOS
+v_ELK1 -> v_FOS
+#position:v_RSK:115.96205386911856,671.0183921336882
+#!control:v_RSK:true,null
+$v_RSK:v_ERK
+v_ERK -> v_RSK
+#position:v_ELK1:294.90219416007585,877.1698364891301
+#!control:v_ELK1:true,null
+$v_ELK1:((v_JNK | v_ERK) | v_p38)
+v_ERK -> v_ELK1
+v_JNK -> v_ELK1
+v_p38 -> v_ELK1
+#position:v_Proliferation:337.3399549479275,157.13831551659246
+#!control:v_Proliferation:false,null
+$v_Proliferation:((v_p70 & v_MYC) & !v_p21)
+v_p70 -> v_Proliferation
+v_p21 -| v_Proliferation
+v_MYC -> v_Proliferation
+#position:v_PTEN:608.2783294491749,390.26818029934384
+#!control:v_PTEN:true,null
+$v_PTEN:v_p53
+v_p53 -> v_PTEN
+#position:v_SMAD:566.2492446013723,1127.12144846355
+#!control:v_SMAD:true,null
+$v_SMAD:v_TGFBR
+v_TGFBR -> v_SMAD
+#position:v_GADD45:655.3746232059987,832.8797915763481
+#!control:v_GADD45:true,null
+$v_GADD45:(v_p53 | v_SMAD)
+v_SMAD -> v_GADD45
+v_p53 -> v_GADD45
+#position:v_FOXO3:386.0030629076218,719.3034937005392
+#!control:v_FOXO3:true,null
+$v_FOXO3:(v_JNK & !v_AKT)
+v_JNK -> v_FOXO3
+v_AKT -| v_FOXO3
+#position:v_SPRY:294.9966636028596,1098.4482082905117
+#!control:v_SPRY:true,null
+$v_SPRY:v_ERK
+v_ERK -> v_SPRY
+#position:v_EGFR:112.44246066225242,1224.8246169181566
+#!control:v_EGFR:true,null
+$v_EGFR:((v_EGFR_stimulus & !(v_PKC | v_GRB2)) | (v_SPRY & !(v_PKC | v_GRB2)))
+v_SPRY -> v_EGFR
+v_EGFR_stimulus -> v_EGFR
+v_GRB2 -| v_EGFR
+v_PKC -| v_EGFR
+#position:v_EGFR_stimulus:64.51360989877958,1441.829068217843
+#!control:v_EGFR_stimulus:true,null
+#position:v_PKC:113.35904245574739,1077.0731309496653
+#!control:v_PKC:true,null
+$v_PKC:v_PLCG
+v_PLCG -> v_PKC
+#position:v_FRS2:293.07711823742034,1254.264991485514
+#!control:v_FRS2:true,null
+$v_FRS2:(v_FGFR3 & !(v_GRB2 | v_SPRY))
+v_SPRY -| v_FRS2
+v_GRB2 -| v_FRS2
+v_FGFR3 -> v_FRS2
+#position:v_FGFR3:189.22456591094692,1328.5365791861527
+#!control:v_FGFR3:true,null
+$v_FGFR3:(v_FGFR3_stimulus & !(v_PKC | v_GRB2))
+v_FGFR3_stimulus -> v_FGFR3
+v_GRB2 -| v_FGFR3
+v_PKC -| v_FGFR3
+#position:v_MDM2:517.6702451533758,362.534992511694
+#!control:v_MDM2:true,null
+$v_MDM2:((v_AKT & !v_p14) | (v_p53 & !v_p14))
+v_p14 -| v_MDM2
+v_p53 -> v_MDM2
+v_AKT -> v_MDM2
+#position:v_ATM:655.9155484427499,667.7490779584751
+#!control:v_ATM:true,null
+$v_ATM:v_DNA_damage
+v_DNA_damage -> v_ATM
+#position:v_DNA_damage:745.8027988197446,495.96889852857345
+#!control:v_DNA_damage:true,null
+#position:v_FGFR3_stimulus:243.27398543384197,1560.8575943237406
+#!control:v_FGFR3_stimulus:true,null
+#position:v_TGFBR_stimulus:497.51433272878376,1490.8262106593731
+#!control:v_TGFBR_stimulus:true,null
+#position:v_Apoptosis:475.314262952782,553.3433903204105
+#!control:v_Apoptosis:false,null
+$v_Apoptosis:((v_FOXO3 & v_p53) & !(v_BCL2 | v_ERK))
+v_p53 -> v_Apoptosis
+v_ERK -| v_Apoptosis
+v_BCL2 -| v_Apoptosis
+v_FOXO3 -> v_Apoptosis
+#position:v_BCL2:475.68172901726484,743.3245061258053
+#!control:v_BCL2:true,null
+$v_BCL2:(v_CREB & v_AKT)
+v_CREB -> v_BCL2
+v_AKT -> v_BCL2
+#position:v_Growth_Arrest:486.7184867866263,70.5
+#!control:v_Growth_Arrest:false,null
+$v_Growth_Arrest:v_p21
+v_p21 -> v_Growth_Arrest
+#position:v_ATF2:295.39776495455044,980.8362540476463
+#!control:v_ATF2:true,null
+$v_ATF2:(v_JNK | v_p38)
+v_JNK -> v_ATF2
+v_p38 -> v_ATF2

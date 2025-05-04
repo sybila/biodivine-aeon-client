@@ -1,151 +1,222 @@
 <!DOCTYPE html>
-
-<!-- 
-        This file is a "landing page" for AEON which 
-        links to different older versions.
-
-        It should be placed outside of the main client directory
-        and renamed to index.html - don't forget to include the fonts!
--->
-
-<html>
+<html lang="en">
     <head>
-        <title>Biodivine/Aeon</title>
-        <meta charset="utf-8">
-        <style type="text/css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biodivine / AEON</title>
 
-            @font-face {
-                font-family: 'BaileyReg';
-                src: url("font/B3.ttf");
-            }
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono&display=swap" rel="stylesheet" />
+    <style>
+        @font-face {
+        font-family: 'BaileyReg';
+        src: url("font/B3.ttf");
+        }
 
-            @font-face {
-                font-family: 'BaileyBold';
-                src: url("font/B2.ttf");
-            }
+        @font-face {
+        font-family: 'BaileyBold';
+        src: url("font/B2.ttf");
+        }
 
-            @font-face {
-                font-family: 'FiraMono';
-                src: url('font/FiraMono-Regular.ttf');
-            }
+        @font-face {
+        font-family: 'FiraMono';
+        src: url("font/FiraMono-Regular.ttf");
+        }
 
-            @font-face {
-                font-family: 'FiraMonoBold';
-                src: url('font/FiraMono-Bold.ttf');
-            }
+        @font-face {
+        font-family: 'FiraMonoBold';
+        src: url("font/FiraMono-Bold.ttf");
+        }
 
+        body {
+        margin: 0;
+        padding: 0;
+        font-family: 'FiraMono', monospace;
+        background-color: #fdfdfd;
+        color: #333;
+        line-height: 1.6;
+        }
 
-            #logo {
-                width: fit-content;
-                width: -moz-fit-content;
-                margin: 0 auto;
-                margin-top: 64px;                
-                margin-bottom: 32px;
-                right: 24px;
-                font-family: 'BaileyReg', monospace;
-                font-weight: normal;
-                color: #3a568c;
-                font-size: 4.2em;
-            }
+        header {
+        text-align: center;
+        padding: 60px 20px 30px;
+        }
 
-            #title{
-                font-family: 'BaileyBold', monospace;
-                font-weight: bold;
-                color: #d05d5d;
-            }
+        #logo {
+        font-family: 'BaileyReg', serif;
+        font-size: 3.5em;
+        color: #3a568c;
+        }
 
-            .version-number {
-                color: #3a568c;
-                font-family: 'FiraMonoBold', monospace;
-                font-weight: bold;
-                font-size: 30px;
-                text-decoration: none;
-            }            
+        #title {
+        font-family: 'BaileyBold', serif;
+        color: #d05d5d;
+        }
 
-            .version-number:hover {
-                color: #d05d5d;
-            }
+        .top-info {
+        max-width: 900px;
+        margin: 0 auto 60px;
+        padding: 24px;
+        background-color: #f4f7fb;
+        border-left: 6px solid #3a568c;
+        border-radius: 8px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+        font-family: 'FiraMono', monospace;
+        }
 
-            .links {
-                margin: 0 auto;
-                width: 800px;
-                font-size: 18px;
-            }
+        .top-info p {
+        margin: 0 0 16px;
+        line-height: 1.6;
+        font-size: 16px;
+        color: #333;
+        }
 
-            .link {
-                font-family: 'Helvetica', 'Arial', sans-serif;
-            }
+        .top-info a {
+        color: #3a568c;
+        font-weight: 600;
+        text-decoration: none;
+        }
 
-            .link a {
-                color: #3a568c;
-            }
+        .top-info a:hover {
+        color: #d05d5d;
+        }
 
-            .link a:visited {
-                color: #3a568c;   
-            }
+        .top-info code {
+        display: block;
+        background-color: #eaeff7;
+        padding: 16px;
+        font-size: 14px;
+        border-radius: 6px;
+        line-height: 1.5;
+        color: #2a2a2a;
+        overflow-x: auto;
+        }
 
-            .subversion {
-                color: #aaa;
-                font-size: 20px;
-                font-family: 'FiraMono', monospace;
-                font-weight: 600;
-            }
+        .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 20px;
+        }
 
-            a.sublink {
-                color: #3a568c;
-                font-family: 'FiraMonoBold', monospace;
-                font-weight: bold;
-                font-size: 20px;
-                text-decoration: none;            
-            }
+        .card {
+        background: #fff;
+        padding: 24px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        transition: transform 0.2s;
+        }
 
-            a.sublink:hover {
-            	color: #d05d5d;
-            }
+        .card:hover {
+        transform: translateY(-5px);
+        }
 
-            code {
-                font-family: 'FiraMono', monospace;
-            }
+        .version-number {
+        font-size: 1.8em;
+        font-weight: bold;
+        color: #3a568c;
+        text-decoration: none;
+        }
 
-            p {
-                text-align: justify;
-            }
+        .version-number:hover {
+        color: #d05d5d;
+        }
 
-        </style>
+        .subversion {
+        color: #888;
+        font-size: 0.9em;
+        margin-left: 12px;
+        }
 
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-HTCNPH6WMB"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
+        .sublink {
+        margin-left: 12px;
+        text-decoration: none;
+        font-weight: bold;
+        color: #3a568c;
+        }
 
-          gtag('config', 'G-HTCNPH6WMB');
-        </script>
-        
+        .sublink:hover {
+        color: #d05d5d;
+        }
+
+        p {
+        text-align: justify;
+        margin: 12px 0;
+        }
+
+        code {
+        font-family: 'FiraMono', monospace;
+        }
+    </style>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HTCNPH6WMB"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-HTCNPH6WMB');
+    </script>
     </head>
-
     <body>
 
-        <h1 id='logo'>Aeon/<span id='title'>BIODIVINE</span></h1>
+    <header>
+        <div id="logo">Aeon/<span id="title">BIODIVINE</span></div>
+    </header>
 
-        <div class="links">
-            <small><p class="link" style="text-align: center;">If you have any issues or questions about AEON, <br>get in touch at <a href="mailto:sybila@fi.muni.cz">sybila@fi.muni.cz</a>. It is probably not your fault ;)<br>You can also raise issues on github for the <a href="https://github.com/sybila/biodivine-aeon-client">web-gui</a> and the <a href="https://github.com/sybila/biodivine-aeon-server">compute-engine</a>. <br>If you found AEON useful in your workflow, please cite it using the following publication:</p>
+    <div class="top-info">
+        <p>
+        📩 Questions? Email us at 
+        <a href="mailto:sybila@fi.muni.cz">sybila@fi.muni.cz</a><br />
+        🛠 GitHub:
+        <a href="https://github.com/sybila/biodivine-aeon-client" target="_blank">web-gui</a> |
+        <a href="https://github.com/sybila/biodivine-aeon-server" target="_blank">compute-engine</a>
+        </p>
 
-            	<code style="text-align: center; display: block; width: 100%;">
-				Beneš, N., Brim, L., Kadlecaj, J., Pastva, S., & Šafránek, D. (2020, July). <br>				
-				AEON: Attractor Bifurcation Analysis of Parametrised Boolean Networks. <br>
-				In International Conference on Computer Aided Verification (pp. 569-581).
-				</code>
-            </small>
+        <code>
+        Beneš, N., Brim, L., Kadlecaj, J., Pastva, S., & Šafránek, D. (2020)<br>
+        AEON: Attractor Bifurcation Analysis of Parametrised Boolean Networks.<br>
+        In International Conference on Computer Aided Verification (CAV 2020), pp. 569–581.
+        </code>
+    </div>
 
-            <p class="link"><a class="version-number" href="v0.4.0/index.html">AEON 2021</a> <span class="subversion">[v0.4.1]</span> Explore bifurcation properties of Boolean networks in Aeon's new interactive tree editor. You can investigate the structure of attractors depending on various properties of the parameter space. These can be basic Boolean parameters/constants, regulation monotonicity, or more advanced context-aware attributes (e.g. <small><code>X essential in Y when Z</code></small>). Furthermore, you can also analyse how stability of particular variable changes in different tree nodes and generate attractor state-space or witness networks for individual conditions. <a class="sublink" href="./v0.4.0/index.html">[tool]</a><a class="sublink" href="./manual/v0.4.0/index.html">[manual]</a></p>   
+    <div class="container">
 
-            <p class="link" style="text-align: center; margin-top: 96px;">~ <i>Older versions</i> ~</p>         
-            <p class="link"><a class="version-number" href="v0.3.0/index.html">v0.3.0</a> Includes a new, completely symbolic attractor detection algorithm. Without parameters, AEON now scales beyond 1000 Boolean variables. With parameters, the performance depends on the actual behaviour, but significant improvements compared to <code>0.2.0</code> are expected. Additionally, static analysis can now explain <i>why</i> an update function cannot be instantiated. Consequently, debugging large models should be much easier.<br>Other smaller improvements include: visualisation of constant variables in large attractors (where full graph cannot be shown); additional improvements to SBML compatibility; and better cancellation and progress support for long computations.</p>
-            <p class="link"><a class="version-number" href="v0.2.0/index.html">v0.2.0</a> <span class="subversion">[deprecated]</span> In this version, AEON learned to visualize attractor state space (up to 1000 states) for witness networks. We also significantly improved SBML import/export compatibility with other tools.</p>
-            <p class="link"><a class="version-number" href="v0.1.0/index.html">AEON 2020</a> <span class="subversion">[v0.1.0]</span> <span class="subversion">[deprecated]</span> Original AEON as published at CAV 2020. Includes interactive editor for parametrized Boolean networks with SBML-qual support. Uses semi-symbolic parallel attractor detection algorithm that can typically handle models with up to 20 variables and 100 Boolean parameters using common hardware. <a class="sublink" href="./v0.1.0/index.html">[tool]</a><a class="sublink" href="./aeon-manual.pdf">[manual]</a></p>
+        <div class="card">
+        <a class="version-number" href="v0.5.0/index.html">AEON 2025</a>
+        <span class="subversion">[v0.5.0]</span>
+        <p>AEON 2025 introduces functionality for control over Boolean networks. Users can now define control-relevant attributes and compute perturbations that guide the network toward a desired phenotype.</p>
+        <a class="sublink" href="./v0.5.0/index.html">[tool]</a>
+        <a class="sublink" href="./manual/v0.5.0/index.html">[manual]</a>
         </div>
+
+        <p style="text-align: center; margin: 60px 0 12px; color: #999;">~ <i>Older versions</i> ~</p>
+
+        <div class="card">
+        <a class="version-number" href="v0.4.0/index.html">AEON 2021</a>
+        <span class="subversion">[v0.4.1]</span>
+        <p>Interactive tree editor for exploring bifurcation properties and attractor structures based on parameter space attributes. Includes variable stability analysis and witness generation.</p>
+        </div>
+
+        <div class="card">
+        <a class="version-number" href="v0.3.0/index.html">v0.3.0</a>
+        <p>Introduced a symbolic attractor detection algorithm. Massive scalability improvements, detailed static analysis for debugging, and enhancements to SBML compatibility.</p>
+        </div>
+
+        <div class="card">
+        <a class="version-number" href="v0.2.0/index.html">v0.2.0</a>
+        <span class="subversion">[deprecated]</span>
+        <p>Added visualization of attractor state spaces and improved SBML import/export.</p>
+        </div>
+
+        <div class="card">
+        <a class="version-number" href="v0.1.0/index.html">AEON 2020</a>
+        <span class="subversion">[v0.1.0] [deprecated]</span>
+        <p>Original AEON version published at CAV 2020. Features SBML-qual support and semi-symbolic attractor detection.</p>
+        <a class="sublink" href="./v0.1.0/index.html">[tool]</a>
+        <a class="sublink" href="./aeon-manual.pdf">[manual]</a>
+        </div>
+    </div>
 
     </body>
 </html>

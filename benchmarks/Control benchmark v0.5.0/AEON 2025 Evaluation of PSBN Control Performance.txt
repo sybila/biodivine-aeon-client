@@ -1,0 +1,49 @@
+AEON 2025: Evaluation of PSBN Control Performance
+
+---------------------------------------------------------------------------------------------------------
+Model         | Phenotype      | Size 1 (T, R, N)     | Size 2 (T, R, N)      | Size 3 (T, R, N)
+---------------------------------------------------------------------------------------------------------
+Cardiac       | FHF             | <1s, 0.5, 3          | <1s, 1, 54            | <1s, 1, 477
+              | SHF             | <1s, 1, 23           | <1s, 1, 249           | <1s, 1, 1691
+              | No mesoderm     | <1s, 0.5, 2          | <1s, 1, 43            | <1s, 1, 429
+---------------------------------------------------------------------------------------------------------
+Reduced MAPK  | Apoptosis       | <1s, 1, 25           | <1s, 1, 291           | 1s, 1, 2104
+              | Growth arrest   | <1s, 0.75, 18        | <1s, 1, 164           | <1s, 1, 1040
+              | No decision     | <1s, 1, 22           | <1s, 1, 253           | <1s, 1, 1952
+              | Proliferation   | <1s, 0.375, 18       | <1s, 1, 151           | 1s, 1, 828
+---------------------------------------------------------------------------------------------------------
+ERBB          | Phosphor        | <1s, 1, 31           | <1s, 1, 463           | <1s, 1, 4442
+              | Non-phosphor    | <1s, 1, 8            | <1s, 1, 257           | <1s, 1, 3972
+---------------------------------------------------------------------------------------------------------
+Tumour        | Apoptosis       | 14s, 1, 5            | 2m54s, 1, 190         | 17m11s, 1, 3357
+              | EMT             | 4s, 0.5, 10          | 49s, 1, 319           | 8m28s, 1, 5171
+              | Hybrid          | 10s, 0.25, 4         | 1m34s, 1, 146         | 9m20s, 1, 2692
+              | Metastasis      | 16s, 0.5, 32         | 4m25s, 1, 510         | 37m45s, 1, 5396
+---------------------------------------------------------------------------------------------------------
+Cell Fate     | Apoptosis       | 28s, 0, 0            | 2m37s, 1, 56          | 9m59s, 1, 1974
+              | Naive           | 15s, 0, 0            | 1m54s, 1, 11          | 8m9s, 1, 790
+              | Necrosis        | 16s, 1, 1            | 1m56s, 1, 110         | 7m47s, 1, 3371
+              | Survival        | 12s, 1, 1            | 55s, 1, 77            | 3m0s, 1, 2290
+---------------------------------------------------------------------------------------------------------
+
+Notes:
+- **T (Time)**: Computation time to analyze perturbations of this size (e.g., `<1s` = less than one second, `2m54s` = two minutes and fifty-four seconds).
+- **R (Robustness)**: Maximum robustness observed (scale from 0 to 1; 1 = fully robust).
+- **N (Number)**: Total number of perturbations computed at this size.
+
+References:
+
+ Cardiac:
+    Herrmann, F., Groß, A., Zhou, D., Kestler, H.A., Kühl, M. (2012). A boolean model of the cardiac gene regulatory network determining first and second heart field identity. PLOS ONE, 7(10), e46798. https://doi.org/10.1371/journal.pone.0046798
+
+ Reduced MAPK:
+    Grieco, L., Calzone, L., Bernard-Pierrot, I., Radvanyi, F., Kahn-Perlès, B., Thieffry, D. (2013). Integrative modelling of the influence of MAPK network on cancer cell fate decision. PLOS Computational Biology, 9(10). https://doi.org/10.1371/journal.pcbi.1003286
+
+ ERBB:
+    Ito, N., Kuwahara, G., Sukehiro, Y., Teratani, H. (2012). Segmental arterial mediolysis accompanied by renal infarction and pancreatic enlargement: a case report. Journal of Medical Case Reports, 6. https://doi.org/10.1186/1752-1947-6-307
+
+ Tumour:
+    Cohen, D.P.A., Martignetti, L., Robine, S., Barillot, E., Zinovyev, A., Calzone, L. (2015). Mathematical modelling of molecular pathways enabling tumour cell invasion and migration. PLOS Computational Biology, 11. https://doi.org/10.1371/journal.pcbi.1004571
+
+ Cell Fate:
+    Calzone, L., Tournier, L., Fourquet, S., Thieffry, D., Zhivotovsky, B., Barillot, E., Zinovyev, A. (2010). Mathematical modelling of cell-fate decision in response to death receptor engagement. PLOS Computational Biology, 6, e1000702. https://doi.org/10.1371/journal.pcbi.1000702
