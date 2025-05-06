@@ -825,8 +825,11 @@ let LiveModel = {
 		},
 
 		/** Export current model in Aeon text format, or undefined if model cannot be 
-		exported (no variables). */
-		exportAeon(emptyPossible = false, withResults = true) {
+		exported (no variables). 
+		emptyPossible (boolean) - true if model can be exported eventhough its empty
+		withResults (boolean) - true if model should be exported with results
+		*/
+		exportAeon(emptyPossible = false, withResults = false) {
 			let result = "";
 			let keys = Object.keys(LiveModel.Variables._variables);
 			if (!emptyPossible && keys.length == 0) return undefined;

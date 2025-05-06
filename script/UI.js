@@ -230,8 +230,9 @@ let UI = {
 			const tabId = TabBar.getNowActiveId();
 			const tab = TabBar.getTab(tabId)
 
+			const modelString = LiveModel.Export.exportAeon(false, withResults);
+
 			if (tab.type == "model") {
-				const modelString = LiveModel.Export.exportAeon(false, withResults);
 				tab.data = modelString;
 				LiveModel.modelSave = modelString;
 			}
@@ -243,7 +244,7 @@ let UI = {
 			newWindow.nextModelId = window.nextModelId;
 			newWindow.modelCalc = window.modelCalc;
 			newWindow.lastComputation = withResults == true ? ComputeEngine.Computation.getLastComputation() : undefined;
-			newWindow.model = LiveModel.modelSave;
+			newWindow.model = modelString;
 		}
 	},
 

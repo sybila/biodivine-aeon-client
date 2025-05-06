@@ -144,7 +144,7 @@ let TabBar = {
 
         if (nowActiveTab.type == "model") {
             InitHotkeys.disableHotkeys();
-            nowActiveTab.data = LiveModel.Export.exportAeon(true);
+            nowActiveTab.data = LiveModel.Export.exportAeon(true, true);
         } else if (nowActiveTab.type == "tree-explorer") {
             InitHotkeys.disableHotkeys();
         }
