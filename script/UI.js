@@ -202,18 +202,22 @@ let UI = {
 
 	/** Functions used for opening new inner tabs and browser tabs. */
 	Open: {
-		openWitness(witness) {
+		openWitness(witness, customUrl = "") {
 			if (!UI.testResultsAvailable()) {return;};
 	
 			const url = window.location.pathname;
 			console.log(window.location.pathname);
-			window.open(url + '?engine=' + encodeURI(ComputeEngine.Connection.getAddress()) + "&witness="+ encodeURI(witness));
+
+			if (customUrl != "") {
+				window.open(url + '?engine=' + encodeURI(ComputeEngine.Connection.getAddress()) + customUrl);
+			} else {
+				window.open(url + '?engine=' + encodeURI(ComputeEngine.Connection.getAddress()) + "&witness="+ encodeURI(witness));
+			}	
 		},
 	
-		openExplorer(behavior) {
+		openExplorer(behaviour) {
 			if (!UI.testResultsAvailable()) {return;};
-	
-			Explorer.openNewExplorer(behavior);
+			Explorer.openNewExplorer(behaviour);
 		},
 	
 		openTreeExplorer() {

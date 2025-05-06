@@ -31,10 +31,10 @@ let Explorer = {
     },
 
     //Requests attractor explorer data from the compute engine and 
-	openNewExplorer(behaviorData) {
-		const splitBeh = behaviorData.split("&");
+	openNewExplorer(behaviourData) {
+		const splitBeh = behaviourData.split("&");
 
-		let behavior = null;
+		let behaviour = null;
 		let treeWitness = null;
 		let variable = null;
 		let vector = null;
@@ -53,13 +53,13 @@ let Explorer = {
 
 			if (dataSplit.length != 2) {
 				if (i == 0 && dataSplit.length == 1 && dataSplit[0] != "") {
-					behavior = dataSplit[0];
+					behaviour = dataSplit[0];
 				}
 				continue;
 			}
 
-			if (dataSplit[0] == "behavior") {
-				behavior = dataSplit[1];
+			if (dataSplit[0] == "behaviour") {
+				behaviour = dataSplit[1];
 			} else if (dataSplit[0] == "tree_witness") {
 				treeWitness = dataSplit[1];
 			} else if (dataSplit[0] == "variable") {
@@ -69,16 +69,16 @@ let Explorer = {
 			}
 		}
 
-		if (behavior != null) {
-			ComputeEngine._backendRequest('/get_attractors/' + behavior, callback, 'GET', null);
-		} else if (treeWitness != null) {
+		 if (treeWitness != null) {
 			if (variable === null || vector === null) {
 				ComputeEngine._backendRequest('/get_tree_attractors/' + treeWitness, callback, 'GET', null);
 			} else {
 				ComputeEngine._backendRequest('/get_stability_attractors/' + treeWitness + '/' 
-								+ encodeURI(behavior) + '/' + encodeURI(variable) + '/' 
+								+ encodeURI(behaviour) + '/' + encodeURI(variable) + '/' 
 									+ encodeURI("["+ vector +"]"), callback, 'GET', null);
 			}
+		} else if (behaviour != null) {
+			ComputeEngine._backendRequest('/get_attractors/' + behaviour, callback, 'GET', null);
 		}
 	},
 

@@ -392,8 +392,8 @@ let TreeExplorer = {
 		if (node === undefined) {
 			return;
 		}
-		const url = window.location.pathname.replace("tree_explorer.html", "index.html");
-		window.open(url + '?engine=' + encodeURI(ComputeEngine.Connection.getAddress()) + "&tree_witness="+ encodeURI(node));
+
+		UI.Open.openWitness(wittness = null, customUrl = "&tree_witness="+ encodeURI(node));
 	},
 
 	openStabilityWitness(variable, behaviour, vector) {
@@ -401,8 +401,8 @@ let TreeExplorer = {
 		if (node === undefined) {
 			return;
 		}
-		const url = window.location.pathname.replace("tree_explorer.html", "index.html");
-		window.open(url + '?engine=' + encodeURI(ComputeEngine.Connection.getAddress()) + "&tree_witness="+ encodeURI(node) + "&variable=" + encodeURI(variable) + "&behaviour=" + encodeURI(behaviour) + "&vector=" + encodeURI(vector));
+
+		UI.Open.openWitness(wittness = null, customUrl = ("&tree_witness="+ encodeURI(node) + "&variable=" + encodeURI(variable) + "&behaviour=" + encodeURI(behaviour) + "&vector=" + encodeURI(vector)))
 	},
 
 	/* Open attractors for the currently selected tree node. */
@@ -420,8 +420,9 @@ let TreeExplorer = {
 		if (node === undefined) {
 			return;
 		}
-		const url = window.location.pathname.replace("tree_explorer.html", "explorer.html");
-		window.open(url + '?engine=' + encodeURI(ComputeEngine.Connection.getAddress()) + "&tree_witness="+ encodeURI(node) + "&variable=" + encodeURI(variable) + "&behaviour=" + encodeURI(behaviour) + "&vector=" + encodeURI(vector));
+
+
+		UI.Open.openExplorer("&tree_witness="+ encodeURI(node) + "&variable=" + encodeURI(variable) + "&behaviour=" + encodeURI(behaviour) + "&vector=" + encodeURI(vector));
 	},
 
 	_vector_to_string(vector) {
