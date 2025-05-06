@@ -1384,6 +1384,11 @@ div.center {
     width: 50%;
 }
 
+.center {
+    justify-content: center;
+    align-items: center;
+}
+
 .symbols {
     font-family: symbols;
 }
