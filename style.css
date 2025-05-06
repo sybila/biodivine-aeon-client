@@ -905,13 +905,6 @@ div.center {
     font-weight: bold;
 }
 
-.symbols {
-    font-family: symbols;
-}
-
-.fira-mono {
-    font-family: FiraMono, monospace;
-}
 
 .sort-checkbox input {
     position: relative;
@@ -1071,7 +1064,6 @@ div.center {
 
 .table td {
     white-space: nowrap;
-    font-family: 'FiraMono';
 }
 
 .table tr {
@@ -1388,6 +1380,14 @@ div.center {
 .half-width {
     height: 100%;
     width: 50%;
+}
+
+.symbols {
+    font-family: symbols;
+}
+
+.fira-mono {
+    font-family: FiraMono, monospace;
 }
 
 /** Status */
