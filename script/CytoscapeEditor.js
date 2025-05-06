@@ -371,7 +371,7 @@ let CytoscapeEditor = {
 				this._cytoscape.getElementById(node.id).style('color', 'red');
 				this._cytoscape.getElementById(node.id).style('border-width', '2px');
 			} else {
-				this._cytoscape.getElementById(node.id).style('border-color', '#bbbbbb');
+				this._cytoscape.getElementById(node.id).style('border-color', "");
 				this._cytoscape.getElementById(node.id).style('color', 'black');
 				this._cytoscape.getElementById(node.id).style('border-width', '1px');
 			}
@@ -395,7 +395,7 @@ let CytoscapeEditor = {
 			if (this._controllableShown && node.controllable) {
 				this._cytoscape.getElementById(node.id).style('background-color', '#FFFF66');
 			} else {
-				this._cytoscape.getElementById(node.id).style('background-color', '#dddddd');
+				this._cytoscape.getElementById(node.id).style('background-color', '');
 			}
 		});
 	},
