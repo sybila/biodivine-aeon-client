@@ -196,6 +196,7 @@ let Results = {
 		this.controlResults.style.display = "none";
 		this.controlInput.innerHTML = "";
 		this.attractorInput.innerHTML = "";
+		this.loadedResults = null;
 	},
 
 	/** Returns true if results module displays non empty results page. */
