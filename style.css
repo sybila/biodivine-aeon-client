@@ -226,6 +226,8 @@ body {
     overflow-y: auto;
     max-width: calc(97vw - 120px);
     width: 500px;
+    min-width: 410px;
+    max-width: 65vw;
     resize: both;
     height: 620px;
     max-height: 95vh;
