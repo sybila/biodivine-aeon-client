@@ -302,6 +302,8 @@ let ComputeEngine = {
 			};
 
 			this.waitingForResult = true;
+			UI.Visible.ensureContentTabOpen(ContentTabs.computeEngine);
+
 			if (!this._computeControl) {
 				this._computationType = "attractor";
 				
