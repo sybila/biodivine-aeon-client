@@ -505,11 +505,13 @@
                 </div>
 
                 <div id="tab-results" class="main-panel gone" style="height: fit-content;">
-                    <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.Visible.closeContent()">
-                    <h2 style="margin: 0 auto; font-size: 20px; text-align: center;">Results</h2>
-                    <button class="square-button-fixed-size button-hover light-grey-background" onclick="UI.Visible.showHideManual('manual-model', 'manual-model-headline', 'Results', 'manual-text-results');" onmouseenter="UI.HoverHint.displayHover(event.target, 0, -65, 'Help')" onmouseleave="UI.HoverHint.hideHover()" style="position: absolute; top: 4px; right: 4px;" ><img class="fit-into-parent" src="img/help-48px.svg" alt="H"></button>
+                    <div style="height: 30px;">
+                        <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="UI.Visible.closeContent()">
+                        <h2 style="margin: 0 auto; font-size: 20px; text-align: center;">Results</h2>
+                        <button class="square-button-fixed-size button-hover light-grey-background" onclick="UI.Visible.showHideManual('manual-model', 'manual-model-headline', 'Results', 'manual-text-results');" onmouseenter="UI.HoverHint.displayHover(event.target, 0, -65, 'Help')" onmouseleave="UI.HoverHint.hideHover()" style="position: absolute; top: 4px; right: 4px;" ><img class="fit-into-parent" src="img/help-48px.svg" alt="H"></button>
+                    </div>
 
-                    <div class="scrolling-container" style="max-height: 50%; margin-top: 0;">
+                    <div class="scrolling-container" style="max-height: calc(100% - 30px); margin-top: 0;">
                         <div style="text-align: center; padding: 12px; display: none;"><span id="results-expired" class="orange center gone">The computation has been overwritten. <br>These results are no longer available!</span></div>               
 
                         <div id="empty-results">
@@ -1399,7 +1401,7 @@ Parameters ::= Name | Parameters, Parameters</pre>
                 <div id="decision-stability-analysis" class="stability-panel"></div>
             </div>
     
-            <div id="mixed-info" class="main-panel fira-mono gone" style="margin: 0; position: absolute; top: 3px; left: 3px;">
+            <div id="mixed-info" class="main-panel fira-mono gone" style="margin: 0; position: absolute; top: 3px; left: 3px; min-width: 500px;">
                 <div class="center" style="margin: 16px;">
                     <span style="position: relative; top: -20px; font-size: 14px;">Mixed</span><br>
                     <span id="mixed-type-label" style="font-size: 30px;">X types</span>
@@ -1570,7 +1572,7 @@ Parameters ::= Name | Parameters, Parameters</pre>
             </div>                
         </div>
 
-        <div id="tab-menu" style="max-height: 30px; height: 30px; max-width: 270px; width: 270px; position: absolute; top: 0; right: 0; z-index: 200; overflow: hidden;">
+        <div id="tab-menu" style="max-height: 30px; height: 30px; max-width: 270px; width: 270px; padding-bottom: 5px; position: absolute; top: 0; right: 0; z-index: 200; overflow: hidden;">
             <img alt="close" src="img/close-24px.svg" class="panel-close-button" onclick="TabBar.closeTab();" onmouseenter="UI.HoverHint.displayHover(event.target, -30, -125, 'Close Inner Tab')" onmouseleave="UI.HoverHint.hideHover()" style="max-height: 18px; top: 3px; left: auto; right: 10px;" onclick="TabBar.closeTab()"> 
     
             <button class="centered-button" style="height: 25px; position: absolute; right: 58px; top: 3px;" onclick="document.getElementById('tab-bar').style.display == 'none' ? 
