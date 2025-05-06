@@ -267,7 +267,7 @@ let TreeExplorer = {
 				console.log(CytoscapeTreeEditor._normalizeClass(cls.class));
 				let row = `
 					<tr ${style}>
-						<td class="symbols phenotype"><div style="margin-bottom: 5px">${CytoscapeTreeEditor._normalizeClass(cls.class)}</td>
+						<td class="symbols phenotype">${CytoscapeTreeEditor._normalizeClass(cls.class)}</td>
 						<td class="distribution">${this.Math_percent(cls.cardinality, rightTotal)}%</td>
 					</tr>
 				`;
