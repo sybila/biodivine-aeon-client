@@ -4,9 +4,9 @@ function init() {
 	// Safari security alert
 	let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 	if (isSafari) {
-		Warning.displayWarning(
-			"At the moment, security measures in Safari may prevent you from connecting to the AEON compute engine.\n\n" +
-			"You can still use the editor to view, modify and export models. While we work on this issue, you " +
+		alert(
+			"At the moment, security measures in Safari may prevent you from connecting to the AEON compute engine.\n\n" + 
+			"You can still use the editor to view, modify and export models. While we work on this issue, you " + 
 			"can access full AEON functionaliy in Google Chrome."
 		);
 	}
