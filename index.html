@@ -550,12 +550,13 @@
                     
                     <p>Aeon is a tool for analysing <b style="font-family: 'FiraMonoBold';">long-term behaviour of Boolean networks with parameters</b>. Use the editor to create a new network, or import your own from .sbml or .aeon. You can leave the update functions in the network blank (this will automatically consider all admissible instantiations of such function) or specify an exact update function. In the update function, you can use <b style="font-family: 'FiraMonoBold';">arbitrary uninterpreted functions as parameters</b> (see Budding Yeast-Irons example). Aeon will then automatically consider all admissible instantiations of such functions when analysing the model.</p>
 
-                    <p>Once your network is ready, you can run the long-term behaviour analysis which will show you the behaviour classes of the model. The classes are separated based on <b style="font-family: 'FiraMonoBold';">stable, oscillating or disordered</b> behaviour. For each class, you can generate a <b style="font-family: 'FiraMonoBold';">witness network</b> that exihibits the specified behaviour.</p>
-
+                    <p>Once your network is ready, you can run the long-term behaviour analysis which will show you the behaviour classes of the model. The classes are separated based on <b style="font-family: 'FiraMonoBold';">stable, oscillating or disordered</b> behaviour. For each class, you can generate a <b style="font-family: 'FiraMonoBold';">witness network</b> that exhibits the specified behaviour.</p>
+                    
+                    <p>Additionally, Aeon provides <b style="font-family: 'FiraMonoBold';">control functionality</b>, allowing you to define a desired phenotype by specifying variable values and whether the system should oscillate. Aeon will compute <b style="font-family: 'FiraMonoBold';">perturbations</b>—variables fixed to specific Boolean values—that guide the network toward this phenotype. The tool also calculates the <b style="font-family: 'FiraMonoBold';">robustness</b> of each perturbation, showing how consistently it works across all admissible interpretations of the network.</p>
+                    
                     <h3>Manual</h3>
-
+                    
                     Full description of the functionality Aeon provides is available in the <a href="https://biodivine.fi.muni.cz/aeon/manual/v0.5.0/">tool manual</a>.
-
 
                     <h3>Quick Help</h3>
                     <b>Network editor actions:</b>
