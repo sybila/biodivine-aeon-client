@@ -1,5 +1,5 @@
 let ContentTabs = {
-	engine: "tab-engine",
+	computeEngine: "tab-engine",
 	modelEditor: "tab-model-editor",
 	results: "tab-results",
 }
